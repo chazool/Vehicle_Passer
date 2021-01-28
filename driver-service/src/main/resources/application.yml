@@ -1,0 +1,14 @@
+server:
+  port: 9191
+spring:
+  application:
+    name: driverservice
+  datasource:
+    url: jdbc:mysql://localhost3306/vehiclepasser_driver?createDatabaseIfNotExist=true
+    data-username: root
+    password: 1234
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
