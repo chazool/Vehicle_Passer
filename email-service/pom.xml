@@ -18,8 +18,8 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.chazoolhighwayvehiclepasser.common</groupId>
-            <artifactId>com.chazool.highwayvehiclepasser.common</artifactId>
+            <groupId>com.chazool.highwayvehiclepasser.model</groupId>
+            <artifactId>vehiclepasser-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
