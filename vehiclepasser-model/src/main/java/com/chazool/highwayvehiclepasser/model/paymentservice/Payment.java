@@ -20,8 +20,8 @@ public class Payment {
     private int driver;
     private LocalDateTime entranceDate;
     private LocalDateTime exitDate;
-    private int entranceGate;
-    private int exitGate;
+    private int entranceTerminal ;
+    private int exitTerminal;
     private BigDecimal charge;
     private boolean isComplete;
     private boolean isSendEmail;

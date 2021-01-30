@@ -22,7 +22,8 @@ public class Vehicle {
      * System Registration Date Time
      */
     private LocalDateTime registrationDate;
-
+    private LocalDateTime deleteDate;
+    private boolean isActive;
 
 
 }
