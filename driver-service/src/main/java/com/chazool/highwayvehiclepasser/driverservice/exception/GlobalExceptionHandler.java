@@ -6,14 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+//@ControllerAdvice
+public class GlobalExceptionHandler  {
 
 
-    @ExceptionHandler(RuntimeException.class)
+   // @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRunTimeException(RuntimeException runtimeException, HttpStatus httpStatus, WebRequest webRequest) {
 
         ErrorResponse errorResponse = new ErrorResponse();

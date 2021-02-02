@@ -6,27 +6,27 @@ import lombok.Data;
 public class Response {
 
 
-        private Status status;
-        private Object data;
+    private Status status;
+    private Boolean action;
+    private Object data;
 
-        private enum Status{
-            SUCCESS, FAIL
-        }
+    private enum Status {
+        SUCCESS, FAIL
+    }
 
-        private Response(Status status,Object data){
-            this.status=status;
-            this.data=data;
-        }
+    private Response(Status status, Boolean action, Object data) {
+        this.status = status;
+        this.action = action;
+        this.data = data;
+    }
 
-        public static Response success(Object data){
-            return new Response(Status.SUCCESS,data);
-        }
+    public static Response success(Object data) {
+        return new Response(Status.SUCCESS, true, data);
+    }
 
-        public static Response fail(Object data){
-            return new Response(Status.FAIL,data);
-        }
-
-
+    public static Response fail(Object data) {
+        return new Response(Status.FAIL, false, data);
+    }
 
 
 }

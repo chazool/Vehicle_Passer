@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan(basePackages = "com.chazool.highwayvehiclepasser.model.driverservice")
+@EntityScan(basePackages = {"com.chazool.highwayvehiclepasser.model.driverservice"
+                            , "com.chazool.highwayvehiclepasser.model.responsehandle" })
 public class DriverServiceApplication {
 
     public static void main(String[] args) {
