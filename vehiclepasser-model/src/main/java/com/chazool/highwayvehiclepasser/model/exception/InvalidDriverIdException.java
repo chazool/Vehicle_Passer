@@ -7,5 +7,9 @@ public class InvalidDriverIdException extends RuntimeException {
         super(message);
     }
 
+    public InvalidDriverIdException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 
 }
