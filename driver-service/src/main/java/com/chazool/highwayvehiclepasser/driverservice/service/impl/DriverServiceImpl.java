@@ -26,7 +26,6 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
-
     @Override
     public Driver save(Driver driver) throws InvalidEmailException, InvalidPasswordException, InvalidNameException,
             InvalidDrivingLicenseException {

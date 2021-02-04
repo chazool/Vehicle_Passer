@@ -1,14 +1,25 @@
 package com.chazool.highwayvehiclepasser.paymentservice.service;
 
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
+import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public interface PaymentService {
 
-    Response save(Payment payment);
-    Response update(Payment payment);
-    Response delete(Payment payment);
-    Response findById(int id);
-    Response findBuyDriver(int  driver);
+
+    Payment enter(int driverId, int entranceTerminal);
+
+    Payment exit(int driverId, int exitTerminal);
+
+    Payment findById(int id);
+
+    Payment isSendEmail(Payment payment);
+
+    BigDecimal getVehicleCharge(int vehicleId);
+
+    Payment update(Payment payment);
 
 }

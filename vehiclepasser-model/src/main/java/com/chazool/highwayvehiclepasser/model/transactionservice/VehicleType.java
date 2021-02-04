@@ -1,28 +1,24 @@
 package com.chazool.highwayvehiclepasser.model.transactionservice;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "vehicle")
+@Table(name = "vehicletype")
 @Data
-public class Vehicle {
-
+@ToString
+public class VehicleType {
     @Id
     @GeneratedValue
     private int id;
-    private String vehicleNo;
-    private int ownerId;
-    /***
-     * System Registration Date Time
-     */
-    private LocalDateTime registrationDate;
-    private LocalDateTime deleteDate;
+    private String name;
+    private BigDecimal charge;
     private boolean isActive;
 
 

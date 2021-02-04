@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.model.paymentservice;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "paymentMethod")
 @Data
+@ToString
 public class PaymentMethod {
 
     @Id

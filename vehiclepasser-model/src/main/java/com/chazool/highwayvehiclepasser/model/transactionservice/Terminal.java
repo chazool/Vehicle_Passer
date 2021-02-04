@@ -2,6 +2,7 @@ package com.chazool.highwayvehiclepasser.model.transactionservice;
 
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Terminal")
 @Data
+@ToString
 public class Terminal {
 
     @Id

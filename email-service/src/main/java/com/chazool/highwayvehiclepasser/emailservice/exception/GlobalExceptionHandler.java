@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,7 +17,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException runtimeException, HttpStatus httpStatus, WebRequest webRequest) {
 
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimeStamp(LocalDateTime.now().toString());
+        errorResponse.setTimeStamp(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
         errorResponse.setMessage(runtimeException.getMessage());
         errorResponse.setStatus(httpStatus.value());
         errorResponse.setError(httpStatus.getReasonPhrase());

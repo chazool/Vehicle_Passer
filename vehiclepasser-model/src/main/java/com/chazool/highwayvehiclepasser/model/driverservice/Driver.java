@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.model.driverservice;
 
 import lombok.Data;
+import lombok.ToString;
 import sun.security.util.Password;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "driver")
 @Data
+@ToString
 public class Driver {
 
     @Id
@@ -24,8 +26,7 @@ public class Driver {
     private int phoneNo;
     private LocalDateTime registrationDate;
     private boolean isActive;
-
-
+    private int activeVehicle;
 
 
 }

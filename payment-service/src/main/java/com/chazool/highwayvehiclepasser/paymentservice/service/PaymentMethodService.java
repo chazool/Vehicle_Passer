@@ -3,14 +3,24 @@ package com.chazool.highwayvehiclepasser.paymentservice.service;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public interface PaymentMethodService {
 
-    Response save(PaymentMethod paymentMethod);
-    Response update(PaymentMethod paymentMethod);
-    Response delete(PaymentMethod paymentMethod);
-    Response findById(int id);
-    Response findByDriver(int driverId,boolean isActive);
+    PaymentMethod save(PaymentMethod paymentMethod);
 
+    PaymentMethod update(PaymentMethod paymentMethod);
+
+    PaymentMethod delete(int id);
+
+    PaymentMethod findById(int id);
+
+    PaymentMethod findByDriver(int driverId, boolean isActive);
+
+    List<PaymentMethod> findAll();
+
+    PaymentMethod updateBalance(int id, BigDecimal amount);
 
 
 }
