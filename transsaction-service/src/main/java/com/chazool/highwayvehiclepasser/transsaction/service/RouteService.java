@@ -17,7 +17,7 @@ public interface RouteService {
 
     List<Route> findByAll();
 
-    List<Route> findByAll(int entrance,int exit);
+    Route findByEntranceAndExist(int entrance, int exit);
 
 
 }

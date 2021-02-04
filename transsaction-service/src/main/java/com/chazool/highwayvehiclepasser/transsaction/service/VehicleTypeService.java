@@ -14,7 +14,7 @@ public interface VehicleTypeService {
 
     VehicleType update(VehicleType vehicleType);
 
-    VehicleType delete(VehicleType vehicleType);
+    VehicleType delete(int id);
 
     VehicleType findById(int id);
 
