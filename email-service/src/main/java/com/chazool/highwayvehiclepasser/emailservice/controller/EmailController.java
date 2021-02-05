@@ -6,7 +6,15 @@ import com.chazool.highwayvehiclepasser.model.exception.InvalidIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import javax.mail.Message.RecipientType;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 @RestController
 @RequestMapping("/services/emails")
@@ -17,31 +25,11 @@ public class EmailController {
 
     @PostMapping
     public Email save(@RequestBody Email email) {
-        return emailService.save(email);
+
+
+        //return emailService.save(email);
+
+        return null;
     }
 
-    @PutMapping
-    public Email update(@RequestBody Email email) throws InvalidIdException {
-        return emailService.update(email);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public Email delete(@PathVariable int id) throws InvalidIdException {
-        return emailService.delete(id);
-    }
-
-    @GetMapping(value = "/{id}")
-    public Email fetchById(@PathVariable int id) throws InvalidIdException {
-        return emailService.findById(id);
-    }
-
-    @GetMapping(value = "/driver/{driverId}")
-    public Email fetchByDriverId(@PathVariable int driverId) throws InvalidIdException {
-        return emailService.findByDriverId(driverId);
-    }
-
-    @GetMapping
-    public List<Email> fetchAll() {
-        return emailService.findAll();
-    }
 }

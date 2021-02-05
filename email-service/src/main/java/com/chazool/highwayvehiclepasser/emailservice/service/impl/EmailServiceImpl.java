@@ -1,71 +1,55 @@
 package com.chazool.highwayvehiclepasser.emailservice.service.impl;
 
-import com.chazool.highwayvehiclepasser.emailservice.repository.EmailRepository;
 import com.chazool.highwayvehiclepasser.emailservice.service.EmailService;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
-import com.chazool.highwayvehiclepasser.model.exception.InvalidIdException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    private EmailRepository emailRepository;
-    @Autowired
-    private RestTemplate restTemplate;;
-
 
     @Override
-    public Email save(Email email) {
-        email.setActive(true);
-        return emailRepository.save(email);
+    public Email Send(Email email) throws MessagingException {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", 465);
+        properties.put("mail.smtp.user", "chazooltopup@gmail.com");
+        properties.put("mail.smtp.password", "hellosrilanka");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.debug", "true");
+        properties.put("mail.smtp.socketFactory.port", 465);
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.socketFactory.fallback", "false");
+
+
+        Session session = Session.getDefaultInstance(properties, null);
+        session.setDebug(true);
+        MimeMessage message = new MimeMessage(session);
+        //message
+        message.setText("Email Send");
+        //subject
+        message.setSubject("Password for your account");
+        //
+        message.setFrom(new InternetAddress(properties.get("mail.smtp.user").toString()));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress("chazoolkaweesha@gmail.com"));
+        message.saveChanges();
+        Transport transport = session.getTransport("smtp");
+
+        transport.connect(properties.get("mail.smtp.host").toString(), properties.get("mail.smtp.user").toString(), properties.get("mail.smtp.password").toString());
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+        System.out.println("Your password mailed to you");
+
+
+        return null;
     }
-
-    @Override
-    public Email update(Email email) throws InvalidIdException {
-        findById(email.getId());
-        return emailRepository.save(email);
-    }
-
-    @Override
-    public Email delete(int id) throws InvalidIdException {
-        Email email = findById(id);
-        email.setActive(false);
-        return emailRepository.save(email);
-    }
-
-    @Override
-    public Email findById(int id) throws InvalidIdException {
-        Optional<Email> emailOptional = emailRepository.findById(id);
-
-        if (emailOptional.isPresent()) {
-            return emailOptional.get();
-        } else {
-            throw new InvalidIdException("Invalid Email Id");
-        }
-    }
-
-    @Override
-    public Email findByDriverId(int driver) {
-        Optional<Email> email = emailRepository.findByDriverIdAndIsActive(driver, true);
-        return email.isPresent() ? email.get() : null;
-    }
-
-
-    @Override
-    public List<Email> findAll() {
-        return emailRepository.findAll();
-    }
-
-
-  
-
-
-
-
 }

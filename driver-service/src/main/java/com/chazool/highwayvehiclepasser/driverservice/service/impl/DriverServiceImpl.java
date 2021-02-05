@@ -56,21 +56,14 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Driver findById(int id) throws InvalidIdException {
         Optional<Driver> driver = driverRepository.findById(id);
-        if (driver.isPresent()) {
-            return driver.get();
-        } else {
-            throw new InvalidIdException("Invalid Driver Id");
-        }
+        return driver.isPresent() ? driver.get() : new Driver();
 
     }
 
     @Override
     public Driver findByDLicenseNo(String dLicenseNo) {
         Optional<Driver> driver = driverRepository.findBydLicenseNo(dLicenseNo);
-        if (driver.isPresent())
-            return driver.get();
-        else
-            throw new InvalidDrivingLicenseException("Invalid Driving License Number ");
+        return driver.isPresent() ? driver.get() : new Driver();
     }
 
     @Override

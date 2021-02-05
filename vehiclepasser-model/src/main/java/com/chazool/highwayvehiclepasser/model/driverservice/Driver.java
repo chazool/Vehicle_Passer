@@ -21,6 +21,7 @@ public class Driver {
     private String lName;
     private String dLicenseNo;
     private char gender;
+    @Column(unique = true)
     private String email;
     private String password;
     private int phoneNo;

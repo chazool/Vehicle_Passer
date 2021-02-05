@@ -6,6 +6,8 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,9 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle save(Vehicle vehicle) {
+        vehicle.setActive(true);
+        vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+
         return vehicleRepository.save(vehicle);
     }
 
@@ -37,7 +42,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle findById(int id) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(id);
-        return vehicle.isPresent() ? vehicle.get() : null;
+        return vehicle.isPresent() ? vehicle.get() : new Vehicle();
     }
 
     @Override

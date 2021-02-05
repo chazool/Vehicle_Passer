@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.paymentservice.exception;
 
 import com.chazool.highwayvehiclepasser.model.responsehandle.ErrorResponse;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,6 +25,8 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, httpStatus);
     }
+
+
 
 
 }

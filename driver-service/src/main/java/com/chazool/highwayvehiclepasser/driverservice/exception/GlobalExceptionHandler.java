@@ -29,5 +29,17 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(ConstraintViolationException constraintViolationException, HttpStatus httpStatus, WebRequest webRequest) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimeStamp(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
+        errorResponse.setMessage("Hiiiiiiiiiiii");
+        errorResponse.setError(httpStatus.getReasonPhrase());
+        errorResponse.setStatus(httpStatus.value());
+        errorResponse.setPath(webRequest.getDescription(false));
+
+        return new ResponseEntity<>(errorResponse, httpStatus);
+    }
+
 
 }
