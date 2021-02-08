@@ -17,6 +17,7 @@ public class TerminalServiceImpl implements TerminalService {
 
     @Override
     public Terminal save(Terminal terminal) {
+        terminal.setActive(true);
         return terminalRepository.save(terminal);
     }
 
@@ -37,7 +38,7 @@ public class TerminalServiceImpl implements TerminalService {
     public Terminal findById(int id) {
         Optional<Terminal> optionalTerminal = terminalRepository.findById(id);
 
-        return optionalTerminal.isPresent() ? optionalTerminal.get() : null;
+        return optionalTerminal.isPresent() ? optionalTerminal.get() : new Terminal();
     }
 
     @Override

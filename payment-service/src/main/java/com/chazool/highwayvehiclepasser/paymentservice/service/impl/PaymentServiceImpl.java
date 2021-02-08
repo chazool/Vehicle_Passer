@@ -49,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
         //
 
         DefaultPayment defaultPayment = new DefaultPayment(payment.getId(), this);
-        defaultPayment.run();
+        defaultPayment.start();
 
         return payment;
     }

@@ -15,14 +15,17 @@ public class RouteController {
     @Autowired
     private RouteService routeService;
 
+    @PostMapping
     public Route save(@RequestBody Route route) {
         return routeService.save(route);
     }
 
+    @PutMapping
     public Route update(@RequestBody Route route) {
         return routeService.update(route);
     }
 
+    @DeleteMapping
     public Route delete(@PathVariable int id) {
         return routeService.delete(id);
     }
@@ -30,5 +33,10 @@ public class RouteController {
     @GetMapping
     public Route findByEntranceAndExist(@RequestBody Route route) {
         return routeService.findByEntranceAndExist(route.getEntrance(), route.getExist());
+    }
+
+    @GetMapping(value = "/{id}")
+    public Route fetchAll(@PathVariable int id) {
+        return routeService.findById(id);
     }
 }

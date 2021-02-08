@@ -3,14 +3,21 @@ package com.chazool.highwayvehiclepasser.driverservice.service.impl;
 
 import com.chazool.highwayvehiclepasser.driverservice.repository.DriverRepository;
 import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
+import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
+import com.chazool.highwayvehiclepasser.driverservice.thread.PaymentCard;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
+import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.*;
+import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.Null;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
@@ -25,16 +32,24 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public Driver save(Driver driver) throws InvalidEmailException, InvalidPasswordException, InvalidNameException,
             InvalidDrivingLicenseException {
 
+
         isValid(driver);
         driver.setActive(true);
         driver.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
 
-        return driverRepository.save(driver);
+        driver = driverRepository.save(driver);
+
+        PaymentCard paymentCard = new PaymentCard(driver, this);
+        paymentCard.start();
+
+        return driver;
     }
 
     @Override
@@ -92,5 +107,29 @@ public class DriverServiceImpl implements DriverService {
 
     }
 
+
+    private Email sendEmail(Email email) {
+        return restTemplate.postForObject("http://localhost:9192/services/emails", email, Email.class);
+    }
+
+
+    @Override
+    public void createCard(Driver driver) {
+
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setDriver(driver.getId());
+        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+        paymentMethod.setBalanceAmount(new BigDecimal("0.00"));
+        paymentMethod.setActive(true);
+
+        paymentMethod = restTemplate.postForObject("http://localhost:9193/services/payment-method", paymentMethod, PaymentMethod.class);
+
+        Email email = new Email();
+        email.setEmail(driver.getEmail());
+        email.setSubject("Registration");
+        email.setMessage("your registration is completed \n Card No: " + paymentMethod.getId());
+
+        sendEmail(email);
+    }
 
 }

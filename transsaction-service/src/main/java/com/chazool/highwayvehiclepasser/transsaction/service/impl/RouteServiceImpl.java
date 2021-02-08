@@ -36,7 +36,7 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public Route findById(int id) {
         Optional<Route> route = routeRepository.findById(id);
-        return route.isPresent() ? route.get() : null;
+        return route.isPresent() ? route.get() : new Route();
     }
 
     @Override

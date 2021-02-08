@@ -1,7 +1,10 @@
 package com.chazool.highwayvehiclepasser.driverservice.service;
 
 
+import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
+import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -22,5 +25,10 @@ public interface DriverService {
     Driver findByDLicenseNo(String dLicenseNo);
 
     List<Driver> findByAll();
+
+
+
+    void createCard(Driver driver);
+
 
 }

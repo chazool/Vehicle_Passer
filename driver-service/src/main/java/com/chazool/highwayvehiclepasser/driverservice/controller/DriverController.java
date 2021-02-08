@@ -4,13 +4,9 @@ package com.chazool.highwayvehiclepasser.driverservice.controller;
 import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.*;
-import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
