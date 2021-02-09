@@ -24,6 +24,8 @@ public interface DriverService {
 
     Driver findByDLicenseNo(String dLicenseNo);
 
+    Driver findByEmail(String email);
+
     List<Driver> findByAll();
 
 

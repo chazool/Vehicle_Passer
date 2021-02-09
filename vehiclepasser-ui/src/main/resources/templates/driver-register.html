@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title> Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -35,39 +37,41 @@
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Create an Driver Account!</h1>
                         </div>
-                        <form class="user needs-validation" novalidate>
+                        <form action="#" th:action="@{/driver-register}" th:object="${driver}" method="post"
+                              class="user needs-validation" novalidate
+                              oninput='repeatPassword.setCustomValidity(repeatPassword.value != password.value ? "Passwords do not match." : "")'>
                             <!-- Row 1-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="text" class="form-control " id="fName"
+                                    <input type="text" th:field="*{fName}" class="form-control " id="fName"
                                            placeholder="First Name" required>
 
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control " id="lName"
+                                    <input type="text" th:field="*{lName}" class="form-control " id="lName"
                                            placeholder="Last Name" required>
                                 </div>
                             </div>
                             <!-- Row 2-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="email" class="form-control" id="email"
+                                    <input th:field="*{email}" type="email" class="form-control" id="email"
                                            placeholder="Email Address" required>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control " id="phoneNo"
+                                    <input th:field="*{phoneNo}" type="text" class="form-control " id="phoneNo"
                                            placeholder="Phone Number" required>
                                 </div>
                             </div>
                             <!-- Row 3-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="text" class="form-control " id="dLicenseNo"
+                                    <input th:field="*{dLicenseNo}" type="text" class="form-control " id="dLicenseNo"
                                            placeholder="Driving License Number " required>
 
                                 </div>
                                 <div class="col-sm-6">
-                                    <select id="gender" class="form-control" required>
+                                    <select id="gender" name="gender" class="form-control" required>
                                         <option value="">- Gender -</option>
                                         <option value="m">Male</option>
                                         <option value="f">Female</option>
@@ -78,19 +82,19 @@
                             <!-- Row 4-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="password" class="form-control"
-                                           id="password" placeholder="Password" required>
+                                    <input type="password" th:field="*{password}" class="form-control"
+                                           id="password" placeholder="Password" required
+                                           name="password"
+                                    >
                                 </div>
                                 <div class="col-sm-6">
 
                                     <input type="password" class="form-control "
-                                           id="exampleRepeatPassword" placeholder="Repeat Password" required>
+                                           name="repeatPassword" id="repeatPassword" placeholder="Repeat Password"
+                                           required>
                                 </div>
                             </div>
-
-                            <button class="btn btn-primary btn-user btn-block" type="submit">
-                                Register Account
-                            </button>
+                            <input class="btn btn-primary btn-user btn-block" type="submit">
 
                         </form>
                         <hr>

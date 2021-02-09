@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
 
@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title> Vehicle</title>
 
@@ -121,28 +122,28 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Register a Vehicle!</h1>
                             </div>
-                            <form class="user needs-validation" novalidate>
+                            <form action="#" th:action="@{/vehicle-register}" th:object="${vehicle}" method="post"
+                                  class="user needs-validation" novalidate>
 
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control " id="vehicleNo"
+                                        <input th:field="*{vehicleNo}" type="text" class="form-control " id="vehicleNo"
                                                placeholder="Vehicle Number " required>
 
                                     </div>
                                     <div class="col-sm-6">
-                                        <select id="vehicleType   " class="form-control" required>
+                                        <select class="form-control" name="vehicleType" required>
                                             <option value="">- Vehicle Type -</option>
-                                            <option value="m">A</option>
-                                            <option value="f">B</option>
+                                            <option th:each="vehicleType: ${vehicleTypes}" th:value="${vehicleType.id}"
+                                                    th:text="${vehicleType.name}"></option>
                                         </select>
 
                                     </div>
                                 </div>
 
-                                <button class="btn btn-primary btn-user btn-block" type="submit">
-                                    Register Vehicle
-                                </button>
+                                <input class="btn btn-primary btn-user btn-block" type="submit">
+
 
                             </form>
 

@@ -82,6 +82,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public Driver findByEmail(String email) {
+        Optional<Driver> driver = driverRepository.findByEmail(email);
+        return driver.isPresent() ? driver.get() : new Driver();
+    }
+
+    @Override
     public List<Driver> findByAll() {
         return driverRepository.findAll();
     }

@@ -45,6 +45,14 @@ public class DriverController {
 
     }
 
+    @GetMapping(value = "/email/{email}")
+    public Driver fetchByEmail(@PathVariable String email) throws InvalidIdException {
+
+
+        return driverService.findByEmail(email);
+
+    }
+
     @GetMapping
     public List<Driver> fetchByAll() {
         return driverService.findByAll();

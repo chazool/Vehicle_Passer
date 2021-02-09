@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
     <meta charset="utf-8">
@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title> Scan Vehicle</title>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -121,22 +123,19 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4"> Scan!</h1>
                             </div>
-                            <form class="user needs-validation" novalidate>
+                            <form action="#" th:action="@{/driver-activeVehicle}" th:object="${driver}" method="post"
+                                  class="user needs-validation" novalidate>
 
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-12 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control " id="activeVehicle"
+                                        <input th:field="*{activeVehicle}" type="text" class="form-control " id="activeVehicle"
                                                placeholder="Vehicle Id " required>
 
                                     </div>
 
                                 </div>
-
-                                <button class="btn btn-primary btn-user btn-block" type="submit">
-                                    Exit
-                                </button>
-
+                                <input class="btn btn-primary btn-user btn-block" type="submit">
                             </form>
 
                         </div>
