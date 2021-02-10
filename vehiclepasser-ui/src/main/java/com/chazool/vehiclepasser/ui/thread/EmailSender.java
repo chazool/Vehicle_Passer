@@ -1,24 +1,19 @@
-package com.chazool.highwayvehiclepasser.driverservice.thread;
+package com.chazool.vehiclepasser.ui.thread;
 
-import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
-import com.chazool.highwayvehiclepasser.driverservice.service.EmailSenderService;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
-
+import com.chazool.vehiclepasser.ui.service.EmailSenderService;
 
 public class EmailSender extends Thread {
 
 
     private Email email;
 
-    EmailSenderService emailSenderService;
+    private EmailSenderService emailSenderService;
 
 
     public EmailSender(Email email, EmailSenderService emailSenderService) {
         this.email = email;
         this.emailSenderService = emailSenderService;
-
     }
 
 
@@ -26,6 +21,4 @@ public class EmailSender extends Thread {
     public void run() {
         emailSenderService.send(email);
     }
-
-
 }

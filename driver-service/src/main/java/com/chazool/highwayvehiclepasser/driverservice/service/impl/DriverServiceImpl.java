@@ -3,6 +3,7 @@ package com.chazool.highwayvehiclepasser.driverservice.service.impl;
 
 import com.chazool.highwayvehiclepasser.driverservice.repository.DriverRepository;
 import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
+import com.chazool.highwayvehiclepasser.driverservice.service.EmailSenderService;
 import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
 import com.chazool.highwayvehiclepasser.driverservice.thread.PaymentCard;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
@@ -32,6 +33,8 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+    @Autowired
+    private EmailSenderService emailSenderService;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -114,11 +117,6 @@ public class DriverServiceImpl implements DriverService {
     }
 
 
-    private Email sendEmail(Email email) {
-        return restTemplate.postForObject("http://localhost:9192/services/emails", email, Email.class);
-    }
-
-
     @Override
     public void createCard(Driver driver) {
 
@@ -135,7 +133,8 @@ public class DriverServiceImpl implements DriverService {
         email.setSubject("Registration");
         email.setMessage("your registration is completed \n Card No: " + paymentMethod.getId());
 
-        sendEmail(email);
+        EmailSender emailSender = new EmailSender(email, emailSenderService);
+        emailSender.start();
     }
 
 }

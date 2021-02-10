@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -8,8 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title> Entrance</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -114,6 +117,7 @@
                     <h1 class="h3 mb-0 text-gray-800">Entrance</h1>
                 </div>
 
+
                 <!-- Content Row -->
                 <div class="row">
                     <div class="col-lg-12">
@@ -121,11 +125,29 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Start Ride!</h1>
                             </div>
-                            <form class="user needs-validation" novalidate>
+                            <form action="#" th:action="@{/entrance}" th:object="${payment}" method="post"
+                                  class="user needs-validation" novalidate>
+                                <!-- Row 0-->
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <select class="form-control" name="location"   id="location" required>
+                                            <option value="">- Location -</option>
+                                            <option th:each="location: ${locations}" th:value="${location.id}"
+                                                    th:text="${location.description}"></option>
+                                        </select>
 
+                                    </div>
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <select  class="form-control" name="entranceTerminal" id="terminal" required>
+                                            <option value="">- Terminal -</option>
+
+                                        </select>
+
+                                    </div>
+                                </div>
                                 <!-- Row 1-->
                                 <div class="form-group row">
-                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                    <div th:field="*{paymentMethod}" class="col-sm-12 mb-3 mb-sm-0">
                                         <input type="text" class="form-control " id="paymentMethod"
                                                placeholder="Card Number " required>
 
@@ -203,22 +225,24 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<script src="vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/chart-area-demo.js"></script>
-<script src="js/demo/chart-pie-demo.js"></script>
-
 
 <script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
+
+    $("#location").change(function () {
+
+        $.getJSON(' location/terminal/' + $(this).val(), function (data, textStatus, jqXHR) {
+            $('#terminal').find('option').remove().end().append('<option value=""> - Location - </option>');
+            $.each(data, function (key, value) {
+                $("#terminal").append(new Option(value.name, value.id));
+            });
+        });
+    });
+
     (function () {
         'use strict';
         window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
+
             var validation = Array.prototype.filter.call(forms, function (form) {
                 form.addEventListener('submit', function (event) {
                     if (form.checkValidity() === false) {

@@ -46,7 +46,6 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setEntranceTerminal(entranceTerminal);
 
         payment = update(payment);
-        //
 
         DefaultPayment defaultPayment = new DefaultPayment(payment.getId(), this);
         defaultPayment.start();
@@ -98,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-    private Driver getDriver(int driverId) throws DriverNotFoundException {
+    private Driver  getDriver(int driverId) throws DriverNotFoundException {
         return restTemplate.getForObject("http://localhost:9191/services/drivers/" + driverId, Driver.class);
 
     }

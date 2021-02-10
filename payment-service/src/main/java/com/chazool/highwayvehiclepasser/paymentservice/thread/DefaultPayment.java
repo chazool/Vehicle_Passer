@@ -19,17 +19,9 @@ public class DefaultPayment extends Thread {
 
     @Override
     public void run() {
-
-        System.out.println("Default Payment Start.....................");
-
-
         Payment payment = paymentService.findById(this.paymentId);
         BigDecimal defaultVehicleCharge = paymentService.getVehicleCharge(payment.getVehicle());
         payment.setCharge(defaultVehicleCharge);
         paymentService.update(payment);
-
-
-        System.out.println("Default Payment End.....................");
-
     }
 }

@@ -129,12 +129,18 @@
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-12 mb-3 mb-sm-0">
-                                        <input th:field="*{activeVehicle}" type="text" class="form-control " id="activeVehicle"
+                                        <input th:field="*{activeVehicle}" type="text" class="form-control "
+                                               id="activeVehicle"
                                                placeholder="Vehicle Id " required>
-
                                     </div>
-
                                 </div>
+                                <!-- Row 2 error-->
+                                <div th:unless="${error==null}" class="form-group row">
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <span class="text-danger" th:text="${error}"></span>
+                                    </div>
+                                </div>
+
                                 <input class="btn btn-primary btn-user btn-block" type="submit">
                             </form>
 

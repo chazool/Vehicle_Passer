@@ -59,16 +59,16 @@
                                            placeholder="Email Address" required>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input th:field="*{phoneNo}" type="text" class="form-control " id="phoneNo"
-                                           placeholder="Phone Number" required>
+                                    <input th:field="*{phoneNo}" onkeypress="return isNumberKey(event)" maxlength="10"
+                                           type="text" class="form-control " id="phoneNo"
+                                           placeholder="Phone Number" pattern=".{10}" required>
                                 </div>
                             </div>
                             <!-- Row 3-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input th:field="*{dLicenseNo}" type="text" class="form-control " id="dLicenseNo"
-                                           placeholder="Driving License Number " required>
-
+                                           placeholder="Driving License Number " maxlength="9" pattern=".{9}" required>
                                 </div>
                                 <div class="col-sm-6">
                                     <select id="gender" name="gender" class="form-control" required>
@@ -76,7 +76,6 @@
                                         <option value="m">Male</option>
                                         <option value="f">Female</option>
                                     </select>
-
                                 </div>
                             </div>
                             <!-- Row 4-->
@@ -94,13 +93,18 @@
                                            required>
                                 </div>
                             </div>
+                            <!-- Row 5 error-->
+                            <div th:unless="${error==null}" class="form-group row">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
+                                    <span class="text-danger" th:text="${error}"></span>
+                                </div>
+                            </div>
                             <input class="btn btn-primary btn-user btn-block" type="submit">
-
                         </form>
                         <hr>
 
                         <div class="text-center">
-                            <a class="font-weight-bold" href="login.html">Already have an account? Login!</a>
+                            <a class="font-weight-bold" href="/">Already have an account? Login!</a>
                         </div>
                     </div>
                 </div>
@@ -109,28 +113,21 @@
     </div>
 
 </div>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="static/js/demo/chart-area-demo.js"></script>
-<script src="static/js/demo/chart-pie-demo.js"></script>
-
 <script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
+
+    function isNumericKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return true;
+        return false;
+    }
+
+    // disabling form submissions if there are invalid fields
     (function () {
         'use strict';
         window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             var validation = Array.prototype.filter.call(forms, function (form) {
                 form.addEventListener('submit', function (event) {
                     if (form.checkValidity() === false) {

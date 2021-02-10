@@ -11,12 +11,14 @@ import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
+//@CrossOrigin(origins = "192.168.8.180:8181")
 public class UserController {
 
     @Autowired
