@@ -41,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = restTemplate.postForObject("http://localhost:9193/services/payments", payment, Payment.class);
 
-        //sendEmail("Entering Highway - Safe Drive",);
         PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
                 , payment.getDriver()
                 , payment.getEntranceTerminal()
@@ -53,7 +52,23 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment exit(int cardNo, int terminalId) {
-        return null;
+        PaymentMethod paymentMethod = getPaymentMethod(cardNo);
+        Payment payment = restTemplate.getForObject("http://localhost:9193/services/payments/driver/" + paymentMethod.getDriver(), Payment.class);
+
+        payment.setPaymentMethod(cardNo);
+        payment.setExitTerminal(terminalId);
+
+        restTemplate.put("http://localhost:9193/services/payments", payment);
+        payment = restTemplate.getForObject("http://localhost:9193/services/payments/" + payment.getId(), Payment.class);
+
+        PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Exit Highway - Thank you Come Again"
+                , payment.getDriver()
+                , payment.getExitTerminal()
+                , this);
+        paymentEmailSender.start();
+
+
+        return payment;
     }
 
     @Override

@@ -22,7 +22,17 @@ public class PaymentController {
 
     @PutMapping
     Payment exit(@RequestBody Payment payment) {
-        return paymentService.enter(payment.getDriver(), payment.getExitTerminal());
+        return paymentService.exit(payment.getDriver(), payment.getExitTerminal());
+    }
+
+    @GetMapping(value = "/driver/{driverId}")
+    Payment findByDriver(@PathVariable int driverId) {
+        return paymentService.findDriverNotCompletePaymentByDriver(driverId);
+    }
+
+    @GetMapping(value = "{id}")
+    Payment findById(@PathVariable int id) {
+        return paymentService.findById(id);
     }
 
     @PutMapping(value = "/sendemail")

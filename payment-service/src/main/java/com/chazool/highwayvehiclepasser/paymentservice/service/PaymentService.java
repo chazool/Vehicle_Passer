@@ -16,6 +16,8 @@ public interface PaymentService {
 
     Payment findById(int id);
 
+    Payment findDriverNotCompletePaymentByDriver(int driver);
+
     Payment isSendEmail(Payment payment);
 
     BigDecimal getVehicleCharge(int vehicleId);

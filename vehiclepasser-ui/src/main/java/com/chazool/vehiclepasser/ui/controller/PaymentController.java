@@ -22,22 +22,44 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @RequestMapping(value = "/entrance")
-    public String entrance(Model model, HttpSession httpSession) {
-        // int id = (int) httpSession.getAttribute("loggedDriverId");
-        model.addAttribute("payment", new Payment());
-        model.addAttribute("locations", locationService.findAllLocations());
+    public String entrance(Model model) {
+        model.addAttribute("alert", false);
+        setModel(model);
+        return "entrance";
+    }
+
+    @PostMapping(value = "/entrance")
+    public String entrance(@ModelAttribute Payment payment, Model model) {
+        payment = paymentService.enter(payment.getPaymentMethod(), payment.getEntranceTerminal());
+        if (payment.getId() <= 0)
+            model.addAttribute("alert", true);
+        setModel(model);
         return "entrance";
     }
 
 
-    @PostMapping(value = "/entrance")
-    public String entrancePay(@ModelAttribute Payment payment, Model model) {
+    @RequestMapping(value = "exit")
+    public String exit(Model model) {
+        model.addAttribute("alert", false);
+        setModel(model);
+        return "exit";
+    }
 
-        paymentService.enter(payment.getPaymentMethod(), payment.getEntranceTerminal());
+    @PostMapping(value = "exit")
+    public String exit(@ModelAttribute Payment payment, Model model) {
+
+        payment = paymentService.exit(payment.getPaymentMethod(), payment.getExitTerminal());
+
+        if (payment.isComplete())
+            model.addAttribute("alert", true);
+        setModel(model);
+        return "exit";
+    }
 
 
+    private void setModel(Model model) {
+        model.addAttribute("payment", new Payment());
         model.addAttribute("locations", locationService.findAllLocations());
-        return "entrance";
     }
 
 

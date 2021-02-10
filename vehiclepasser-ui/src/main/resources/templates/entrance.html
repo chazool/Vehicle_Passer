@@ -159,7 +159,8 @@
                                 <button class="btn btn-primary btn-user btn-block" type="submit">
                                     Entrance
                                 </button>
-
+                                <!--Alert Text  -->
+                                <input th:value="${alert}" type="hidden" id="alert"/>
                             </form>
 
                         </div>
@@ -225,9 +226,18 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
+
+    if ($("#alert").val() === "true") {
+        swal({
+            title: "Safe Drive!",
+            text: "Thank You! Take care ",
+            icon: "success",
+            timer: 3000
+        });
+    }
 
     $("#location").change(function () {
 

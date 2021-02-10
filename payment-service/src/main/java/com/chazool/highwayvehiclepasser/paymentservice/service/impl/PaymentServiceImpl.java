@@ -58,7 +58,6 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<Payment> optionalPayment = paymentRepository.findByDriverAndIsComplete(driverId, false);
 
         if (optionalPayment.isPresent()) {
-
             Payment payment = optionalPayment.get();
             PaymentMethod paymentMethod = paymentMethodService.findByDriver(payment.getDriver(), true);
             Route route = getRout(payment.getEntranceTerminal(), exitTerminal);
@@ -78,6 +77,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment findById(int id) {
         Optional<Payment> payment = paymentRepository.findById(id);
+        return payment.isPresent() ? payment.get() : new Payment();
+    }
+
+    @Override
+    public Payment findDriverNotCompletePaymentByDriver(int driver) {
+        Optional<Payment> payment = paymentRepository.findByDriverAndIsComplete(driver, false);
         return payment.isPresent() ? payment.get() : new Payment();
     }
 
@@ -103,14 +108,15 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Route getRout(int entranceTerminal, int exitTerminal) {
-        Route route = new Route();
+   /*     Route route = new Route();
         route.setEntrance(entranceTerminal);
         route.setExist(exitTerminal);
 
-        HttpEntity<Route> httpEntity = new HttpEntity<>(route);
+        HttpEntity<Route> httpEntity = new HttpEntity<>(route);*/
 
         ResponseEntity<Route> routeResponseEntity
-                = restTemplate.exchange("http://localhost:9191/services/route/", HttpMethod.GET, httpEntity, Route.class);
+                = restTemplate.getForEntity("http://localhost:9194/services/routs?entrance={entrance}&exit={exit}"
+                , Route.class, entranceTerminal, exitTerminal);
 
         return routeResponseEntity.getBody();
     }

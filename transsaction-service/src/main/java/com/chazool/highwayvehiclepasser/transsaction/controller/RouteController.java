@@ -31,8 +31,9 @@ public class RouteController {
     }
 
     @GetMapping
-    public Route findByEntranceAndExist(@RequestBody Route route) {
-        return routeService.findByEntranceAndExist(route.getEntrance(), route.getExist());
+    public Route findByEntranceAndExist(@RequestParam int entrance, @RequestParam int exit) {
+        return routeService.findByEntranceAndExist(entrance, exit);
+
     }
 
     @GetMapping(value = "/{id}")
