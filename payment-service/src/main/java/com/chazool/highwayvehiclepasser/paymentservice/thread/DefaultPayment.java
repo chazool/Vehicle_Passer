@@ -10,16 +10,15 @@ import java.math.BigDecimal;
 public class DefaultPayment extends Thread {
 
     private PaymentService paymentService;
-    private int paymentId;
+    private Payment payment;
 
-    public DefaultPayment(int paymentId, PaymentService paymentService) {
-        this.paymentId = paymentId;
+    public DefaultPayment(Payment payment, PaymentService paymentService) {
+        this.payment = payment;
         this.paymentService = paymentService;
     }
 
     @Override
     public void run() {
-        Payment payment = paymentService.findById(this.paymentId);
         BigDecimal defaultVehicleCharge = paymentService.getVehicleCharge(payment.getVehicle());
         payment.setCharge(defaultVehicleCharge);
         paymentService.update(payment);

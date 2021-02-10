@@ -9,6 +9,7 @@ import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.vehiclepasser.ui.service.*;
 import com.chazool.vehiclepasser.ui.thread.EmailSender;
+import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,17 +25,29 @@ public class PaymentServiceImpl implements PaymentService {
     private VehicleService vehicleService;
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private EmailSenderService emailSenderService;
 
 
     @Override
     public Payment enter(int cardNo, int terminalId) {
+        PaymentMethod paymentMethod = getPaymentMethod(cardNo);
+
         Payment payment = new Payment();
         payment.setPaymentMethod(cardNo);
         payment.setEntranceTerminal(terminalId);
+        payment.setDriver(paymentMethod.getDriver());
+
 
         payment = restTemplate.postForObject("http://localhost:9193/services/payments", payment, Payment.class);
 
         //sendEmail("Entering Highway - Safe Drive",);
+        PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
+                , payment.getDriver()
+                , payment.getEntranceTerminal()
+                , this);
+        paymentEmailSender.start();
+
         return payment;
     }
 
@@ -53,8 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-    private void sendEmail(String subject, int driverId, int terminalId) {
-        //driver , vehilce , Location , Terminal
+    public void sendEmail(String subject, int driverId, int terminalId) {
 
         Driver driver = driverService.findById(driverId);
 
@@ -73,8 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
                 , location.getDescription()
                 , terminal.getName() + " - " + terminal.getTerminalType()
         ));
-
-
+        emailSenderService.send(email);
     }
 
     private String emailBody(String driver, String vehicle, String location, String terminal) {

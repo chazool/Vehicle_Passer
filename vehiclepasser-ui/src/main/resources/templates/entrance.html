@@ -87,7 +87,7 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
                             <img class="img-profile rounded-circle"
-                                 src="../static/img/undraw_profile.svg">
+                                 src="img/undraw_profile.svg">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -130,7 +130,7 @@
                                 <!-- Row 0-->
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select class="form-control" name="location"   id="location" required>
+                                        <select class="form-control" name="location" id="location" required>
                                             <option value="">- Location -</option>
                                             <option th:each="location: ${locations}" th:value="${location.id}"
                                                     th:text="${location.description}"></option>
@@ -138,7 +138,7 @@
 
                                     </div>
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select  class="form-control" name="entranceTerminal" id="terminal" required>
+                                        <select class="form-control" name="entranceTerminal" id="terminal" required>
                                             <option value="">- Terminal -</option>
 
                                         </select>
@@ -147,8 +147,9 @@
                                 </div>
                                 <!-- Row 1-->
                                 <div class="form-group row">
-                                    <div th:field="*{paymentMethod}" class="col-sm-12 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control " id="paymentMethod"
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <input th:field="*{paymentMethod}" type="text" class="form-control "
+                                               id="paymentMethod"
                                                placeholder="Card Number " required>
 
                                     </div>

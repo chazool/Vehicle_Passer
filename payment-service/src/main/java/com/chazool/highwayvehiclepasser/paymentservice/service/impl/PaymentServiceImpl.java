@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = update(payment);
 
-        DefaultPayment defaultPayment = new DefaultPayment(payment.getId(), this);
+        DefaultPayment defaultPayment = new DefaultPayment(payment, this);
         defaultPayment.start();
 
         return payment;
@@ -97,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-    private Driver  getDriver(int driverId) throws DriverNotFoundException {
+    private Driver getDriver(int driverId) throws DriverNotFoundException {
         return restTemplate.getForObject("http://localhost:9191/services/drivers/" + driverId, Driver.class);
 
     }
@@ -116,8 +116,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     public BigDecimal getVehicleCharge(int vehicleId) {
-        Vehicle vehicle = restTemplate.getForObject("http://localhost:9191/services/vehicle/" + vehicleId, Vehicle.class);
-        return restTemplate.getForObject("http://localhost:9191/services/vehicle-type/" + vehicle.getVehicleType(), BigDecimal.class);
+        Vehicle vehicle = restTemplate.getForObject("http://localhost:9191/services/vehicles/" + vehicleId, Vehicle.class);
+        VehicleType vehicleType = restTemplate.getForObject("http://localhost:9194/services/vehicle-type/" + vehicle.getVehicleType(), VehicleType.class);
+        return vehicleType.getCharge();
     }
 
 

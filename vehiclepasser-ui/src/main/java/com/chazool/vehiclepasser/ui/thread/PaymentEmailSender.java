@@ -1,24 +1,30 @@
 package com.chazool.vehiclepasser.ui.thread;
 
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.vehiclepasser.ui.service.EmailSenderService;
+import com.chazool.vehiclepasser.ui.service.PaymentService;
 
-public class EmailSender extends Thread {
-
-
-    private Email email;
-
-    private EmailSenderService emailSenderService;
+public class PaymentEmailSender extends Thread {
 
 
-    public EmailSender(Email email, EmailSenderService emailSenderService) {
-        this.email = email;
-        this.emailSenderService = emailSenderService;
+    private String subject;
+    private int driver;
+    private int terminal;
+    private PaymentService paymentService;
+
+
+    public PaymentEmailSender(String subject, int driver, int terminal, PaymentService paymentService) {
+        this.subject = subject;
+        this.driver = driver;
+        this.terminal = terminal;
+        this.paymentService = paymentService;
+
     }
 
 
     @Override
     public void run() {
-        emailSenderService.send(email);
+        paymentService.sendEmail(subject, driver, terminal);
     }
 }

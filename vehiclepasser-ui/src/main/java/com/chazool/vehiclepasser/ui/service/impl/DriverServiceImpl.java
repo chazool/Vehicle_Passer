@@ -45,7 +45,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver findById(int id) {
-        return null;
+        return restTemplate.getForObject("http://localhost:9191/services/drivers/" + id, Driver.class);
     }
 
     @Override
