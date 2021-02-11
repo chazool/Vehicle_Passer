@@ -35,7 +35,6 @@ public class VehicleController {
         return "vehicle-register";
     }
 
-
     @PostMapping("vehicle-register")
     public String load(@ModelAttribute Vehicle vehicle, Model model, HttpServletRequest httpServletRequest) {
         vehicle.setOwnerId((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));

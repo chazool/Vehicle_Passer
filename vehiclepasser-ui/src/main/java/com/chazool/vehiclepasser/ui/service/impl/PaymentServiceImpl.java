@@ -3,6 +3,7 @@ package com.chazool.vehiclepasser.ui.service.impl;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
@@ -13,6 +14,8 @@ import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -33,41 +36,48 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment enter(int cardNo, int terminalId) {
         PaymentMethod paymentMethod = getPaymentMethod(cardNo);
 
-        Payment payment = new Payment();
-        payment.setPaymentMethod(cardNo);
-        payment.setEntranceTerminal(terminalId);
-        payment.setDriver(paymentMethod.getDriver());
+        if (paymentMethod.getBalanceAmount().compareTo(new BigDecimal("1000.00")) != -1) {
+            Payment payment = findByDriver(paymentMethod.getDriver());
+            if (payment.getId() > 0) {
+                return payment;
+            } else {
+                payment.setPaymentMethod(cardNo);
+                payment.setEntranceTerminal(terminalId);
+                payment.setDriver(paymentMethod.getDriver());
 
+                payment = restTemplate.postForObject("http://localhost:9193/services/payments", payment, Payment.class);
 
-        payment = restTemplate.postForObject("http://localhost:9193/services/payments", payment, Payment.class);
-
-        PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
-                , payment.getDriver()
-                , payment.getEntranceTerminal()
-                , this);
-        paymentEmailSender.start();
-
-        return payment;
+                PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
+                        , payment.getDriver()
+                        , payment.getEntranceTerminal()
+                        , this);
+                paymentEmailSender.start();
+            }
+            return payment;
+        } else {
+            throw new LowBalanceException("Your Balance is Less than Rs.1000.00");
+        }
     }
 
     @Override
     public Payment exit(int cardNo, int terminalId) {
         PaymentMethod paymentMethod = getPaymentMethod(cardNo);
-        Payment payment = restTemplate.getForObject("http://localhost:9193/services/payments/driver/" + paymentMethod.getDriver(), Payment.class);
+        Payment payment = findByDriver(paymentMethod.getDriver());
 
-        payment.setPaymentMethod(cardNo);
-        payment.setExitTerminal(terminalId);
+        if (payment.getId() > 0) {
+            payment.setPaymentMethod(cardNo);
+            payment.setExitTerminal(terminalId);
 
-        restTemplate.put("http://localhost:9193/services/payments", payment);
-        payment = restTemplate.getForObject("http://localhost:9193/services/payments/" + payment.getId(), Payment.class);
+            restTemplate.put("http://localhost:9193/services/payments", payment);
+            payment = restTemplate.getForObject("http://localhost:9193/services/payments/" + payment.getId(), Payment.class);
 
-        PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Exit Highway - Thank you Come Again"
-                , payment.getDriver()
-                , payment.getExitTerminal()
-                , this);
-        paymentEmailSender.start();
+            PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Exit Highway - Thank you Come Again"
+                    , payment.getDriver()
+                    , payment.getExitTerminal()
+                    , this);
+            paymentEmailSender.start();
 
-
+        }
         return payment;
     }
 
@@ -80,6 +90,14 @@ public class PaymentServiceImpl implements PaymentService {
         return restTemplate.getForObject("http://localhost:9193/services/payment-method/" + cardNo, PaymentMethod.class);
     }
 
+    private void updatePaymentMethod(PaymentMethod paymentMethod) {
+        restTemplate.put("http://localhost:9193/services/payment-method/", paymentMethod);
+    }
+
+    private Payment findByDriver(int driver) {
+        return restTemplate.getForObject("http://localhost:9193/services/payments/driver/" + driver, Payment.class);
+
+    }
 
     public void sendEmail(String subject, int driverId, int terminalId) {
 
@@ -590,7 +608,7 @@ public class PaymentServiceImpl implements PaymentService {
                 "      <td style=\"overflow-wrap:break-word;word-break:break-word;padding:20px;font-family:'Lato',sans-serif;\" align=\"left\">" +
                 "        " +
                 "  <div style=\"color: #7d7d7d; line-height: 140%; text-align: center; word-wrap: break-word;\">" +
-                "    <p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 12px; line-height: 16.8px;\">Copyright © 2017  chazool. All rights reserved. </span></p>" +
+                "    <p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 12px; line-height: 16.8px;\">Copyright © 2021  chazool. All rights reserved. </span></p>" +
                 "  </div>" +
                 "" +
                 "      </td>" +

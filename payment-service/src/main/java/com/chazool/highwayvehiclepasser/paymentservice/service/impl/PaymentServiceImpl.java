@@ -60,6 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (optionalPayment.isPresent()) {
             Payment payment = optionalPayment.get();
             PaymentMethod paymentMethod = paymentMethodService.findByDriver(payment.getDriver(), true);
+
             Route route = getRout(payment.getEntranceTerminal(), exitTerminal);
 
             //Update Object
@@ -68,6 +69,11 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setExitDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
             payment.setExitTerminal(exitTerminal);
             payment.setComplete(true);
+
+            //Update card Balance
+            paymentMethod.setBalanceAmount(paymentMethod.getBalanceAmount().subtract(payment.getCharge()));
+            paymentMethodService.update(paymentMethod);
+
             return update(payment);
         } else
             throw new PaymentNotFoundException("Payment not Exit");

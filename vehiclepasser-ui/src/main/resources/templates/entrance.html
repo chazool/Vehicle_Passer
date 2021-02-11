@@ -161,6 +161,7 @@
                                 </button>
                                 <!--Alert Text  -->
                                 <input th:value="${alert}" type="hidden" id="alert"/>
+                                <input th:value="${error}" type="hidden" id="error"/>
                             </form>
 
                         </div>
@@ -235,6 +236,15 @@
             title: "Safe Drive!",
             text: "Thank You! Take care ",
             icon: "success",
+            timer: 3000
+        });
+    }
+
+    if ($("#error").val() !== "") {
+        swal({
+            title: $("#error").val(),
+            //text: "Thank You! Take care ",
+            icon: "error",
             timer: 3000
         });
     }
