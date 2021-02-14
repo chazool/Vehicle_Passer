@@ -1,11 +1,22 @@
 server:
-  port: 8899
+  port: 8989
 spring:
   application:
     name: cloudgateway
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-  instance:
-    hostname: localhost
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      routes:
+        - id: emailservice
+          uri: lb://emailservice
+          predicates:
+            - Path= /services/**
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost

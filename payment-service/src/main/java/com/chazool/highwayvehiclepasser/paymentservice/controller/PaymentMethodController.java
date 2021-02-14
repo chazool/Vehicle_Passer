@@ -1,9 +1,11 @@
 package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
+import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -13,6 +15,10 @@ public class PaymentMethodController {
 
     @Autowired
     private PaymentMethodService paymentMethodService;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
 
     @PostMapping
     public PaymentMethod save(@RequestBody PaymentMethod paymentMethod) {

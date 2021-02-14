@@ -1,10 +1,8 @@
-server:
-  port: 8761
-
 eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-  datacenter: Colombo-SrLanka
+  datacenter: Colombo-SriLanka
   environment: production
-
+server:
+  port: 8761

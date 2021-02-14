@@ -21,4 +21,9 @@ public class EmailController {
         return emailService.Send(email);
     }
 
+    @GetMapping
+    public Email getEmail() {
+        return new Email();
+    }
+
 }
