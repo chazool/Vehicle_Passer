@@ -24,7 +24,7 @@ public class Driver {
     @Column(unique = true)
     private String email;
     private String password;
-    private int phoneNo;
+    private String phoneNo;
     private LocalDateTime registrationDate;
     private boolean isActive;
     private int activeVehicle;

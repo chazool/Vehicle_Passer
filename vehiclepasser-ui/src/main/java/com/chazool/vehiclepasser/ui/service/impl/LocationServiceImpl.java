@@ -19,26 +19,26 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<Location> findAllLocations() {
-        ResponseEntity<Location[]> locations = restTemplate.getForEntity("http://localhost:9194/services/locations/", Location[].class);
+        ResponseEntity<Location[]> locations = restTemplate.getForEntity("http://transsaction/services/locations/", Location[].class);
         return Arrays.asList(locations.getBody());
     }
 
     @Override
     public List<Terminal> findTerminal(int locationId) {
-        ResponseEntity<Terminal[]> terminals = restTemplate.getForEntity("http://localhost:9194/services/terminal/location/" + locationId, Terminal[].class);
+        ResponseEntity<Terminal[]> terminals = restTemplate.getForEntity("http://transsaction/services/terminal/location/" + locationId, Terminal[].class);
         return Arrays.asList(terminals.getBody());
     }
 
     @Override
     public Location findLocationById(int id) {
-        Location location = restTemplate.getForObject("http://localhost:9194/services/locations/" + id, Location.class);
+        Location location = restTemplate.getForObject("http://transsaction/services/locations/" + id, Location.class);
         return location;
 
     }
 
     @Override
     public Terminal findTerminalById(int id) {
-        Terminal terminal = restTemplate.getForObject("http://localhost:9194/services/terminal/" + id, Terminal.class);
+        Terminal terminal = restTemplate.getForObject("http://transsaction/services/terminal/" + id, Terminal.class);
         return terminal;
     }
 }

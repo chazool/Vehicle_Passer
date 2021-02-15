@@ -25,8 +25,7 @@ public class VehicleTypeServiceImpl implements VehicleTypeService {
 
     @Override
     public List<VehicleType> findAll() {
-
-        ResponseEntity<VehicleType[]> responseEntity = restTemplate.getForEntity("http://localhost:9194/services/vehicle-type/", VehicleType[].class);
+        ResponseEntity<VehicleType[]> responseEntity = restTemplate.getForEntity("http://transsaction/services/vehicle-type/", VehicleType[].class);
         return Arrays.asList(responseEntity.getBody());
     }
 }

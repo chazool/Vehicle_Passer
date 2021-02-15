@@ -19,15 +19,9 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
 
 
+
     @Override
     public Email Send(Email email) throws MessagingException {
-
-      /*  SimpleMailMessage msg = new SimpleMailMessage();
-
-        msg.setTo(email.getEmail());
-        msg.setSubject(email.getSubject());
-        msg.setText(email.getMessage());
-*/
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -35,7 +29,6 @@ public class EmailServiceImpl implements EmailService {
         mimeMessageHelper.setText(email.getMessage(), true);
         mimeMessageHelper.setSubject(email.getSubject());
         javaMailSender.send(mimeMessage);
-
 
         email.setSend(true);
         return email;

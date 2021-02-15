@@ -109,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     private Driver getDriver(int driverId) throws DriverNotFoundException {
-        return restTemplate.getForObject("http://localhost:9191/services/drivers/" + driverId, Driver.class);
+        return restTemplate.getForObject("http://driver/services/drivers/" + driverId, Driver.class);
 
     }
 
@@ -121,15 +121,15 @@ public class PaymentServiceImpl implements PaymentService {
         HttpEntity<Route> httpEntity = new HttpEntity<>(route);*/
 
         ResponseEntity<Route> routeResponseEntity
-                = restTemplate.getForEntity("http://localhost:9194/services/routs?entrance={entrance}&exit={exit}"
+                = restTemplate.getForEntity("http://transsaction/services/routs?entrance={entrance}&exit={exit}"
                 , Route.class, entranceTerminal, exitTerminal);
 
         return routeResponseEntity.getBody();
     }
 
     public BigDecimal getVehicleCharge(int vehicleId) {
-        Vehicle vehicle = restTemplate.getForObject("http://localhost:9191/services/vehicles/" + vehicleId, Vehicle.class);
-        VehicleType vehicleType = restTemplate.getForObject("http://localhost:9194/services/vehicle-type/" + vehicle.getVehicleType(), VehicleType.class);
+        Vehicle vehicle = restTemplate.getForObject("http://driver/services/vehicles/" + vehicleId, Vehicle.class);
+        VehicleType vehicleType = restTemplate.getForObject("http://transsaction/services/vehicle-type/" + vehicle.getVehicleType(), VehicleType.class);
         return vehicleType.getCharge();
     }
 

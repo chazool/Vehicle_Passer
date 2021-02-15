@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
 
@@ -8,8 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <title> Dashboard</title>
+    <title> Vehicle</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -70,8 +71,11 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
+
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
+
+
                     <div class="topbar-divider d-none d-sm-block"></div>
 
                     <!-- Nav Item - User Information -->
@@ -85,7 +89,7 @@
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="/driver-profile">
+                            <a class="dropdown-item" href="#">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
                             </a>
@@ -107,48 +111,81 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-
+                    <h1 class="h3 mb-0 text-gray-800">Vehicle</h1>
                 </div>
 
                 <!-- Content Row -->
+                <!-- Nested Row within Card Body -->
                 <div class="row">
-
-                    <!-- Vehicle Registation -->
-                    <div class="col-xl-2 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body d-flex justify-content-center">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <a class="btn btn-warning btn-lg" href="/vehicle-register" role="button">Vehicles</a>
-                                    </div>
-
-                                </div>
+                    <div class="col-lg-12">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Update an Driver Account!</h1>
                             </div>
+                            <form action="#" th:action="@{/driver-register}" th:object="${driver}" method="post"
+                                  class="user needs-validation" novalidate>
+                                <!-- Row 1-->
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="text" th:field="*{fName}" class="form-control " id="fName"
+                                               placeholder="First Name" required>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="text" th:field="*{lName}" class="form-control " id="lName"
+                                               placeholder="Last Name" required>
+                                    </div>
+                                </div>
+                                <!-- Row 2-->
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input th:field="*{email}" type="email" class="form-control" id="email"
+                                               placeholder="Email Address" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input th:field="*{phoneNo}" onkeypress="return isNumberKey(event)"
+                                               maxlength="10"
+                                               type="text" class="form-control " id="phoneNo"
+                                               placeholder="Phone Number" pattern=".{10}" required>
+                                    </div>
+                                </div>
+                                <!-- Row 3-->
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input th:field="*{dLicenseNo}" type="text" class="form-control "
+                                               id="dLicenseNo"
+                                               placeholder="Driving License Number " maxlength="9" pattern=".{9}"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select id="gender" th:field="*{gender}" name="gender" class="form-control"
+                                                required>
+                                            <option value="m">Male</option>
+                                            <option value="f">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Row 5 error-->
+                                <div th:unless="${error==null}" class="form-group row">
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <span class="text-danger" th:text="${error}"></span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-success btn-user btn-block" type="submit">
+                                    Update
+                                </button>
+                            </form>
+                            <hr>
+
                         </div>
                     </div>
-
-                    <!-- Vehicle Scan -->
-                    <div class="col-xl-2 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body d-flex justify-content-center">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <a class="btn btn-success btn-lg" href="/driver-activeVehicle" role="button">Scan
-                                            Vehicle</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
 
 
             </div>
             <!-- /.container-fluid -->
+
 
         </div>
         <!-- End of Main Content -->
@@ -205,12 +242,33 @@
 <script src="js/sb-admin-2.min.js"></script>
 
 <!-- Page level plugins -->
-<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="../static/js/demo/chart-area-demo.js"></script>
-<script src="../static/js/demo/chart-pie-demo.js"></script>
+<script src="../static/js/demo/datatables-demo.js"></script>
 
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </body>
 
 </html>

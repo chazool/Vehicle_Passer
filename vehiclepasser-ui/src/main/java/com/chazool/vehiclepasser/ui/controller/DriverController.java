@@ -29,6 +29,14 @@ public class DriverController {
         return "scan-vehicle";
     }
 
+    @GetMapping("/driver-profile")
+    public String driverProfile(Model model, HttpServletRequest httpServletRequest) {
+        Driver driver = driverService.findById((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));
+
+        model.addAttribute("driver", driver);
+        return "driver-profile";
+    }
+
     @PostMapping("/driver-register")
     public String save(@ModelAttribute Driver driver, Model model) {
         driver = driverService.save(driver);

@@ -126,7 +126,7 @@ public class DriverServiceImpl implements DriverService {
         paymentMethod.setBalanceAmount(new BigDecimal("0.00"));
         paymentMethod.setActive(true);
 
-        paymentMethod = restTemplate.postForObject("http://localhost:9193/services/payment-method", paymentMethod, PaymentMethod.class);
+        paymentMethod = restTemplate.postForObject("http://payment/services/payment-method", paymentMethod, PaymentMethod.class);
 
         Email email = new Email();
         email.setEmail(driver.getEmail());

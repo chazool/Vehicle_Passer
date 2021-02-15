@@ -26,11 +26,12 @@ public class VehicleController {
     private VehicleTypeService vehicleTypeService;
 
     @GetMapping("vehicle-register")
-    public String load(Model model) {
+    public String load(Model model, HttpServletRequest httpServletRequest) {
 
         List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
         model.addAttribute("vehicle", new Vehicle());
         model.addAttribute("vehicleTypes", vehicleTypes);
+        model.addAttribute("vehicles", vehicleService.findByOwnerId((int) httpServletRequest.getSession().getAttribute("loggedDriverId")));
 
         return "vehicle-register";
     }
@@ -39,7 +40,6 @@ public class VehicleController {
     public String load(@ModelAttribute Vehicle vehicle, Model model, HttpServletRequest httpServletRequest) {
         vehicle.setOwnerId((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));
         vehicle = vehicleService.save(vehicle);
-
 
         return "index";
     }

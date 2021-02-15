@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -22,37 +21,31 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver save(Driver driver) {
-
-        driver = restTemplate.postForObject("http://localhost:9191/services/drivers/", driver, Driver.class);
-        System.out.println(driver);
-
-
+        driver = restTemplate.postForObject("http://driver/services/drivers/", driver, Driver.class);
         return driver;
     }
 
     @Override
     public Driver setActiveVehicle(int driverId, int activeVehicleId) throws VehicleNotFoundException {
-
         Vehicle vehicle = vehicleService.findById(activeVehicleId);
 
-        Driver driver = restTemplate.getForObject("http://localhost:9191/services/drivers/" + driverId, Driver.class);
+        Driver driver = findById(driverId);
         driver.setActiveVehicle(vehicle.getId());
 
-        restTemplate.put("http://localhost:9191/services/drivers/", driver, Driver.class);
+        restTemplate.put("http://driver/services/drivers/", driver, Driver.class);
 
         return driver;
     }
 
     @Override
     public Driver findById(int id) {
-        return restTemplate.getForObject("http://localhost:9191/services/drivers/" + id, Driver.class);
+        return restTemplate.getForObject("http://driver/services/drivers/" + id, Driver.class);
     }
 
     @Override
     public Driver findByEmail(String email) {
 
-        Driver driver = restTemplate.getForObject("http://localhost:9191/services/drivers/email/" + email, Driver.class);
-
+        Driver driver = restTemplate.getForObject("http://driver/services/drivers/email/" + email, Driver.class);
         return driver;
     }
 

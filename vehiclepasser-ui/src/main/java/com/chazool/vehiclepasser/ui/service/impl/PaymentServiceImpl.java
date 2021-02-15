@@ -9,7 +9,6 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.vehiclepasser.ui.service.*;
-import com.chazool.vehiclepasser.ui.thread.EmailSender;
 import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setEntranceTerminal(terminalId);
                 payment.setDriver(paymentMethod.getDriver());
 
-                payment = restTemplate.postForObject("http://localhost:9193/services/payments", payment, Payment.class);
+                payment = restTemplate.postForObject("http://payment/services/payments", payment, Payment.class);
 
                 PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
                         , payment.getDriver()
@@ -68,8 +67,8 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setPaymentMethod(cardNo);
             payment.setExitTerminal(terminalId);
 
-            restTemplate.put("http://localhost:9193/services/payments", payment);
-            payment = restTemplate.getForObject("http://localhost:9193/services/payments/" + payment.getId(), Payment.class);
+            restTemplate.put("http://payment/services/payments", payment);
+            payment = restTemplate.getForObject("http://payment/services/payments/" + payment.getId(), Payment.class);
 
             PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Exit Highway - Thank you Come Again"
                     , payment.getDriver()
@@ -87,15 +86,15 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private PaymentMethod getPaymentMethod(int cardNo) {
-        return restTemplate.getForObject("http://localhost:9193/services/payment-method/" + cardNo, PaymentMethod.class);
+        return restTemplate.getForObject("http://payment/services/payment-method/" + cardNo, PaymentMethod.class);
     }
 
     private void updatePaymentMethod(PaymentMethod paymentMethod) {
-        restTemplate.put("http://localhost:9193/services/payment-method/", paymentMethod);
+        restTemplate.put("http://payment/services/payment-method/", paymentMethod);
     }
 
     private Payment findByDriver(int driver) {
-        return restTemplate.getForObject("http://localhost:9193/services/payments/driver/" + driver, Payment.class);
+        return restTemplate.getForObject("http://payment/services/payments/driver/" + driver, Payment.class);
 
     }
 
@@ -116,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
                 driver.getFName() + " " + driver.getLName()
                 , vehicle.getVehicleNo()
                 , location.getDescription()
-                , terminal.getName() + " - " + terminal.getTerminalType()
+                , terminal.getName() + " - " + (terminal.getTerminalType() == 0 ? "Entrance" : "Exit")
         ));
         emailSenderService.send(email);
     }

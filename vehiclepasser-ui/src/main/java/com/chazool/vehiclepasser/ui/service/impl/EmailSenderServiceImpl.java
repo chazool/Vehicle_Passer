@@ -15,6 +15,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public Email send(Email email) {
-        return restTemplate.postForObject("http://localhost:9192/services/emails", email, Email.class);
+        return restTemplate.postForObject("http://email/services/emails", email, Email.class);
     }
 }

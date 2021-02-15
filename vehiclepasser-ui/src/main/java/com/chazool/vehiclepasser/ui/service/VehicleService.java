@@ -13,5 +13,7 @@ public interface VehicleService {
 
     List<Vehicle> finAll();
 
+    List<Vehicle> findByOwnerId(int driver);
+
 
 }
