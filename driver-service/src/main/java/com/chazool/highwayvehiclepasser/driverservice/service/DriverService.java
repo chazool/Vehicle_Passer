@@ -28,8 +28,6 @@ public interface DriverService {
 
     List<Driver> findByAll();
 
-
-
     void createCard(Driver driver);
 
 

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-//@CrossOrigin(origins = "192.168.8.180:8181")
 public class DriverController {
 
     @Autowired
@@ -43,6 +42,7 @@ public class DriverController {
         return "index";
     }
 
+
     @PostMapping("/driver-activeVehicle")
     public String update(@ModelAttribute Driver driver, Model model, HttpServletRequest httpServletRequest) {
         String exceptionMessage = null;
@@ -53,11 +53,26 @@ public class DriverController {
         } catch (VehicleNotFoundException vehicleNotFoundException) {
             exceptionMessage = vehicleNotFoundException.getMessage();
         }
-
         model.addAttribute("error", exceptionMessage);
 
         return "scan-vehicle";
 
+    }
+
+    @PostMapping("/driver-profile")
+    public String updateDriverProfile(@ModelAttribute Driver driver, Model model, HttpServletRequest httpServletRequest) {
+        int driverId = (int) httpServletRequest.getSession().getAttribute("loggedDriverId");
+        Driver oldDriver = driverService.findById(driverId);
+
+        driver.setId(driverId);
+        driver.setPassword(oldDriver.getPassword());
+        driver.setActive(true);
+        driverService.update(driver);
+
+        driver = driverService.findById(driverId);
+
+        model.addAttribute("driver", driver);
+        return "driver-profile";
     }
 
 }

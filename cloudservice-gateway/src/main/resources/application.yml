@@ -8,8 +8,8 @@ spring:
       enabled: true
     gateway:
       routes:
-        - id: emailservice
-          uri: lb://emailservice
+        - id: email
+          uri: lb://email
           predicates:
             - Path= /services/**
 #eureka:

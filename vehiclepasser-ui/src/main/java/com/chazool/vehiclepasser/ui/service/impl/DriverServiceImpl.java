@@ -26,10 +26,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public Driver update(Driver driver) {
+        restTemplate.put("http://driver/services/drivers/", driver);
+        return findById(driver.getId());
+    }
+
+    @Override
     public Driver setActiveVehicle(int driverId, int activeVehicleId) throws VehicleNotFoundException {
         Vehicle vehicle = vehicleService.findById(activeVehicleId);
 
         Driver driver = findById(driverId);
+
         driver.setActiveVehicle(vehicle.getId());
 
         restTemplate.put("http://driver/services/drivers/", driver, Driver.class);
