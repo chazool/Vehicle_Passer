@@ -12,6 +12,10 @@ spring:
           uri: lb://email
           predicates:
             - Path= /services/**
+        - id: driver
+          uri: lb://driver
+          predicates:
+            - Path= /services/**
 #eureka:
 #  client:
 #    register-with-eureka: true
