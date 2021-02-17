@@ -28,6 +28,7 @@ public class Driver {
     private LocalDateTime registrationDate;
     private boolean isActive;
     private int activeVehicle;
+    private int user;
 
 
 }

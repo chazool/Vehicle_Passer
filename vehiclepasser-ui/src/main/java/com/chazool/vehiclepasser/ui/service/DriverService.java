@@ -3,7 +3,6 @@ package com.chazool.vehiclepasser.ui.service;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface DriverService {
 

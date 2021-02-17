@@ -10,13 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-//@CrossOrigin(origins = "192.168.8.180:8181")
 public class UIController {
 
-
-    @RequestMapping(value = "/index")
+    //@RequestMapping(value = "/index")
+    @RequestMapping(value = "/")
     public String home(HttpSession httpSession) {
-        int id = (int) httpSession.getAttribute("loggedDriverId");
+        // int id = (int) httpSession.getAttribute("loggedDriverId");
         return "index";
     }
 

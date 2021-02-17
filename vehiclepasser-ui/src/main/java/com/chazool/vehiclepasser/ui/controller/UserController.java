@@ -27,7 +27,7 @@ public class UserController {
     private DriverService driverService;
 
 
-    @RequestMapping(value = "/login")
+   // @RequestMapping(value = "/login")
     public String login(User user, Model model, HttpSession httpSession) {
         String exceptionMessage = null;
         try {
@@ -47,7 +47,7 @@ public class UserController {
         return "login";
     }
 
-    @RequestMapping(value = "/")
+  //  @RequestMapping(value = "/")
     public String loginPage(Model model, HttpServletRequest httpServletRequest) {
         httpServletRequest.removeAttribute("loggedDriverId");
         model.addAttribute("user", new User());
