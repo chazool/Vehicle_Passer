@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service("userDetailServiceImpl")
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService, UserService {
 
 
     @Autowired
@@ -30,5 +30,19 @@ public class UserDetailServiceImpl implements UserDetailsService {
         new AccountStatusUserDetailsChecker().check(userDetails);
 
         return userDetails;
+    }
+
+    @Override
+    public User save(User user) {
+        return userDetailRepository.save(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+
+        Optional<User> optionalUser = userDetailRepository.findByUsername(username);
+        optionalUser.orElseThrow(() -> new UsernameNotFoundException("Username wrong"));
+
+        return optionalUser.get();
     }
 }
