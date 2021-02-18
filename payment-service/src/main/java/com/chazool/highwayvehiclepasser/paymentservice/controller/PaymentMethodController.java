@@ -2,6 +2,7 @@ package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,9 @@ public class PaymentMethodController {
 
 
     @PostMapping
-    public PaymentMethod save(@RequestBody PaymentMethod paymentMethod) {
-        return paymentMethodService.save(paymentMethod);
+    public Response save(@RequestBody PaymentMethod paymentMethod) {
+        paymentMethod = paymentMethodService.save(paymentMethod);
+        return Response.success(paymentMethod);
     }
 
     @PutMapping

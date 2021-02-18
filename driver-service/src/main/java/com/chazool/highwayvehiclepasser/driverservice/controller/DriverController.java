@@ -21,9 +21,9 @@ public class DriverController {
     private DriverService driverService;
 
     @PostMapping("/register")
-    public Response save(@RequestBody Driver driver, @RequestHeader Map<String, String> header) {
+    public Response save(@RequestBody Driver driver, @RequestHeader Map<String, String> headers) {
         try {
-            String authorization = header.get("authorization");
+            String authorization = headers.get("authorization");
             driver = driverService.save(driver, authorization);
             return Response.success(driver);
         } catch (InvalidEmailException invalidEmailException) {

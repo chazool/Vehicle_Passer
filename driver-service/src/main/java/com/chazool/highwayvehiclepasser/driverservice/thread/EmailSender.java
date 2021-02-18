@@ -9,22 +9,19 @@ import org.springframework.web.client.RestTemplate;
 
 public class EmailSender extends Thread {
 
-
     private Email email;
+    private EmailSenderService emailSenderService;
+    private String authorization;
 
-    EmailSenderService emailSenderService;
-
-
-    public EmailSender(Email email, EmailSenderService emailSenderService) {
+    public EmailSender(Email email, EmailSenderService emailSenderService, String authorization) {
         this.email = email;
         this.emailSenderService = emailSenderService;
-
+        this.authorization = authorization;
     }
-
 
     @Override
     public void run() {
-        emailSenderService.send(email);
+        emailSenderService.send(email, authorization);
     }
 
 

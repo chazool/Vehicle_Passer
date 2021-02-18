@@ -10,15 +10,16 @@ public class PaymentCard extends Thread {
     private Driver driver;
     private String authorization;
 
-    public PaymentCard(Driver driver, DriverService driverService , String authorization) {
+    public PaymentCard(Driver driver, DriverService driverService, String authorization) {
         this.driver = driver;
         this.driverService = driverService;
+        this.authorization = authorization;
     }
 
 
     @Override
     public void run() {
-        driverService.createCard(driver,authorization);
+        driverService.createCard(driver, authorization);
     }
 
 }

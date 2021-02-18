@@ -2,10 +2,15 @@ package com.chazool.highwayvehiclepasser.driverservice.controller;
 
 import com.chazool.highwayvehiclepasser.driverservice.service.VehicleService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
+import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/services/vehicles")
@@ -15,8 +20,9 @@ public class VehicleController {
     private VehicleService vehicleService;
 
     @PostMapping
-    public Vehicle save(@RequestBody Vehicle vehicle) {
-        return vehicleService.save(vehicle);
+    public Response save(@RequestBody Vehicle vehicle, @RequestHeader Map<String, String> headers) {
+        String authorization = headers.get("authorization");
+        return Response.success(vehicleService.save(vehicle, authorization));
     }
 
     @PutMapping

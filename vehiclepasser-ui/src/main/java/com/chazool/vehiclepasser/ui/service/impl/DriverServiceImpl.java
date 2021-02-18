@@ -12,11 +12,12 @@ import com.chazool.vehiclepasser.ui.service.UserService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.security.oauth2.client.AccessTokenContextRelay;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -44,16 +45,18 @@ public class DriverServiceImpl implements DriverService {
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
 
-        List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setId(2);
-        roles.add(role);
-        user.setRoles(roles);
-
-        Response response = restTemplate.postForObject("http://authorization/auth/users/signup", user, Response.class);
+        Response response = userService.save(user);
+        OAuth2AccessToken oAuth2AccessToken = userService.getAccessToken(user.getUsername(), user.getPassword());
 
         if (response.isAction()) {
-            return restTemplate.postForObject("http://driver/services/drivers/register", driver, Response.class);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("Authorization"
+                    , oAuth2AccessToken.getTokenType().concat(" ").concat(oAuth2AccessToken.getValue()));
+            HttpEntity<Driver> httpEntity = new HttpEntity<>(driver, httpHeaders);
+
+            ResponseEntity<Response> responseEntity = restTemplate
+                    .exchange("http://driver/services/drivers/register", HttpMethod.POST, httpEntity, Response.class);
+            return responseEntity.getBody();
         } else {
             return response;
         }
@@ -94,4 +97,6 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> findAll() {
         return null;
     }
+
+
 }

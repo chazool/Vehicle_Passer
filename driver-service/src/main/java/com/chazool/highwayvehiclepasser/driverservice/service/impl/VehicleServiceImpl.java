@@ -7,7 +7,10 @@ import com.chazool.highwayvehiclepasser.driverservice.service.VehicleService;
 import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,7 +30,7 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public Vehicle save(Vehicle vehicle) {
+    public Vehicle save(Vehicle vehicle,String  authorization) {
         vehicle.setActive(true);
         vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
         vehicle = vehicleRepository.save(vehicle);
@@ -38,8 +41,13 @@ public class VehicleServiceImpl implements VehicleService {
         email.setSubject("Registration");
         email.setMessage("your Vehicle registration is completed \n Registration No: " + vehicle.getId());
 
-        EmailSender emailSender = new EmailSender(email, emailSenderService);
+        EmailSender emailSender = new EmailSender(email, emailSenderService, authorization);
         emailSender.start();
+
+
+
+
+
 
         return vehicle;
     }

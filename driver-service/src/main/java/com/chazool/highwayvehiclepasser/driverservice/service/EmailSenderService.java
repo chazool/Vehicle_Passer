@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.driverservice.service;
 
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
@@ -8,5 +9,5 @@ import org.springframework.web.client.RestTemplate;
 public interface EmailSenderService {
 
 
-    Email send(Email email);
+    Response send(Email email,String  authorization);
 }

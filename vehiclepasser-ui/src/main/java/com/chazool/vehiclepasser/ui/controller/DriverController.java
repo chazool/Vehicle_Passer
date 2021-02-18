@@ -2,6 +2,7 @@ package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -50,28 +51,9 @@ public class DriverController {
     @PostMapping("/driver-register")
     public String save(@ModelAttribute Driver driver, Model model) {
 
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type", "password");
-        map.add("username", "chazool");
-        map.add("password", "chazool");
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-
-
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("mobile", "pin"));
-
-
-        ResponseEntity<OAuth2AccessToken> accessTokenResponseEntity = restTemplate.exchange("http://authorization/oauth/token", HttpMethod.POST, request, OAuth2AccessToken.class);
-
-        System.out.println(accessTokenResponseEntity.getBody().getValue());
-
-//        Response response = driverService.save(driver);
-//        model.addAttribute("response", response);
-//        model.addAttribute("driver", new Driver());
+        Response response = driverService.save(driver);
+        model.addAttribute("response", response);
+        model.addAttribute("driver", new Driver());
 
         return "driver-register";
     }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,8 +42,8 @@ public class DriverServiceImpl implements DriverService {
         isValid(driver);
         driver.setActive(true);
         driver.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
-
         driver = driverRepository.save(driver);
+
 
         PaymentCard paymentCard = new PaymentCard(driver, this, authorization);
         paymentCard.start();
@@ -123,22 +124,20 @@ public class DriverServiceImpl implements DriverService {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", authorization);
+        HttpEntity<PaymentMethod> httpEntity = new HttpEntity<>(paymentMethod, httpHeaders);
 
-        HttpEntity<PaymentMethod> httpEntity=new HttpEntity<>(paymentMethod,httpHeaders);
-
-
-
-         restTemplate.exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);
-
-        paymentMethod = restTemplate.postForObject("http://payment/services/payment-method", paymentMethod, PaymentMethod.class);
+        ResponseEntity<Response> responseEntity = restTemplate
+                .exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);
 
         Email email = new Email();
         email.setEmail(driver.getEmail());
         email.setSubject("Registration");
         email.setMessage("your registration is completed \n Card No: " + paymentMethod.getId());
 
-        EmailSender emailSender = new EmailSender(email, emailSenderService);
+        EmailSender emailSender = new EmailSender(email, emailSenderService, authorization);
         emailSender.start();
+
     }
+
 
 }
