@@ -8,8 +8,9 @@ public class PaymentCard extends Thread {
 
     private DriverService driverService;
     private Driver driver;
+    private String authorization;
 
-    public PaymentCard(Driver driver, DriverService driverService) {
+    public PaymentCard(Driver driver, DriverService driverService , String authorization) {
         this.driver = driver;
         this.driverService = driverService;
     }
@@ -17,7 +18,7 @@ public class PaymentCard extends Thread {
 
     @Override
     public void run() {
-        driverService.createCard(driver);
+        driverService.createCard(driver,authorization);
     }
 
 }

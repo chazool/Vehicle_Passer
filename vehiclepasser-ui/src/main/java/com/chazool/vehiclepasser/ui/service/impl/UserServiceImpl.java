@@ -1,5 +1,6 @@
 package com.chazool.vehiclepasser.ui.service.impl;
 
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.InvalidEmailException;
 import com.chazool.highwayvehiclepasser.model.exception.InvalidPasswordException;
@@ -33,7 +34,11 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidPasswordException("Invalid Password");
             }
         }
+    }
 
-
+    @Override
+    public User save(User user) {
+        user = restTemplate.postForObject("", user, User.class);
+        return user;
     }
 }

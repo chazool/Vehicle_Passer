@@ -1,5 +1,6 @@
 package com.chazool.highwayvehiclepasser.model.driverservice;
 
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import lombok.Data;
 import lombok.ToString;
 import sun.security.util.Password;
@@ -23,12 +24,12 @@ public class Driver {
     private char gender;
     @Column(unique = true)
     private String email;
+    @Transient
     private String password;
     private String phoneNo;
     private LocalDateTime registrationDate;
     private boolean isActive;
     private int activeVehicle;
-    private int user;
-
+    private String username;
 
 }

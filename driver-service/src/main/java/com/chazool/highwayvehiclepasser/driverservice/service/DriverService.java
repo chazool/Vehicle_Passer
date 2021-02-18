@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface DriverService {
 
-    Driver save(Driver driver) throws ConstraintViolationException;
+    Driver save(Driver driver, String authorization) throws ConstraintViolationException;
 
     Driver update(Driver driver);
 
@@ -28,7 +28,7 @@ public interface DriverService {
 
     List<Driver> findByAll();
 
-    void createCard(Driver driver);
+    void createCard(Driver driver,String accessToken);
 
 
 }

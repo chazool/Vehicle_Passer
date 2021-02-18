@@ -1,6 +1,8 @@
 server:
   port: 9191
 spring:
+  application:
+    name: authorization
   datasource:
     url: jdbc:mysql://localhost:3306/authDB?createDatabaseIfNotExist=true
     username: root
@@ -20,3 +22,9 @@ logging:
     org:
       hibernate:
         type: trace
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+

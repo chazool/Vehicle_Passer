@@ -4,10 +4,14 @@ package com.chazool.highwayvehiclepasser.driverservice.controller;
 import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.*;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/services/drivers")
@@ -16,10 +20,19 @@ public class DriverController {
     @Autowired
     private DriverService driverService;
 
-    @PostMapping
-    public Driver save(@RequestBody Driver driver)
-            throws InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
-        return driverService.save(driver);
+    @PostMapping("/register")
+    public Response save(@RequestBody Driver driver, @RequestHeader Map<String, String> header) {
+        try {
+            String authorization = header.get("authorization");
+            driver = driverService.save(driver, authorization);
+            return Response.success(driver);
+        } catch (InvalidEmailException invalidEmailException) {
+            return Response.fail(invalidEmailException.getMessage());
+        } catch (InvalidNameException invalidNameException) {
+            return Response.fail(invalidNameException.getMessage());
+        } catch (InvalidDrivingLicenseException invalidDrivingLicenseException) {
+            return Response.fail(invalidDrivingLicenseException.getMessage());
+        }
     }
 
 

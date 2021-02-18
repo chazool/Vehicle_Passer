@@ -40,6 +40,22 @@
                         <form action="#" th:action="@{/driver-register}" th:object="${driver}" method="post"
                               class="user needs-validation" novalidate
                               oninput='repeatPassword.setCustomValidity(repeatPassword.value != password.value ? "Passwords do not match." : "")'>
+
+                            <!-- Row 0-->
+                            <div class="form-group row">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">@</div>
+                                        </div>
+                                        <input th:field="*{username}" type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username" required>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
                             <!-- Row 1-->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">

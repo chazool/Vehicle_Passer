@@ -11,21 +11,17 @@ import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.constraints.Null;
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -38,10 +34,9 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Override
-    public Driver save(Driver driver) throws InvalidEmailException, InvalidPasswordException, InvalidNameException,
-            InvalidDrivingLicenseException {
 
+    @Override
+    public Driver save(Driver driver, String authorization) throws InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
 
         isValid(driver);
         driver.setActive(true);
@@ -49,7 +44,7 @@ public class DriverServiceImpl implements DriverService {
 
         driver = driverRepository.save(driver);
 
-        PaymentCard paymentCard = new PaymentCard(driver, this);
+        PaymentCard paymentCard = new PaymentCard(driver, this, authorization);
         paymentCard.start();
 
         return driver;
@@ -118,13 +113,22 @@ public class DriverServiceImpl implements DriverService {
 
 
     @Override
-    public void createCard(Driver driver) {
+    public void createCard(Driver driver, String authorization) {
 
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setDriver(driver.getId());
         paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
         paymentMethod.setBalanceAmount(new BigDecimal("0.00"));
         paymentMethod.setActive(true);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", authorization);
+
+        HttpEntity<PaymentMethod> httpEntity=new HttpEntity<>(paymentMethod,httpHeaders);
+
+
+
+         restTemplate.exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);
 
         paymentMethod = restTemplate.postForObject("http://payment/services/payment-method", paymentMethod, PaymentMethod.class);
 
