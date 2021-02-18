@@ -1,4 +1,4 @@
-package com.chazool.vehiclepasser.authorizationserver.model;
+package com.chazool.highwayvehiclepasser.model.authorizationserver;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.chazool.vehiclepasser.authorizationserver.repository;
 
-import com.chazool.vehiclepasser.authorizationserver.model.User;
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

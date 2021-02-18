@@ -1,9 +1,6 @@
 package com.chazool.vehiclepasser.authorizationserver.service;
 
-import com.chazool.vehiclepasser.authorizationserver.model.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.Optional;
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 
 public interface UserService {
     User save(User user);

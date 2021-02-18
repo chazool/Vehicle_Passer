@@ -1,6 +1,6 @@
 package com.chazool.vehiclepasser.authorizationserver.Controller;
 
-import com.chazool.vehiclepasser.authorizationserver.model.User;
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import com.chazool.vehiclepasser.authorizationserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

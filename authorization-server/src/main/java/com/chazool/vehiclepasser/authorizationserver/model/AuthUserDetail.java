@@ -1,5 +1,6 @@
 package com.chazool.vehiclepasser.authorizationserver.model;
 
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

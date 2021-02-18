@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableOAuth2Sso
+//@EnableOAuth2Sso
 public class VehiclepasserUiApplication {
 
     public static void main(String[] args) {

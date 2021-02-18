@@ -1,7 +1,7 @@
 package com.chazool.vehiclepasser.authorizationserver.service;
 
+import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import com.chazool.vehiclepasser.authorizationserver.model.AuthUserDetail;
-import com.chazool.vehiclepasser.authorizationserver.model.User;
 import com.chazool.vehiclepasser.authorizationserver.repository.UserDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
