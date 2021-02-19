@@ -1,9 +1,14 @@
 package com.chazool.vehiclepasser.ui.service.impl;
 
+import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
+import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +22,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private DriverService driverService;
 
 
     @Override
@@ -35,10 +42,17 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicle;
     }
 
-    public List<Vehicle> findByOwnerId(int driver) {
-        Vehicle[] vehicles = restTemplate.getForObject("http://driver/services/vehicles/owner/" + driver, Vehicle[].class);
+    @Override
+    public List<Vehicle> findByOwner() {
+        Driver driver = driverService.findByUsername(AccessToken.getUsername());
 
-        return Arrays.asList(vehicles);
+        ResponseEntity<Vehicle[]> responseEntity = restTemplate.exchange(
+                "http://driver/services/vehicles/owner/" + driver.getId()
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Vehicle[].class);
+
+        return Arrays.asList(responseEntity.getBody());
     }
 
     @Override

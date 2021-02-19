@@ -1,5 +1,6 @@
 package com.chazool.highwayvehiclepasser.transsaction.controller;
 
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
 import com.chazool.highwayvehiclepasser.transsaction.service.VehicleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class VehicleTypeController {
     }
 
     @GetMapping
-    public List<VehicleType> findByAll() {
-        return vehicleTypeService.findByAll();
+    public Response findByAll() {
+        return Response.success(vehicleTypeService.findByAll());
     }
 }

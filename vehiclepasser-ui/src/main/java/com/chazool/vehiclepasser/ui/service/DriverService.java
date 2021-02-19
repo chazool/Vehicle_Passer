@@ -17,6 +17,8 @@ public interface DriverService {
 
     Driver findByEmail(String email);
 
+    Driver findByUsername(String username);
+
     List<Driver> findAll();
 
 

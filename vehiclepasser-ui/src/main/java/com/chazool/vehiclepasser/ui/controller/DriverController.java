@@ -42,9 +42,10 @@ public class DriverController {
 
     @GetMapping("/driver-profile")
     public String driverProfile(Model model, HttpServletRequest httpServletRequest) {
-        Driver driver = driverService.findById((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));
 
+        Driver driver = driverService.findById((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));
         model.addAttribute("driver", driver);
+
         return "driver-profile";
     }
 

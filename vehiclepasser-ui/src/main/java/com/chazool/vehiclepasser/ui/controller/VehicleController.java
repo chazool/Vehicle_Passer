@@ -2,6 +2,7 @@ package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
+import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import com.chazool.vehiclepasser.ui.service.VehicleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class VehicleController {
     private VehicleTypeService vehicleTypeService;
 
     @GetMapping("vehicle-register")
-    public String load(Model model, HttpServletRequest httpServletRequest) {
+    public String load(Model model) {
 
         List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
         model.addAttribute("vehicle", new Vehicle());
         model.addAttribute("vehicleTypes", vehicleTypes);
-        model.addAttribute("vehicles", vehicleService.findByOwnerId((int) httpServletRequest.getSession().getAttribute("loggedDriverId")));
+        model.addAttribute("vehicles", vehicleService.findByOwner());
 
         return "vehicle-register";
     }

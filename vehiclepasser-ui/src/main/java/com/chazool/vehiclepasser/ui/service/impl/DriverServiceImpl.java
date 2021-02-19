@@ -88,9 +88,18 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver findByEmail(String email) {
-
         Driver driver = restTemplate.getForObject("http://driver/services/drivers/email/" + email, Driver.class);
         return driver;
+    }
+
+    @Override
+    public Driver findByUsername(String username) {
+        ResponseEntity<Driver> responseEntity = restTemplate.exchange(
+                "http://driver/services/drivers/username/" + username
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Driver.class);
+        return responseEntity.getBody();
     }
 
     @Override

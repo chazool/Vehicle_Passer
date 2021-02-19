@@ -55,15 +55,16 @@ public class DriverController {
     @GetMapping(value = "/dlicense/{dLNo}")
     public Driver fetchByDLicense(@PathVariable String dLNo) throws InvalidIdException {
         return driverService.findByDLicenseNo(dLNo);
-
     }
 
     @GetMapping(value = "/email/{email}")
     public Driver fetchByEmail(@PathVariable String email) throws InvalidIdException {
-
-
         return driverService.findByEmail(email);
+    }
 
+    @GetMapping(value = "/username/{username}")
+    public Driver fetchByUsername(@PathVariable String username) {
+        return driverService.findByUsername(username);
     }
 
     @GetMapping

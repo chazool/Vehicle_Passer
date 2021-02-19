@@ -93,6 +93,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public Driver findByUsername(String username) {
+        Optional<Driver> optionalDriver = driverRepository.findByUsername(username);
+        return optionalDriver.isPresent() ? optionalDriver.get() : new Driver();
+    }
+
+    @Override
     public List<Driver> findByAll() {
         return driverRepository.findAll();
     }
@@ -136,7 +142,7 @@ public class DriverServiceImpl implements DriverService {
                 .exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);
 
         Map response = (Map) responseEntity.getBody().getData();
-        
+
         Email email = new Email();
         email.setEmail(driver.getEmail());
         email.setSubject("Registration");

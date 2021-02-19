@@ -1,9 +1,14 @@
 package com.chazool.vehiclepasser.ui.service.impl;
 
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import com.chazool.vehiclepasser.ui.service.VehicleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +30,15 @@ public class VehicleTypeServiceImpl implements VehicleTypeService {
 
     @Override
     public List<VehicleType> findAll() {
-        ResponseEntity<VehicleType[]> responseEntity = restTemplate.getForEntity("http://transsaction/services/vehicle-type/", VehicleType[].class);
-        return Arrays.asList(responseEntity.getBody());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", AccessToken.getAccessToken());
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+
+        ResponseEntity<Response> responseEntity = restTemplate
+                .exchange("http://transsaction/services/vehicle-type/", HttpMethod.GET, httpEntity, Response.class);
+
+        return (List<VehicleType>) responseEntity.getBody().getData();
+
     }
 }

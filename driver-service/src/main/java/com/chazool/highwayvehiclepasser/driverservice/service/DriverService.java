@@ -26,9 +26,11 @@ public interface DriverService {
 
     Driver findByEmail(String email);
 
+    Driver findByUsername(String username);
+
     List<Driver> findByAll();
 
-    void createCard(Driver driver,String accessToken);
+    void createCard(Driver driver, String accessToken);
 
 
 }
