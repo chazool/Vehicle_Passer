@@ -11,7 +11,9 @@ import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -41,14 +44,17 @@ public class DriverServiceImpl implements DriverService {
 
         isValid(driver);
         driver.setActive(true);
+
         driver.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
-        driver = driverRepository.save(driver);
 
-
-        PaymentCard paymentCard = new PaymentCard(driver, this, authorization);
-        paymentCard.start();
-
-        return driver;
+        try {
+            driver = driverRepository.save(driver);
+            PaymentCard paymentCard = new PaymentCard(driver, this, authorization);
+            paymentCard.start();
+            return driver;
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            throw new DuplicateEntryException("Username already exit. please Check again");
+        }
     }
 
     @Override
@@ -129,10 +135,12 @@ public class DriverServiceImpl implements DriverService {
         ResponseEntity<Response> responseEntity = restTemplate
                 .exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);
 
+        Map response = (Map) responseEntity.getBody().getData();
+        
         Email email = new Email();
         email.setEmail(driver.getEmail());
         email.setSubject("Registration");
-        email.setMessage("your registration is completed \n Card No: " + paymentMethod.getId());
+        email.setMessage("your registration is completed \n Card No: " + response.get("id"));
 
         EmailSender emailSender = new EmailSender(email, emailSenderService, authorization);
         emailSender.start();

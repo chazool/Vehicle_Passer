@@ -48,7 +48,8 @@
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">@</div>
                                         </div>
-                                        <input th:field="*{username}" type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username" required>
+                                        <input th:field="*{username}" type="text" class="form-control"
+                                               id="inlineFormInputGroup" placeholder="Username" required>
                                     </div>
 
                                 </div>
@@ -129,7 +130,30 @@
     </div>
 
 </div>
-<script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var response = [[${response}]];
+  //  alert(response);
+  //  console.log(response.action);
+    if (response.action === true) {
+        swal({
+            title: "Registration complete successfully.!",
+            text: "please check your email for a message with card number",
+            icon: "success",
+            timer: 3000
+        });
+    } else {
+        swal({
+            title: "Check Again.!",
+            text: response.data,
+            icon: "error",
+            timer: 3000
+        });
+    }
+
+    /*]]>*/
+
 
     function isNumericKey(evt) {
         var charCode = (evt.which) ? evt.which : evt.keyCode;

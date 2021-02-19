@@ -7,16 +7,18 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 public class AccessToken {
 
     public static String getAccessToken() {
-
-        OAuth2AuthenticationDetails authenticationDetail = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-
+        OAuth2AuthenticationDetails authenticationDetail =
+                (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        
         return authenticationDetail.getTokenType().concat(" ").concat(authenticationDetail.getTokenValue());
     }
 
 
     public static String getUsername() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUsername();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        //  UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //   return userDetails.getUsername();
+        return null;
     }
 
 }

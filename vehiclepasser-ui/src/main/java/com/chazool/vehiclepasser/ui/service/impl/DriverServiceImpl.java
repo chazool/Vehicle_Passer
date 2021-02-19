@@ -46,9 +46,9 @@ public class DriverServiceImpl implements DriverService {
         user.setCredentialsNonExpired(true);
 
         Response response = userService.save(user);
-        OAuth2AccessToken oAuth2AccessToken = userService.getAccessToken(user.getUsername(), user.getPassword());
 
         if (response.isAction()) {
+            OAuth2AccessToken oAuth2AccessToken = userService.getAccessToken(user.getUsername(), user.getPassword());
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Authorization"
                     , oAuth2AccessToken.getTokenType().concat(" ").concat(oAuth2AccessToken.getValue()));
