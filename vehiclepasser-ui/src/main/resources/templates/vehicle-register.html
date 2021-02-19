@@ -82,7 +82,7 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                            <span th:text="${username}" class="mr-2 d-none d-lg-inline text-gray-600 small"> </span>
                             <img class="img-profile rounded-circle"
                                  src="img/undraw_profile.svg">
                         </a>
@@ -255,14 +255,33 @@
 <script src="../static/js/demo/datatables-demo.js"></script>
 
 
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var response = [[${response}]];
+    //  alert(response);
+    console.log(response);
+    if (response.action === true) {
+        swal({
+            title: "Registration complete successfully.!",
+            text: "please check your email for a message with Vehicle Registration number",
+            icon: "success",
+            timer: 3000
+        });
+    } else {
+        swal({
+            title: "Check Again.!",
+            text: response.data,
+            icon: "error",
+            timer: 3000
+        });
+    }
+
+    /*]]>*/
     (function () {
         'use strict';
         window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             var validation = Array.prototype.filter.call(forms, function (form) {
                 form.addEventListener('submit', function (event) {
                     if (form.checkValidity() === false) {

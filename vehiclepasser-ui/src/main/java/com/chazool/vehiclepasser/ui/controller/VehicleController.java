@@ -1,7 +1,9 @@
 package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import com.chazool.vehiclepasser.ui.service.VehicleTypeService;
@@ -20,7 +22,6 @@ import java.util.List;
 //@CrossOrigin(origins = "192.168.8.180:8181")
 public class VehicleController {
 
-
     @Autowired
     private VehicleService vehicleService;
     @Autowired
@@ -29,21 +30,30 @@ public class VehicleController {
     @GetMapping("vehicle-register")
     public String load(Model model) {
 
-        List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
         model.addAttribute("vehicle", new Vehicle());
-        model.addAttribute("vehicleTypes", vehicleTypes);
-        model.addAttribute("vehicles", vehicleService.findByOwner());
-
+        setModel(model);
         return "vehicle-register";
     }
 
     @PostMapping("vehicle-register")
-    public String load(@ModelAttribute Vehicle vehicle, Model model, HttpServletRequest httpServletRequest) {
-        vehicle.setOwnerId((int) httpServletRequest.getSession().getAttribute("loggedDriverId"));
-        vehicle = vehicleService.save(vehicle);
+    public String save(@ModelAttribute Vehicle vehicle, Model model) {
 
-        return "index";
+        Response response = vehicleService.save(vehicle);
+        model.addAttribute("response", response);
+        setModel(model);
+        if (response.isAction())
+            model.addAttribute("vehicle", new Vehicle());
+        else
+            model.addAttribute("vehicle", vehicle);
+
+        return "vehicle-register";
     }
 
+    private void setModel(Model model) {
+        List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
+        model.addAttribute("vehicleTypes", vehicleTypes);
+        model.addAttribute("vehicles", vehicleService.findByOwner());
+        model.addAttribute("username", AccessToken.getUsername());
+    }
 
 }

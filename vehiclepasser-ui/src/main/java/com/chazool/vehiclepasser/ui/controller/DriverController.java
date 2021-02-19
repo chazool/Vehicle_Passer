@@ -54,7 +54,10 @@ public class DriverController {
 
         Response response = driverService.save(driver);
         model.addAttribute("response", response);
-        model.addAttribute("driver", driver);
+        if (response.isAction())
+            model.addAttribute("driver", new Driver());
+        else
+            model.addAttribute("driver", driver);
 
         return "driver-register";
     }

@@ -2,6 +2,7 @@ package com.chazool.highwayvehiclepasser.driverservice.controller;
 
 import com.chazool.highwayvehiclepasser.driverservice.service.VehicleService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
+import com.chazool.highwayvehiclepasser.model.exception.DuplicateEntryException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,11 @@ public class VehicleController {
     @PostMapping
     public Response save(@RequestBody Vehicle vehicle, @RequestHeader Map<String, String> headers) {
         String authorization = headers.get("authorization");
-        return Response.success(vehicleService.save(vehicle, authorization));
+        try {
+            return Response.success(vehicleService.save(vehicle, authorization));
+        } catch (DuplicateEntryException duplicateEntryException) {
+            return Response.fail(duplicateEntryException.getMessage());
+        }
     }
 
     @PutMapping

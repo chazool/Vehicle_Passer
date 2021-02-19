@@ -3,6 +3,7 @@ package com.chazool.vehiclepasser.ui.service.impl;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
@@ -27,9 +28,17 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public Vehicle save(Vehicle vehicle) {
-        vehicle = restTemplate.postForObject("http://driver/services/vehicles/", vehicle, Vehicle.class);
-        return vehicle;
+    public Response save(Vehicle vehicle) {
+        Driver driver = driverService.findByUsername(AccessToken.getUsername());
+        vehicle.setOwnerId(driver.getId());
+
+        ResponseEntity<Response> response = restTemplate.exchange(
+                "http://driver/services/vehicles/"
+                , HttpMethod.POST
+                , AccessToken.getHttpEntity(vehicle)
+                , Response.class);
+
+        return response.getBody();
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.chazool.highwayvehiclepasser.driverservice.service.VehicleService;
 import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
+import com.chazool.highwayvehiclepasser.model.exception.DuplicateEntryException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -30,26 +31,27 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public Vehicle save(Vehicle vehicle,String  authorization) {
-        vehicle.setActive(true);
-        vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
-        vehicle = vehicleRepository.save(vehicle);
+    public Vehicle save(Vehicle vehicle, String authorization) throws DuplicateEntryException {
 
-        Email email = new Email();
-        email.setSubject("Vehicle Registration Successfully");
-        email.setEmail(driverService.findById(vehicle.getOwnerId()).getEmail());
-        email.setSubject("Registration");
-        email.setMessage("your Vehicle registration is completed \n Registration No: " + vehicle.getId());
+        Optional<Vehicle> optionalVehicle = vehicleRepository
+                .findByOwnerIdAndVehicleNo(vehicle.getOwnerId(), vehicle.getVehicleNo());
 
-        EmailSender emailSender = new EmailSender(email, emailSenderService, authorization);
-        emailSender.start();
+        if (optionalVehicle.isPresent()) {
+            throw new DuplicateEntryException("Vehicle Number is Already Exists");
+        } else {
+            vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+            vehicle = vehicleRepository.save(vehicle);
 
+            Email email = new Email();
+            email.setSubject("Vehicle Registration Successfully");
+            email.setEmail(driverService.findById(vehicle.getOwnerId()).getEmail());
+            email.setSubject("Registration");
+            email.setMessage("your Vehicle registration is completed \n Registration No: " + vehicle.getId());
 
-
-
-
-
-        return vehicle;
+            EmailSender emailSender = new EmailSender(email, emailSenderService, authorization);
+            emailSender.start();
+            return vehicle;
+        }
     }
 
     @Override
