@@ -3,6 +3,7 @@ package com.chazool.highwayvehiclepasser.driverservice.controller;
 import com.chazool.highwayvehiclepasser.driverservice.service.VehicleService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.exception.DuplicateEntryException;
+import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,12 @@ public class VehicleController {
     }
 
     @GetMapping(value = "/{id}")
-    public Vehicle findById(@PathVariable int id) {
-        return vehicleService.findById(id);
+    public Response findById(@PathVariable int id) {
+        try {
+            return Response.success(vehicleService.findById(id));
+        } catch (VehicleNotFoundException vehicleNotFoundException) {
+            return Response.fail(vehicleNotFoundException.getMessage());
+        }
     }
 
     @GetMapping

@@ -8,6 +8,7 @@ import com.chazool.highwayvehiclepasser.driverservice.thread.EmailSender;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.DuplicateEntryException;
+import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -39,7 +40,7 @@ public class VehicleServiceImpl implements VehicleService {
         if (optionalVehicle.isPresent()) {
             throw new DuplicateEntryException("Vehicle Number is Already Exists");
         } else {
-            vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+            vehicle.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
             vehicle = vehicleRepository.save(vehicle);
 
             Email email = new Email();
@@ -68,9 +69,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle findById(int id) {
-        Optional<Vehicle> vehicle = vehicleRepository.findById(id);
-        return vehicle.isPresent() ? vehicle.get() : new Vehicle();
+    public Vehicle findById(int id) throws VehicleNotFoundException {
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
+
+        if (optionalVehicle.isPresent())
+            return optionalVehicle.get();
+        else
+            throw new VehicleNotFoundException("Vehicle Not Found");
     }
 
     @Override

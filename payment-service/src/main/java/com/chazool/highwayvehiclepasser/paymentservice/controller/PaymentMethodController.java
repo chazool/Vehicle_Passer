@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
+import com.chazool.highwayvehiclepasser.model.exception.PaymentMethodNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
@@ -39,8 +40,13 @@ public class PaymentMethodController {
 
 
     @GetMapping(value = "/{id}")
-    public PaymentMethod fetchById(@PathVariable int id) {
-        return paymentMethodService.findById(id);
+    public Response fetchById(@PathVariable int id) {
+        try {
+            PaymentMethod paymentMethod = paymentMethodService.findById(id);
+            return Response.success(paymentMethod);
+        } catch (PaymentMethodNotFoundException paymentMethodNotFoundException) {
+            return Response.fail(paymentMethodNotFoundException.getMessage());
+        }
     }
 
     @GetMapping(value = "/driver/{id}")

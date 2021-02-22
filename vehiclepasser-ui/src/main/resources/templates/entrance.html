@@ -159,9 +159,7 @@
                                 <button class="btn btn-primary btn-user btn-block" type="submit">
                                     Entrance
                                 </button>
-                                <!--Alert Text  -->
-                                <input th:value="${alert}" type="hidden" id="alert"/>
-                                <input th:value="${error}" type="hidden" id="error"/>
+
                             </form>
 
                         </div>
@@ -228,31 +226,11 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script th:inline="javascript">
 
-<script>
-
-
-
-    if ($("#alert").val() === "true") {
-        swal({
-            title: "Safe Drive!",
-            text: "Thank You! Take care ",
-            icon: "success",
-            timer: 3000
-        });
-    }
-
-    if ($("#error").val() !== "") {
-        swal({
-            title: $("#error").val(),
-            //text: "Thank You! Take care ",
-            icon: "error",
-            timer: 3000
-        });
-    }
 
     $("#location").change(function () {
-
+       // alert("aaaaaaa")
         $.getJSON(' location/terminal/' + $(this).val(), function (data, textStatus, jqXHR) {
             $('#terminal').find('option').remove().end().append('<option value=""> - Location - </option>');
             $.each(data, function (key, value) {
@@ -260,6 +238,32 @@
             });
         });
     });
+
+
+
+    /*<![CDATA[*/
+    var response = [[${response}]];
+    //  alert(response);
+    //  console.log(response.action);
+    if (response.action === true) {
+        swal({
+            title: "Safe Drive!",
+            text: "Thank You! Take care ",
+            icon: "success",
+            timer: 3000
+        });
+    } else {
+        swal({
+            title: "Check Again.!",
+            text: response.data,
+            icon: "error",
+            timer: 3000
+        });
+    }
+
+    /*]]>*/
+
+
 
     (function () {
         'use strict';

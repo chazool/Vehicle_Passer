@@ -29,4 +29,11 @@ public class Vehicle {
     private boolean isActive;
 
 
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate != null ? LocalDateTime.parse(registrationDate) : null;
+    }
+
+    public void setDeleteDate(String deleteDate) {
+        this.deleteDate = deleteDate != null ? LocalDateTime.parse(deleteDate) : null;
+    }
 }

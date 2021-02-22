@@ -29,5 +29,11 @@ public class Payment {
     private boolean isSendEmail;
     private int paymentMethod;
 
+    public void setEntranceDate(String entranceDate) {
+        this.entranceDate = entranceDate != null ? LocalDateTime.parse(entranceDate) : null;
+    }
 
+    public void setExitDate(String exitDate) {
+        this.exitDate = exitDate != null ? LocalDateTime.parse(exitDate) : null;
+    }
 }

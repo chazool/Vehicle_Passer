@@ -20,6 +20,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.Access;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,27 +64,53 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver update(Driver driver) {
-        restTemplate.put("http://driver/services/drivers/", driver);
-        return findById(driver.getId());
+    public Response update(Driver driver) {
+        Driver oldDriver = findByUsername(AccessToken.getUsername());
+
+        driver.setId(oldDriver.getId());
+        driver.setActive(true);
+        driver.setRegistrationDate(oldDriver.getRegistrationDate().toString());
+        driver.setUsername(oldDriver.getUsername());
+
+        ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                "http://driver/services/drivers/"
+                , HttpMethod.PUT
+                , AccessToken.getHttpEntity(driver)
+                , Response.class);
+
+        return responseEntity.getBody();
     }
 
     @Override
-    public Driver setActiveVehicle(int driverId, int activeVehicleId) throws VehicleNotFoundException {
-        Vehicle vehicle = vehicleService.findById(activeVehicleId);
+    public Response setActiveVehicle(int activeVehicleId) {
 
-        Driver driver = findById(driverId);
+        Response vehicleResponse = vehicleService.findById(activeVehicleId);
 
-        driver.setActiveVehicle(vehicle.getId());
+        if (vehicleResponse.isAction()) {
+            Driver driver = findByUsername(AccessToken.getUsername());
+            driver.setActiveVehicle(activeVehicleId);
+            ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                    "http://driver/services/drivers/"
+                    , HttpMethod.PUT
+                    , AccessToken.getHttpEntity(driver)
+                    , Response.class);
 
-        restTemplate.put("http://driver/services/drivers/", driver, Driver.class);
-
-        return driver;
+            return responseEntity.getBody();
+        } else {
+            return vehicleResponse;
+        }
     }
 
     @Override
     public Driver findById(int id) {
-        return restTemplate.getForObject("http://driver/services/drivers/" + id, Driver.class);
+
+        ResponseEntity<Driver> responseEntity = restTemplate.exchange(
+                "http://driver/services/drivers/" + id
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Driver.class);
+
+        return responseEntity.getBody();
     }
 
     @Override
@@ -106,6 +133,5 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> findAll() {
         return null;
     }
-
 
 }

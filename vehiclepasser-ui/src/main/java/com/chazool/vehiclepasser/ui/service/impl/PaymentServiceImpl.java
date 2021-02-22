@@ -6,15 +6,28 @@ import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.*;
 import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -32,52 +45,95 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public Payment enter(int cardNo, int terminalId) {
-        PaymentMethod paymentMethod = getPaymentMethod(cardNo);
+    public Response enter(int cardNo, int terminalId) throws LowBalanceException {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        if (paymentMethod.getBalanceAmount().compareTo(new BigDecimal("1000.00")) != -1) {
-            Payment payment = findByDriver(paymentMethod.getDriver());
-            if (payment.getId() > 0) {
-                return payment;
+        Response paymentMethodResponse = getPaymentMethod(cardNo);
+
+        if (paymentMethodResponse.isAction()) {
+            PaymentMethod paymentMethod = objectMapper.convertValue(paymentMethodResponse.getData(), PaymentMethod.class);
+
+            Driver driver = driverService.findById(paymentMethod.getDriver());
+
+            if (driver.getActiveVehicle() == 0) {
+                return Response.fail("Cannot Find Vehicle.!");
             } else {
-                payment.setPaymentMethod(cardNo);
-                payment.setEntranceTerminal(terminalId);
-                payment.setDriver(paymentMethod.getDriver());
 
-                payment = restTemplate.postForObject("http://payment/services/payments", payment, Payment.class);
+                if (paymentMethod.getBalanceAmount().compareTo(new BigDecimal("1000.00")) != -1) {
+                    Response paymentResponse = findByDriver(paymentMethod.getDriver());
+                    if (paymentResponse.isAction() == false) {
 
-                PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
-                        , payment.getDriver()
-                        , payment.getEntranceTerminal()
-                        , this);
-                paymentEmailSender.start();
+                        //  Payment payment =objectMapper.convertValue(paymentResponse.getData(), Payment.class);
+                        Payment payment = new Payment();
+
+                        payment.setPaymentMethod(cardNo);
+                        payment.setEntranceTerminal(terminalId);
+                        payment.setDriver(paymentMethod.getDriver());
+
+                        ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                                "http://payment/services/payments"
+                                , HttpMethod.POST
+                                , AccessToken.getHttpEntity(payment)
+                                , Response.class);
+
+                        paymentResponse = responseEntity.getBody();
+                        if (paymentResponse.isAction()) {
+                            payment = objectMapper.convertValue(paymentResponse.getData(), Payment.class);
+                            PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
+                                    , payment.getDriver()
+                                    , payment.getEntranceTerminal()
+                                    , this);
+                            paymentEmailSender.start();
+                        }
+                        return paymentResponse;
+
+                    } else {
+                        return paymentResponse;
+                    }
+                } else {
+                    throw new LowBalanceException("Your Balance is Less than Rs.1000.00");
+                }
             }
-            return payment;
         } else {
-            throw new LowBalanceException("Your Balance is Less than Rs.1000.00");
+            return paymentMethodResponse;
         }
     }
 
     @Override
-    public Payment exit(int cardNo, int terminalId) {
-        PaymentMethod paymentMethod = getPaymentMethod(cardNo);
-        Payment payment = findByDriver(paymentMethod.getDriver());
+    public Response exit(int cardNo, int terminalId) {
+        Response paymentMethodResponse = getPaymentMethod(cardNo);
+        if (paymentMethodResponse.isAction()) {
+            PaymentMethod paymentMethod = (PaymentMethod) paymentMethodResponse.getData();
 
-        if (payment.getId() > 0) {
-            payment.setPaymentMethod(cardNo);
-            payment.setExitTerminal(terminalId);
+            Response paymentResponse = findByDriver(paymentMethod.getDriver());
 
-            restTemplate.put("http://payment/services/payments", payment);
-            payment = restTemplate.getForObject("http://payment/services/payments/" + payment.getId(), Payment.class);
+            if (paymentResponse.isAction()) {
+                Payment payment = (Payment) paymentResponse.getData();
+                payment.setPaymentMethod(cardNo);
+                payment.setExitTerminal(terminalId);
 
-            PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Exit Highway - Thank you Come Again"
-                    , payment.getDriver()
-                    , payment.getExitTerminal()
-                    , this);
-            paymentEmailSender.start();
+                ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                        "http://payment/services/payments"
+                        , HttpMethod.PUT
+                        , AccessToken.getHttpEntity(payment)
+                        , Response.class);
 
+                Response response = responseEntity.getBody();
+                if (response.isAction()) {
+                    payment = (Payment) response.getData();
+                    PaymentEmailSender paymentEmailSender = new PaymentEmailSender(
+                            "Exit Highway - Thank you Come Again"
+                            , payment.getDriver()
+                            , payment.getExitTerminal()
+                            , this);
+                    paymentEmailSender.start();
+                } else
+                    return response;
+            }
+            return paymentResponse;
+        } else {
+            return paymentMethodResponse;
         }
-        return payment;
     }
 
     @Override
@@ -85,24 +141,37 @@ public class PaymentServiceImpl implements PaymentService {
         return null;
     }
 
-    private PaymentMethod getPaymentMethod(int cardNo) {
-        return restTemplate.getForObject("http://payment/services/payment-method/" + cardNo, PaymentMethod.class);
+    private Response getPaymentMethod(int cardNo) {
+        ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                "http://payment/services/payment-method/" + cardNo
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Response.class);
+        return responseEntity.getBody();
     }
 
     private void updatePaymentMethod(PaymentMethod paymentMethod) {
-        restTemplate.put("http://payment/services/payment-method/", paymentMethod);
+        restTemplate.put(
+                "http://payment/services/payment-method/"
+                , HttpMethod.PUT
+                , AccessToken.getHttpEntity(paymentMethod)
+                , PaymentMethod.class);
     }
 
-    private Payment findByDriver(int driver) {
-        return restTemplate.getForObject("http://payment/services/payments/driver/" + driver, Payment.class);
-
+    private Response findByDriver(int driver) {
+        ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                "http://payment/services/payments/driver/" + driver
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Response.class);
+        return responseEntity.getBody();
     }
 
     public void sendEmail(String subject, int driverId, int terminalId) {
 
         Driver driver = driverService.findById(driverId);
 
-        Vehicle vehicle = vehicleService.findById(driver.getActiveVehicle());
+        Response vehicleResponse = vehicleService.findById(driver.getActiveVehicle());
 
         Terminal terminal = locationService.findTerminalById(terminalId);
 
@@ -113,7 +182,7 @@ public class PaymentServiceImpl implements PaymentService {
         email.setSubject(subject);
         email.setMessage(emailBody(
                 driver.getFName() + " " + driver.getLName()
-                , vehicle.getVehicleNo()
+                , ((Vehicle) vehicleResponse.getData()).getVehicleNo()
                 , location.getDescription()
                 , terminal.getName() + " - " + (terminal.getTerminalType() == 0 ? "Entrance" : "Exit")
         ));

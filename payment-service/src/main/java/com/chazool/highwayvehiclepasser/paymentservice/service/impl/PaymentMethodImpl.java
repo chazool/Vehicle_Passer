@@ -1,6 +1,8 @@
 package com.chazool.highwayvehiclepasser.paymentservice.service.impl;
 
 import com.chazool.highwayvehiclepasser.model.exception.InvalidIdException;
+import com.chazool.highwayvehiclepasser.model.exception.PaymentMethodNotFoundException;
+import com.chazool.highwayvehiclepasser.model.exception.PaymentNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentMethodRepository;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentRepository;
@@ -53,9 +55,12 @@ public class PaymentMethodImpl implements PaymentMethodService {
     }
 
     @Override
-    public PaymentMethod findById(int id) {
+    public PaymentMethod findById(int id) throws PaymentNotFoundException {
         Optional<PaymentMethod> optionalPaymentMethod = paymentMethodRepository.findById(id);
-        return optionalPaymentMethod.get();
+        if (optionalPaymentMethod.isPresent())
+            return optionalPaymentMethod.get();
+        else
+            throw new PaymentMethodNotFoundException("Invalid Card");
     }
 
     @Override

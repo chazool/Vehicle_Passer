@@ -42,13 +42,14 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle findById(int id) throws VehicleNotFoundException {
-        Vehicle vehicle = restTemplate.getForObject("http://driver/services/vehicles/" + id, Vehicle.class);
-        if (vehicle.getId() <= 0 || vehicle.getId() != id) {
-            throw new VehicleNotFoundException("Invalid Vehicle");
-        }
+    public Response findById(int id) throws VehicleNotFoundException {
 
-        return vehicle;
+        ResponseEntity<Response> responseEntity = restTemplate.exchange(
+                "http://driver/services/vehicles/" + id
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Response.class);
+        return responseEntity.getBody();
     }
 
     @Override

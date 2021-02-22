@@ -24,5 +24,7 @@ public class Reload {
     private LocalDateTime dateTime;
     private boolean isActive;
 
-
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime != null ? LocalDateTime.parse(dateTime) : null;
+    }
 }

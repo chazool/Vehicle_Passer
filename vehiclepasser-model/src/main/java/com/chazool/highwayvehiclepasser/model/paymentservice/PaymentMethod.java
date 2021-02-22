@@ -1,5 +1,6 @@
 package com.chazool.highwayvehiclepasser.model.paymentservice;
 
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -21,12 +22,18 @@ public class PaymentMethod {
     private int id;
     private int driver;
     private BigDecimal balanceAmount;
+
     private LocalDateTime issueDate;
+
     private LocalDateTime closeDate;
     private boolean isActive;
 
 
+    public void setIssueDate(String issueDate) {
+        this.issueDate = closeDate != null ? LocalDateTime.parse(issueDate) : null;
+    }
 
-
-
+    public void setCloseDate(String closeDate) {
+        this.closeDate = closeDate != null ? LocalDateTime.parse(closeDate) : null;
+    }
 }

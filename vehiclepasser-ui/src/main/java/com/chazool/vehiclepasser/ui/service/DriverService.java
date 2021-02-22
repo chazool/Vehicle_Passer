@@ -9,9 +9,9 @@ public interface DriverService {
 
     Response save(Driver driver);
 
-    Driver update(Driver driver);
+    Response update(Driver driver);
 
-    Driver setActiveVehicle(int driverId, int activeVehicleId);
+    Response setActiveVehicle(int activeVehicleId);
 
     Driver findById(int id);
 

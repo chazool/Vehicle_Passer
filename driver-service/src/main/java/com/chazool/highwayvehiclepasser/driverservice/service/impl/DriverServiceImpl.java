@@ -40,12 +40,18 @@ public class DriverServiceImpl implements DriverService {
 
 
     @Override
-    public Driver save(Driver driver, String authorization) throws InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
+    public Driver save(Driver driver, String authorization)
+            throws InvalidEmailException, InvalidPasswordException
+            , InvalidNameException, InvalidDrivingLicenseException {
 
         isValid(driver);
+        if (driver.getPassword().trim().equals(null) || driver.getPassword().trim().equals("")
+                || driver.getPassword().trim().length() <= 5) {
+            throw new InvalidEmailException("Invalid Password");
+        }
         driver.setActive(true);
 
-        driver.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+        driver.setRegistrationDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
 
         try {
             driver = driverRepository.save(driver);
@@ -58,7 +64,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver update(Driver driver) throws InvalidIdException, InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
+    public Driver update(Driver driver)
+            throws InvalidIdException, InvalidEmailException, InvalidPasswordException
+            , InvalidNameException, InvalidDrivingLicenseException {
 
         findById(driver.getId());
         isValid(driver);
@@ -113,10 +121,6 @@ public class DriverServiceImpl implements DriverService {
         if (Pattern.compile("^(.+)@(.+)$").matcher(driver.getEmail()).matches() == false) {
             throw new InvalidEmailException("Invalid Email Address");
         }
-        if (driver.getPassword().trim().equals(null) || driver.getPassword().trim().equals("")
-                || driver.getPassword().trim().length() <= 5) {
-            throw new InvalidEmailException("Invalid Password");
-        }
         if (driver.getDLicenseNo().trim().equals(null) || driver.getDLicenseNo().trim().equals("")
                 || driver.getDLicenseNo().trim().length() < 9) {
             new InvalidDrivingLicenseException("Invalid Driving Licence ");
@@ -130,7 +134,7 @@ public class DriverServiceImpl implements DriverService {
 
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setDriver(driver.getId());
-        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
         paymentMethod.setBalanceAmount(new BigDecimal("0.00"));
         paymentMethod.setActive(true);
 

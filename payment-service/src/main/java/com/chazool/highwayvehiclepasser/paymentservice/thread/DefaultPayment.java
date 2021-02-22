@@ -11,10 +11,12 @@ public class DefaultPayment extends Thread {
 
     private PaymentService paymentService;
     private Payment payment;
+    private String authorization;
 
     public DefaultPayment(Payment payment, PaymentService paymentService) {
         this.payment = payment;
         this.paymentService = paymentService;
+        this.authorization = authorization;
     }
 
     @Override

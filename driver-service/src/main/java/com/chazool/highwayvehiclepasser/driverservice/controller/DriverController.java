@@ -37,9 +37,20 @@ public class DriverController {
 
 
     @PutMapping
-    public Driver update(@RequestBody Driver driver)
-            throws InvalidIdException, InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
-        return driverService.update(driver);
+    public Response update(@RequestBody Driver driver)
+            throws InvalidIdException, InvalidEmailException, InvalidNameException, InvalidDrivingLicenseException {
+        try {
+            driver = driverService.update(driver);
+            return Response.success(driver);
+        } catch (InvalidEmailException invalidEmailException) {
+            return Response.fail(invalidEmailException.getMessage());
+        } catch (InvalidNameException invalidNameException) {
+            return Response.fail(invalidNameException.getMessage());
+        } catch (InvalidDrivingLicenseException invalidDrivingLicenseException) {
+            return Response.fail(invalidDrivingLicenseException.getMessage());
+        } catch (InvalidIdException invalidIdException) {
+            return Response.fail(invalidIdException.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/{id}")

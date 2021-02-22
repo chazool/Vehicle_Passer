@@ -32,4 +32,7 @@ public class Driver {
     private int activeVehicle;
     private String username;
 
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate != null ? LocalDateTime.parse(registrationDate) : null;
+    }
 }

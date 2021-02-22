@@ -10,7 +10,7 @@ public interface VehicleService {
 
     Response save(Vehicle vehicle);
 
-    Vehicle findById(int id);
+    Response findById(int id);
 
     List<Vehicle> finAll();
 

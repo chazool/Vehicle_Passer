@@ -2,8 +2,10 @@ package com.chazool.vehiclepasser.ui.service.impl;
 
 import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,13 +21,23 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<Location> findAllLocations() {
-        ResponseEntity<Location[]> locations = restTemplate.getForEntity("http://transsaction/services/locations/", Location[].class);
+
+        ResponseEntity<Location[]> locations = restTemplate.exchange(
+                "http://transsaction/services/locations/"
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Location[].class);
         return Arrays.asList(locations.getBody());
     }
 
     @Override
     public List<Terminal> findTerminal(int locationId) {
-        ResponseEntity<Terminal[]> terminals = restTemplate.getForEntity("http://transsaction/services/terminal/location/" + locationId, Terminal[].class);
+
+        ResponseEntity<Terminal[]> terminals = restTemplate.exchange(
+                "http://transsaction/services/terminal/location/" + locationId
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Terminal[].class);
         return Arrays.asList(terminals.getBody());
     }
 

@@ -1,12 +1,16 @@
 package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
+import com.chazool.highwayvehiclepasser.model.exception.PaymentNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
+import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("services/payments")
@@ -16,22 +20,32 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping
-    public Payment enter(@RequestBody Payment payment) {
-        return paymentService.enter(payment.getDriver(), payment.getEntranceTerminal());
+    public Response enter(@RequestBody Payment payment) {
+        return Response.success(paymentService.enter(payment.getDriver(), payment.getEntranceTerminal()));
     }
 
     @PutMapping
-    Payment exit(@RequestBody Payment payment) {
-        return paymentService.exit(payment.getDriver(), payment.getExitTerminal());
+    public Response exit(@RequestBody Payment payment) {
+
+        try {
+            return Response.success(paymentService.exit(payment.getDriver(), payment.getExitTerminal()));
+        } catch (PaymentNotFoundException paymentNotFoundException) {
+            return Response.fail(paymentNotFoundException.getMessage());
+        }
     }
 
     @GetMapping(value = "/driver/{driverId}")
-    Payment findByDriver(@PathVariable int driverId) {
-        return paymentService.findDriverNotCompletePaymentByDriver(driverId);
+    public Response findByDriver(@PathVariable int driverId) {
+        try {
+            Payment payment = paymentService.findDriverNotCompletePaymentByDriver(driverId);
+            return Response.success(payment);
+        } catch (PaymentNotFoundException paymentNotFoundException) {
+            return Response.fail(paymentNotFoundException.getMessage());
+        }
     }
 
     @GetMapping(value = "{id}")
-    Payment findById(@PathVariable int id) {
+    public Payment findById(@PathVariable int id) {
         return paymentService.findById(id);
     }
 

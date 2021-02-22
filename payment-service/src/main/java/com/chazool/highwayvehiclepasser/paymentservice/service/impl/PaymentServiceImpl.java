@@ -5,23 +5,28 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Route;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
+import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentRepository;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
 import com.chazool.highwayvehiclepasser.paymentservice.thread.DefaultPayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -42,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment();
         payment.setDriver(driver.getId());
         payment.setVehicle(driver.getActiveVehicle());
-        payment.setEntranceDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+        payment.setEntranceDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
         payment.setEntranceTerminal(entranceTerminal);
 
         payment = update(payment);
@@ -66,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
             //Update Object
             payment.setCharge(payment.getCharge().add(route.getFee()));
             payment.setPaymentMethod(paymentMethod.getId());
-            payment.setExitDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+            payment.setExitDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
             payment.setExitTerminal(exitTerminal);
             payment.setComplete(true);
 
@@ -87,9 +92,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment findDriverNotCompletePaymentByDriver(int driver) {
+    public Payment findDriverNotCompletePaymentByDriver(int driver) throws PaymentNotFoundException {
         Optional<Payment> payment = paymentRepository.findByDriverAndIsComplete(driver, false);
-        return payment.isPresent() ? payment.get() : new Payment();
+        if (payment.isPresent())
+            return payment.get();
+        else
+            throw new PaymentNotFoundException("Payment Not Found.!");
     }
 
     @Override
@@ -109,28 +117,60 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     private Driver getDriver(int driverId) throws DriverNotFoundException {
-        return restTemplate.getForObject("http://driver/services/drivers/" + driverId, Driver.class);
 
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", AccessToken.getAccessToken());
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+
+        ResponseEntity<Driver> responseEntity = restTemplate.exchange("http://driver/services/drivers/" + driverId
+                , HttpMethod.GET
+                , httpEntity
+                , Driver.class);
+
+        return responseEntity.getBody();
     }
 
     private Route getRout(int entranceTerminal, int exitTerminal) {
-   /*     Route route = new Route();
-        route.setEntrance(entranceTerminal);
-        route.setExist(exitTerminal);
 
-        HttpEntity<Route> httpEntity = new HttpEntity<>(route);*/
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", AccessToken.getAccessToken());
+
+       /* Route route = new Route();
+        route.setEntrance(entranceTerminal);
+        route.setExist(exitTerminal);*/
+
+        HttpEntity<Route> httpEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<Route> routeResponseEntity
-                = restTemplate.getForEntity("http://transsaction/services/routs?entrance={entrance}&exit={exit}"
-                , Route.class, entranceTerminal, exitTerminal);
+                = restTemplate.exchange(
+                "http://transsaction/services/routs?entrance={entrance}&exit={exit}"
+                , HttpMethod.GET
+                , httpEntity
+                , Route.class
+                , entranceTerminal, exitTerminal);
 
         return routeResponseEntity.getBody();
     }
 
     public BigDecimal getVehicleCharge(int vehicleId) {
-        Vehicle vehicle = restTemplate.getForObject("http://driver/services/vehicles/" + vehicleId, Vehicle.class);
-        VehicleType vehicleType = restTemplate.getForObject("http://transsaction/services/vehicle-type/" + vehicle.getVehicleType(), VehicleType.class);
-        return vehicleType.getCharge();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", AccessToken.getAccessToken());
+        HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<Vehicle> vehicleResponseEntity = restTemplate.exchange(
+                "http://driver/services/vehicles/" + vehicleId
+                , HttpMethod.GET
+                , httpEntity
+                , Vehicle.class);
+
+        ResponseEntity<VehicleType> vehicleTypeResponseEntity = restTemplate.exchange(
+                "http://transsaction/services/vehicle-type/" + vehicleResponseEntity.getBody().getVehicleType()
+                , HttpMethod.GET
+                , httpEntity
+                , VehicleType.class);
+
+        return vehicleTypeResponseEntity.getBody().getCharge();
     }
 
 
