@@ -13,7 +13,7 @@ public class DefaultPayment extends Thread {
     private Payment payment;
     private String authorization;
 
-    public DefaultPayment(Payment payment, PaymentService paymentService) {
+    public DefaultPayment(Payment payment, PaymentService paymentService, String authorization) {
         this.payment = payment;
         this.paymentService = paymentService;
         this.authorization = authorization;
@@ -21,7 +21,7 @@ public class DefaultPayment extends Thread {
 
     @Override
     public void run() {
-        BigDecimal defaultVehicleCharge = paymentService.getVehicleCharge(payment.getVehicle());
+        BigDecimal defaultVehicleCharge = paymentService.getVehicleCharge(payment.getVehicle(), authorization);
         payment.setCharge(defaultVehicleCharge);
         paymentService.update(payment);
     }

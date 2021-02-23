@@ -42,7 +42,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Response findById(int id) throws VehicleNotFoundException {
+    public synchronized Response findById(int id) throws VehicleNotFoundException {
 
         ResponseEntity<Response> responseEntity = restTemplate.exchange(
                 "http://driver/services/vehicles/" + id

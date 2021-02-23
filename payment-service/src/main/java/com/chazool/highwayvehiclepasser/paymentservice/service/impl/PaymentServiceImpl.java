@@ -13,6 +13,7 @@ import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentReposit
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
 import com.chazool.highwayvehiclepasser.paymentservice.thread.DefaultPayment;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment enter(int driverId, int entranceTerminal) {
+
         Driver driver = getDriver(driverId);
 
         Payment payment = new Payment();
@@ -52,7 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = update(payment);
 
-        DefaultPayment defaultPayment = new DefaultPayment(payment, this);
+        DefaultPayment defaultPayment = new DefaultPayment(payment, this, AccessToken.getAccessToken());
         defaultPayment.start();
 
         return payment;
@@ -152,25 +154,30 @@ public class PaymentServiceImpl implements PaymentService {
         return routeResponseEntity.getBody();
     }
 
-    public BigDecimal getVehicleCharge(int vehicleId) {
+    public BigDecimal getVehicleCharge(int vehicleId, String authorization) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", AccessToken.getAccessToken());
+        System.out.println(authorization);
+        httpHeaders.add("Authorization", authorization);
+
         HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<Vehicle> vehicleResponseEntity = restTemplate.exchange(
+        ResponseEntity<Response> vehicleResponseEntity = restTemplate.exchange(
                 "http://driver/services/vehicles/" + vehicleId
                 , HttpMethod.GET
                 , httpEntity
-                , Vehicle.class);
+                , Response.class);
+
+        Vehicle vehicle = new ObjectMapper().convertValue(vehicleResponseEntity.getBody().getData(), Vehicle.class);
 
         ResponseEntity<VehicleType> vehicleTypeResponseEntity = restTemplate.exchange(
-                "http://transsaction/services/vehicle-type/" + vehicleResponseEntity.getBody().getVehicleType()
+                "http://transsaction/services/vehicle-type/" + vehicle.getVehicleType()
                 , HttpMethod.GET
                 , httpEntity
                 , VehicleType.class);
 
         return vehicleTypeResponseEntity.getBody().getCharge();
+
     }
 
 

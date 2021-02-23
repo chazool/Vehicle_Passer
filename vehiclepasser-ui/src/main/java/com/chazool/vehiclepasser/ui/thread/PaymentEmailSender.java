@@ -12,19 +12,20 @@ public class PaymentEmailSender extends Thread {
     private int driver;
     private int terminal;
     private PaymentService paymentService;
+    private String authorization;
 
 
-    public PaymentEmailSender(String subject, int driver, int terminal, PaymentService paymentService) {
+    public PaymentEmailSender(String subject, int driver, int terminal, PaymentService paymentService, String authorization) {
         this.subject = subject;
         this.driver = driver;
         this.terminal = terminal;
         this.paymentService = paymentService;
-
+        this.authorization = authorization;
     }
 
 
     @Override
     public void run() {
-        paymentService.sendEmail(subject, driver, terminal);
+        paymentService.sendEmail(subject, driver, terminal,authorization);
     }
 }

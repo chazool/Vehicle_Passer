@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Access;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,10 @@ public class DriverController {
 
     @GetMapping
     public List<Driver> fetchByAll() {
+
+
+
+
         return driverService.findByAll();
     }
 

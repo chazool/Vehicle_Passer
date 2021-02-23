@@ -11,7 +11,7 @@ public interface PaymentService {
 
     Payment isSendEmail(Payment payment);
 
-    void sendEmail(String subject, int driverId, int terminalId);
+    void sendEmail(String subject, int driverId, int terminalId, String authorization);
 
 
 }

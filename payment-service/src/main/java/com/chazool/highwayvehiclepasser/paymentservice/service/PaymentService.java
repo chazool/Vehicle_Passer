@@ -20,7 +20,7 @@ public interface PaymentService {
 
     Payment isSendEmail(Payment payment);
 
-    BigDecimal getVehicleCharge(int vehicleId);
+    BigDecimal getVehicleCharge(int vehicleId,String authorization);
 
     Payment update(Payment payment);
 

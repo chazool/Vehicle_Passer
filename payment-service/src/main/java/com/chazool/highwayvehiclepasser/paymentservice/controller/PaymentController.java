@@ -21,6 +21,8 @@ public class PaymentController {
 
     @PostMapping
     public Response enter(@RequestBody Payment payment) {
+        System.out.println(AccessToken.getAccessToken());
+
         return Response.success(paymentService.enter(payment.getDriver(), payment.getEntranceTerminal()));
     }
 

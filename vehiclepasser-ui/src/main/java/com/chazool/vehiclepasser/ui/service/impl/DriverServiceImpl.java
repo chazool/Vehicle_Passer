@@ -104,7 +104,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver findById(int id) {
+    public synchronized Driver findById(int id) {
 
         ResponseEntity<Driver> responseEntity = restTemplate.exchange(
                 "http://driver/services/drivers/" + id

@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -82,7 +84,8 @@ public class PaymentServiceImpl implements PaymentService {
                             PaymentEmailSender paymentEmailSender = new PaymentEmailSender("Entering Highway - Safe Drive"
                                     , payment.getDriver()
                                     , payment.getEntranceTerminal()
-                                    , this);
+                                    , this
+                                    , AccessToken.getAccessToken());
                             paymentEmailSender.start();
                         }
                         return paymentResponse;
@@ -125,7 +128,8 @@ public class PaymentServiceImpl implements PaymentService {
                             "Exit Highway - Thank you Come Again"
                             , payment.getDriver()
                             , payment.getExitTerminal()
-                            , this);
+                            , this
+                            , AccessToken.getAccessToken());
                     paymentEmailSender.start();
                 } else
                     return response;
@@ -167,26 +171,47 @@ public class PaymentServiceImpl implements PaymentService {
         return responseEntity.getBody();
     }
 
-    public void sendEmail(String subject, int driverId, int terminalId) {
+    public void sendEmail(String subject, int driverId, int terminalId, String authorization) {
 
-        Driver driver = driverService.findById(driverId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", authorization);
+        HttpEntity httpEntity = new HttpEntity(httpHeaders);
 
-        Response vehicleResponse = vehicleService.findById(driver.getActiveVehicle());
 
-        Terminal terminal = locationService.findTerminalById(terminalId);
+        ResponseEntity<Driver> responseEntity = restTemplate.exchange(
+                "http://driver/services/drivers/" + driverId, HttpMethod.GET, httpEntity, Driver.class);
 
-        Location location = locationService.findLocationById(terminal.getLocationId());
+        Driver driver = responseEntity.getBody();
+
+        ResponseEntity<Response> VehicleResponseEntity = restTemplate.exchange(
+                "http://driver/services/vehicles/" + driver.getActiveVehicle(), HttpMethod.GET, httpEntity, Response.class);
+
+        Response vehicleResponse = VehicleResponseEntity.getBody();
+
+
+        ResponseEntity<Terminal> terminalResponseEntity = restTemplate.exchange(
+                "http://transsaction/services/terminal/" + terminalId, HttpMethod.GET, httpEntity, Terminal.class);
+
+        Terminal terminal = terminalResponseEntity.getBody();
+
+        ResponseEntity<Location> locationResponseEntity = restTemplate.exchange(
+                "http://transsaction/services/locations/" + terminal.getLocationId(), HttpMethod.GET, httpEntity, Location.class);
+
+        Location location = locationResponseEntity.getBody();
 
         Email email = new Email();
         email.setEmail(driver.getEmail());
         email.setSubject(subject);
         email.setMessage(emailBody(
                 driver.getFirstName() + " " + driver.getLastName()
-                , ((Vehicle) vehicleResponse.getData()).getVehicleNo()
+                , new ObjectMapper().convertValue(vehicleResponse.getData(), Vehicle.class).getVehicleNo()
                 , location.getDescription()
                 , terminal.getName() + " - " + (terminal.getTerminalType() == 0 ? "Entrance" : "Exit")
         ));
-        emailSenderService.send(email);
+
+        ResponseEntity<Email> emailResponseEntity = restTemplate.exchange(
+                "http://email/services/emails", HttpMethod.POST, new HttpEntity<>(email, httpHeaders), Email.class);
+
     }
 
     private String emailBody(String driver, String vehicle, String location, String terminal) {

@@ -4,6 +4,7 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.PaymentMethodNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
+import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,9 @@ public class PaymentMethodController {
 
     @GetMapping
     public List<PaymentMethod> fetchAll() {
+
+
+
         return paymentMethodService.findAll();
     }
 
