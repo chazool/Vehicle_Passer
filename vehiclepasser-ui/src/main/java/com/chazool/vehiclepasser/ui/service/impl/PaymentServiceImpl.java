@@ -181,7 +181,7 @@ public class PaymentServiceImpl implements PaymentService {
         email.setEmail(driver.getEmail());
         email.setSubject(subject);
         email.setMessage(emailBody(
-                driver.getFName() + " " + driver.getLName()
+                driver.getFirstName() + " " + driver.getLastName()
                 , ((Vehicle) vehicleResponse.getData()).getVehicleNo()
                 , location.getDescription()
                 , terminal.getName() + " - " + (terminal.getTerminalType() == 0 ? "Entrance" : "Exit")

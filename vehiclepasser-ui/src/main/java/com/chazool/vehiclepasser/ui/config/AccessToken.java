@@ -1,7 +1,9 @@
 package com.chazool.vehiclepasser.ui.config;
 
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,14 @@ public class AccessToken {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", getAccessToken());
         HttpEntity httpEntity = new HttpEntity(body, httpHeaders);
+        return httpEntity;
+    }
+
+    public static HttpEntity<?> getHttpEntity(JSONObject body) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("Authorization", getAccessToken());
+        HttpEntity httpEntity = new HttpEntity(body.toString(), httpHeaders);
         return httpEntity;
     }
 

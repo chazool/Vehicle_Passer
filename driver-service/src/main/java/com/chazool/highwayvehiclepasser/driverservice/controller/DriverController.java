@@ -39,7 +39,9 @@ public class DriverController {
     @PutMapping
     public Response update(@RequestBody Driver driver)
             throws InvalidIdException, InvalidEmailException, InvalidNameException, InvalidDrivingLicenseException {
+        // System.out.println(driver1);
         try {
+            //   Driver driver = new Driver();
             driver = driverService.update(driver);
             return Response.success(driver);
         } catch (InvalidEmailException invalidEmailException) {

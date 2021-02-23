@@ -90,7 +90,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver findByDLicenseNo(String dLicenseNo) {
-        Optional<Driver> driver = driverRepository.findBydLicenseNo(dLicenseNo);
+        Optional<Driver> driver = driverRepository.findByDrivingLicenseNo(dLicenseNo);
         return driver.isPresent() ? driver.get() : new Driver();
     }
 
@@ -114,15 +114,15 @@ public class DriverServiceImpl implements DriverService {
 
     private void isValid(Driver driver) throws InvalidPasswordException, InvalidEmailException {
 
-        if (driver.getFName().trim().toString().equals(null) || driver.getFName().trim().equals(""))
+        if (driver.getFirstName().trim().toString().equals(null) || driver.getFirstName().trim().equals(""))
             throw new InvalidNameException("Invalid First Name");
-        if (driver.getLName().trim().toString().equals(null) || driver.getLName().trim().equals(""))
+        if (driver.getLastName().trim().toString().equals(null) || driver.getLastName().trim().equals(""))
             throw new InvalidNameException("Invalid Last Name");
         if (Pattern.compile("^(.+)@(.+)$").matcher(driver.getEmail()).matches() == false) {
             throw new InvalidEmailException("Invalid Email Address");
         }
-        if (driver.getDLicenseNo().trim().equals(null) || driver.getDLicenseNo().trim().equals("")
-                || driver.getDLicenseNo().trim().length() < 9) {
+        if (driver.getDrivingLicenseNo().trim().equals(null) || driver.getDrivingLicenseNo().trim().equals("")
+                || driver.getDrivingLicenseNo().trim().length() < 9) {
             new InvalidDrivingLicenseException("Invalid Driving Licence ");
         }
 

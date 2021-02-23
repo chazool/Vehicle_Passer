@@ -77,7 +77,7 @@ public class DriverController {
 
         Response response = driverService.update(driver);
         model.addAttribute("response", response);
-        model.addAttribute("user", AccessToken.getUsername());
+        model.addAttribute("username", AccessToken.getUsername());
         model.addAttribute("driver", driver);
 
         return "driver-profile";

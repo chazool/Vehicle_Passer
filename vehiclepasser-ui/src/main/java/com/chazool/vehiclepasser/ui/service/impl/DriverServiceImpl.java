@@ -10,6 +10,7 @@ import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.UserService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.security.oauth2.client.AccessTokenContextRelay;
 import org.springframework.http.*;
@@ -75,7 +76,7 @@ public class DriverServiceImpl implements DriverService {
         ResponseEntity<Response> responseEntity = restTemplate.exchange(
                 "http://driver/services/drivers/"
                 , HttpMethod.PUT
-                , AccessToken.getHttpEntity(driver)
+                , AccessToken.getHttpEntity(new JSONObject(driver))
                 , Response.class);
 
         return responseEntity.getBody();
@@ -89,10 +90,11 @@ public class DriverServiceImpl implements DriverService {
         if (vehicleResponse.isAction()) {
             Driver driver = findByUsername(AccessToken.getUsername());
             driver.setActiveVehicle(activeVehicleId);
+
             ResponseEntity<Response> responseEntity = restTemplate.exchange(
                     "http://driver/services/drivers/"
                     , HttpMethod.PUT
-                    , AccessToken.getHttpEntity(driver)
+                    , AccessToken.getHttpEntity(new JSONObject(driver))
                     , Response.class);
 
             return responseEntity.getBody();

@@ -127,12 +127,12 @@
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" th:field="*{fName}" class="form-control " id="fName"
+                                        <input type="text" th:field="*{firstName}" class="form-control " id="fName"
                                                placeholder="First Name" required>
 
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="text" th:field="*{lName}" class="form-control " id="lName"
+                                        <input type="text" th:field="*{lastName}" class="form-control " id="lName"
                                                placeholder="Last Name" required>
                                     </div>
                                 </div>
@@ -152,7 +152,7 @@
                                 <!-- Row 3-->
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input th:field="*{dLicenseNo}" type="text" class="form-control "
+                                        <input th:field="*{drivingLicenseNo}" type="text" class="form-control "
                                                id="dLicenseNo"
                                                placeholder="Driving License Number " maxlength="9" pattern=".{9}"
                                                required>
@@ -163,13 +163,6 @@
                                             <option value="m">Male</option>
                                             <option value="f">Female</option>
                                         </select>
-                                    </div>
-                                </div>
-
-                                <!-- Row 5 error-->
-                                <div th:unless="${error==null}" class="form-group row">
-                                    <div class="col-sm-12 mb-3 mb-sm-0">
-                                        <span class="text-danger" th:text="${error}"></span>
                                     </div>
                                 </div>
                                 <button class="btn btn-success btn-user btn-block" type="submit">
@@ -250,8 +243,8 @@
     console.log(response);
     if (response.action === true) {
         swal({
-            title: "Registration complete successfully.!",
-            text: "please check your email for a message with card number",
+            title: "Update complete successfully.!",
+            // text: "please check your email for a message with card number",
             icon: "success",
             timer: 3000
         });

@@ -24,7 +24,7 @@ public class PaymentMethodImpl implements PaymentMethodService {
     @Override
     public PaymentMethod save(PaymentMethod paymentMethod) {
         paymentMethod.setActive(true);
-        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
         return paymentMethodRepository.save(paymentMethod);
     }
 
@@ -46,7 +46,7 @@ public class PaymentMethodImpl implements PaymentMethodService {
         if (optionalPaymentMethod.isPresent()) {
             paymentMethod = optionalPaymentMethod.get();
             paymentMethod.setActive(false);
-            paymentMethod.setCloseDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")));
+            paymentMethod.setCloseDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
             return paymentMethodRepository.save(paymentMethod);
         } else
             throw new InvalidIdException("Invalid PaymentMethod Id");

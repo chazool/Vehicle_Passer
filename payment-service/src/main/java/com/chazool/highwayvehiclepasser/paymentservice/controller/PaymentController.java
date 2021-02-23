@@ -46,6 +46,7 @@ public class PaymentController {
 
     @GetMapping(value = "{id}")
     public Payment findById(@PathVariable int id) {
+
         return paymentService.findById(id);
     }
 
