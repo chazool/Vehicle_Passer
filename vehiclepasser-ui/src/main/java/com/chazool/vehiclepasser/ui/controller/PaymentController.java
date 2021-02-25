@@ -6,6 +6,7 @@ import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import com.chazool.vehiclepasser.ui.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class PaymentController {
 
 
     @PostMapping(value = "/entrance")
+
     public String entrance(@ModelAttribute Payment payment, Model model) {
         try {
             Response response = paymentService.enter(payment.getPaymentMethod(), payment.getEntranceTerminal());
