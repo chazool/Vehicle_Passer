@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -104,26 +105,30 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Response exit(int cardNo, int terminalId) {
+        ObjectMapper objectMapper = new ObjectMapper();
         Response paymentMethodResponse = getPaymentMethod(cardNo);
         if (paymentMethodResponse.isAction()) {
-            PaymentMethod paymentMethod = (PaymentMethod) paymentMethodResponse.getData();
+            PaymentMethod paymentMethod = objectMapper.convertValue(paymentMethodResponse.getData(), PaymentMethod.class);
 
             Response paymentResponse = findByDriver(paymentMethod.getDriver());
 
             if (paymentResponse.isAction()) {
-                Payment payment = (Payment) paymentResponse.getData();
+                Payment payment = objectMapper.convertValue(paymentResponse.getData(), Payment.class);
                 payment.setPaymentMethod(cardNo);
                 payment.setExitTerminal(terminalId);
+
+                JSONObject jsonObject = new JSONObject(payment);
+                System.out.println(jsonObject.toString());
 
                 ResponseEntity<Response> responseEntity = restTemplate.exchange(
                         "http://payment/services/payments"
                         , HttpMethod.PUT
-                        , AccessToken.getHttpEntity(payment)
+                        , AccessToken.getHttpEntity(jsonObject)
                         , Response.class);
 
                 Response response = responseEntity.getBody();
                 if (response.isAction()) {
-                    payment = (Payment) response.getData();
+                    payment = objectMapper.convertValue(response.getData(), Payment.class);
                     PaymentEmailSender paymentEmailSender = new PaymentEmailSender(
                             "Exit Highway - Thank you Come Again"
                             , payment.getDriver()

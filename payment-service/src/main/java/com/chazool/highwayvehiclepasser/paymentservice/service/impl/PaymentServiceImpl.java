@@ -145,7 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         ResponseEntity<Route> routeResponseEntity
                 = restTemplate.exchange(
-                "http://transsaction/services/routs?entrance={entrance}&exit={exit}"
+                "http://transsaction/services/routs?entrance=" + entranceTerminal + "&exit=" + exitTerminal
                 , HttpMethod.GET
                 , httpEntity
                 , Route.class

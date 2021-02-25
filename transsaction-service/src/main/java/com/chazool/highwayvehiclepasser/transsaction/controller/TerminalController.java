@@ -35,12 +35,7 @@ public class TerminalController {
     }
 
     @GetMapping
-    public List<Terminal> findByAll() {
-        return terminalService.findByAll();
-    }
-
-    @GetMapping(value = "/location/{locationId}")
-    public List<Terminal> findByLocation(@PathVariable int locationId) {
-        return terminalService.findByLocation(locationId);
+    public List<Terminal> find(@RequestParam int location, @RequestParam char terminalType) {
+        return terminalService.find(location, terminalType);
     }
 }

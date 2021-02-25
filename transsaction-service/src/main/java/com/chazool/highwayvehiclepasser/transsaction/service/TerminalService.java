@@ -18,7 +18,9 @@ public interface TerminalService {
 
     List<Terminal> findByAll();
 
-    List<Terminal> findByLocation(int locationId);
+    List<Terminal> find(int locationId);
+
+    List<Terminal> find(int locationId, char terminalType);
 
 
 }

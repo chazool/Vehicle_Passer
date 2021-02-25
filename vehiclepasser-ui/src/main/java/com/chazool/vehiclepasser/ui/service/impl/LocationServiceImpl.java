@@ -31,10 +31,10 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Terminal> findTerminal(int locationId) {
+    public List<Terminal> findTerminal(int location, int terminalType) {
 
         ResponseEntity<Terminal[]> terminals = restTemplate.exchange(
-                "http://transsaction/services/terminal/location/" + locationId
+                "http://transsaction/services/terminal?location=" + location + "&terminalType=" + terminalType
                 , HttpMethod.GET
                 , AccessToken.getHttpEntity()
                 , Terminal[].class);

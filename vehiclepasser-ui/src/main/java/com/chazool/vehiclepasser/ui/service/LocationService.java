@@ -12,7 +12,7 @@ public interface LocationService {
 
     Location findLocationById(int id);
 
-    List<Terminal> findTerminal(int locationId);
+    List<Terminal> findTerminal(int location,int terminalType);
 
     Terminal findTerminalById(int id);
 

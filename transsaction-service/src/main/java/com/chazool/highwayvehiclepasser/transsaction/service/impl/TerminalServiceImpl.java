@@ -47,7 +47,12 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
-    public List<Terminal> findByLocation(int locationId) {
+    public List<Terminal> find(int locationId) {
         return terminalRepository.findByLocationId(locationId);
+    }
+
+    @Override
+    public List<Terminal> find(int locationId, char terminalType) {
+        return terminalRepository.findByLocationIdAndTerminalType(locationId, terminalType);
     }
 }

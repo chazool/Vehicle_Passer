@@ -126,25 +126,10 @@
                             </div>
                             <form action="#" th:action="@{/exit}" th:object="${payment}" method="post"
                                   class="user needs-validation" novalidate>
-                                <!-- Row 0-->
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select class="form-control" name="location" id="location" required>
-                                            <option value="">- Location -</option>
-                                            <option th:each="location: ${locations}" th:value="${location.id}"
-                                                    th:text="${location.description}"></option>
-                                        </select>
 
-                                    </div>
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select class="form-control" name="exitTerminal" id="terminal" required>
-                                            <option value="">- Terminal -</option>
-
-                                        </select>
-                                    </div>
+                                <input type="hidden" th:field="*{exitTerminal}">
 
 
-                                </div>
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-12 mb-3 mb-sm-0">
@@ -240,16 +225,6 @@
             timer: 3000
         });
     }
-
-    $("#location").change(function () {
-
-        $.getJSON(' location/terminal/' + $(this).val(), function (data, textStatus, jqXHR) {
-            $('#terminal').find('option').remove().end().append('<option value=""> - Location - </option>');
-            $.each(data, function (key, value) {
-                $("#terminal").append(new Option(value.name, value.id));
-            });
-        });
-    });
 
 
     (function () {

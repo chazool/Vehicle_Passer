@@ -5,15 +5,21 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+
+import java.util.Collection;
 
 public class AccessToken {
 
     public static synchronized String getAccessToken() {
         OAuth2AuthenticationDetails authenticationDetail =
                 (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
 
         return authenticationDetail.getTokenType().concat(" ").concat(authenticationDetail.getTokenValue());
     }
@@ -22,6 +28,20 @@ public class AccessToken {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (principal instanceof UserDetails) ?
                 ((UserDetails) principal).getUsername() : principal.toString();
+    }
+
+    public static void printAuth() {
+
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println(auth.getPrincipal());
+        System.out.println(auth.getCredentials().toString());
+        System.out.println(auth.getAuthorities().size());
+        System.out.println(auth.getDetails());
+
+
     }
 
     public static HttpEntity getHttpEntity() {

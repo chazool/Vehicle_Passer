@@ -6,6 +6,7 @@ import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import com.chazool.vehiclepasser.ui.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,6 +31,7 @@ public class PaymentController {
         return "entrance";
     }
 
+
     @PostMapping(value = "/entrance")
     public String entrance(@ModelAttribute Payment payment, Model model) {
         try {
@@ -39,6 +41,9 @@ public class PaymentController {
             model.addAttribute("response", lowBalanceException.getMessage());
         }
         setModel(model);
+        Payment payment1 = new Payment();
+        payment1.setEntranceTerminal(payment.getEntranceTerminal());
+        model.addAttribute("payment", payment1);
         return "entrance";
     }
 
@@ -56,13 +61,16 @@ public class PaymentController {
         Response response = paymentService.exit(payment.getPaymentMethod(), payment.getExitTerminal());
         model.addAttribute("response", response);
 
+        Payment payment1 = new Payment();
+        payment1.setExitTerminal(payment.getEntranceTerminal());
+        model.addAttribute("payment", payment1);
+
         setModel(model);
         return "exit";
     }
 
 
     private void setModel(Model model) {
-        model.addAttribute("payment", new Payment());
         model.addAttribute("locations", locationService.findAllLocations());
     }
 

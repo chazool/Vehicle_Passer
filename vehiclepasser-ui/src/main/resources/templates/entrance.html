@@ -127,24 +127,8 @@
                             </div>
                             <form action="#" th:action="@{/entrance}" th:object="${payment}" method="post"
                                   class="user needs-validation" novalidate>
-                                <!-- Row 0-->
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select class="form-control" name="location" id="location" required>
-                                            <option value="">- Location -</option>
-                                            <option th:each="location: ${locations}" th:value="${location.id}"
-                                                    th:text="${location.description}"></option>
-                                        </select>
 
-                                    </div>
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <select class="form-control" name="entranceTerminal" id="terminal" required>
-                                            <option value="">- Terminal -</option>
-
-                                        </select>
-
-                                    </div>
-                                </div>
+                                <input type="hidden" th:field="*{entranceTerminal}">
                                 <!-- Row 1-->
                                 <div class="form-group row">
                                     <div class="col-sm-12 mb-3 mb-sm-0">
@@ -229,18 +213,6 @@
 <script th:inline="javascript">
 
 
-    $("#location").change(function () {
-       // alert("aaaaaaa")
-        $.getJSON(' location/terminal/' + $(this).val(), function (data, textStatus, jqXHR) {
-            $('#terminal').find('option').remove().end().append('<option value=""> - Location - </option>');
-            $.each(data, function (key, value) {
-                $("#terminal").append(new Option(value.name, value.id));
-            });
-        });
-    });
-
-
-
     /*<![CDATA[*/
     var response = [[${response}]];
     //  alert(response);
@@ -262,7 +234,6 @@
     }
 
     /*]]>*/
-
 
 
     (function () {

@@ -8,4 +8,6 @@ import java.util.List;
 public interface TerminalRepository extends JpaRepository<Terminal, Integer> {
 
     List<Terminal> findByLocationId(int locationId);
+
+    List<Terminal> findByLocationIdAndTerminalType(int locationId, char terminalType);
 }
