@@ -28,8 +28,6 @@ public class PaymentController {
 
     @PutMapping
     public Response exit(@RequestBody Payment payment) {
-
-
         try {
             //    Payment payment = new Payment();
             return Response.success(paymentService.exit(payment.getDriver(), payment.getExitTerminal()));

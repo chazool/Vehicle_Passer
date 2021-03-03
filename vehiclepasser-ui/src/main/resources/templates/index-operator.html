@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -8,9 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <title> Vehicle</title>
+    <title> Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -19,6 +18,7 @@
 
     <!-- Custom styles for this template-->
     <link type="text/css" href="css/sb-admin-2.min.css" rel="stylesheet">
+
 
 </head>
 
@@ -71,11 +71,8 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
-
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
-
-
                     <div class="topbar-divider d-none d-sm-block"></div>
 
                     <!-- Nav Item - User Information -->
@@ -99,6 +96,7 @@
                             </a>
                         </div>
                     </li>
+
                 </ul>
 
             </nav>
@@ -109,74 +107,46 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Driver Profile</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                 </div>
-
                 <!-- Content Row -->
-                <!-- Nested Row within Card Body -->
+
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Update an Driver Account!</h1>
+                    <!-- Recharge -->
+                    <div class="col-xl-4 col-lg-5 align-self-center">
+
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <a href="/recharge" class="btn btn-lg btn-block btn-primary shadow-sm">
+                                    <i class="fas fa-money-check-alt fa-sm text-white-50"></i>
+                                    Recharge </a>
                             </div>
-                            <form action="#" th:action="@{/driver-profile}" th:object="${driver}" method="post"
-                                  class="user needs-validation" novalidate>
-                                <!-- Row 1-->
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" th:field="*{firstName}" class="form-control " id="fName"
-                                               placeholder="First Name" required>
+                        </div>
 
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="text" th:field="*{lastName}" class="form-control " id="lName"
-                                               placeholder="Last Name" required>
-                                    </div>
-                                </div>
-                                <!-- Row 2-->
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input th:field="*{email}" type="email" class="form-control" id="email"
-                                               placeholder="Email Address" required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input th:field="*{phoneNo}" onkeypress="return isNumberKey(event)"
-                                               maxlength="10"
-                                               type="text" class="form-control " id="phoneNo"
-                                               placeholder="Phone Number" pattern=".{10}" required>
-                                    </div>
-                                </div>
-                                <!-- Row 3-->
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input th:field="*{drivingLicenseNo}" type="text" class="form-control "
-                                               id="dLicenseNo"
-                                               placeholder="Driving License Number " maxlength="9" pattern=".{9}"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <select id="gender" th:field="*{gender}" name="gender" class="form-control"
-                                                required>
-                                            <option value="m">Male</option>
-                                            <option value="f">Female</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button class="btn btn-success btn-user btn-block" type="submit">
-                                    Update
-                                </button>
-                            </form>
-                            <hr>
 
+                    </div>
+                    <!-- Area Chart -->
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="myAreaChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
 
             </div>
             <!-- /.container-fluid -->
-
 
         </div>
         <!-- End of Main Content -->
@@ -235,47 +205,13 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"
+        integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw=="
+        crossorigin="anonymous"></script>
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var response = [[${response}]];
-    //  alert(response);
-    console.log(response);
-    if (response.action === true) {
-        swal({
-            title: "Update complete successfully.!",
-            // text: "please check your email for a message with card number",
-            icon: "success",
-            timer: 3000
-        });
-    } else {
-        swal({
-            title: "Check Again.!",
-            text: response.data,
-            icon: "error",
-            timer: 3000
-        });
-    }
 
-    /*]]>*/
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-
-            var forms = document.getElementsByClassName('needs-validation');
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>
+<!-- Page level custom scripts -->
+<script src="js/demo/chart-area-demo.js"></script>
 </body>
 
 </html>

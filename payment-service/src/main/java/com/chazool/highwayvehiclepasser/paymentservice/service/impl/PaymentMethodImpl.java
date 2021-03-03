@@ -34,8 +34,6 @@ public class PaymentMethodImpl implements PaymentMethodService {
             return paymentMethodRepository.save(paymentMethod);
         else
             throw new InvalidIdException("Invalid PaymentMethod Id");
-
-
     }
 
 
@@ -56,7 +54,7 @@ public class PaymentMethodImpl implements PaymentMethodService {
 
     @Override
     public PaymentMethod findById(int id) throws PaymentNotFoundException {
-        Optional<PaymentMethod> optionalPaymentMethod = paymentMethodRepository.findById(id);
+        Optional<PaymentMethod> optionalPaymentMethod = paymentMethodRepository.findByIdAndIsActive(id, true);
         if (optionalPaymentMethod.isPresent())
             return optionalPaymentMethod.get();
         else
@@ -74,7 +72,7 @@ public class PaymentMethodImpl implements PaymentMethodService {
     }
 
     @Override
-    public PaymentMethod updateBalance(int id, BigDecimal amount) {
+    public PaymentMethod updateBalance(int id, BigDecimal amount) throws PaymentMethodNotFoundException {
 
         PaymentMethod paymentMethod = findById(id);
         paymentMethod.setBalanceAmount(paymentMethod.getBalanceAmount().add(amount));

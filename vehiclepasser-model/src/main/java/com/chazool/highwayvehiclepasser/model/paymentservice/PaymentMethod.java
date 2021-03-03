@@ -30,7 +30,7 @@ public class PaymentMethod {
 
 
     public void setIssueDate(String issueDate) {
-        this.issueDate = closeDate != null ? LocalDateTime.parse(issueDate) : null;
+        this.issueDate = issueDate != null ? LocalDateTime.parse(issueDate) : null;
     }
 
     public void setCloseDate(String closeDate) {

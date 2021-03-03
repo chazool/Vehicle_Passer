@@ -150,6 +150,20 @@ public class PaymentServiceImpl implements PaymentService {
         return null;
     }
 
+    @Override
+    public PaymentMethod findPaymentMethod(String username) {
+        Driver driver = driverService.findByUsername(username);//driver
+
+
+        ResponseEntity<PaymentMethod> responseEntity = restTemplate.exchange(
+                "http://payment/services/payment-method/driver/" + driver.getId()
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , PaymentMethod.class);
+        return responseEntity.getBody();
+
+    }
+
     private Response getPaymentMethod(int cardNo) {
         ResponseEntity<Response> responseEntity = restTemplate.exchange(
                 "http://payment/services/payment-method/" + cardNo

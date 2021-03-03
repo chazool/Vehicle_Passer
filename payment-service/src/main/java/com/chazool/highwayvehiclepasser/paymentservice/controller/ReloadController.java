@@ -1,16 +1,18 @@
 package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
+import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
+import com.chazool.highwayvehiclepasser.model.exception.PaymentMethodNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Reload;
+import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.paymentservice.service.ReloadService;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("services/recharge")
 public class ReloadController {
 
 
@@ -18,12 +20,19 @@ public class ReloadController {
     private ReloadService reloadService;
 
     @PostMapping
-    public Reload save(Reload reload) {
-        return reloadService.save(reload);
+    public Response save(@RequestBody Reload reload) {
+
+        try {
+            return Response.success(reloadService.save(reload));
+        } catch (PaymentMethodNotFoundException paymentMethodNotFoundException) {
+            return Response.fail(paymentMethodNotFoundException.getMessage());
+        } catch (LowBalanceException lowBalanceException) {
+            return Response.fail(lowBalanceException.getMessage());
+        }
     }
 
     @GetMapping(value = "/card")
-    public List<Reload> fetchByCar(@PathVariable int card) {
+    public List<Reload> fetchByCards(@PathVariable int card) {
         return reloadService.findByCard(card);
     }
 

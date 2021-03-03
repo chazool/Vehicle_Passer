@@ -2,7 +2,9 @@ package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
+import com.chazool.highwayvehiclepasser.model.paymentservice.Reload;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import com.chazool.vehiclepasser.ui.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
@@ -32,9 +32,7 @@ public class PaymentController {
         return "entrance";
     }
 
-
     @PostMapping(value = "/entrance")
-
     public String entrance(@ModelAttribute Payment payment, Model model) {
         try {
             Response response = paymentService.enter(payment.getPaymentMethod(), payment.getEntranceTerminal());
@@ -70,6 +68,8 @@ public class PaymentController {
         setModel(model);
         return "exit";
     }
+
+
 
 
     private void setModel(Model model) {

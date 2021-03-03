@@ -134,7 +134,10 @@ public class DriverServiceImpl implements DriverService {
 
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setDriver(driver.getId());
-        paymentMethod.setIssueDate(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
+
+        String date = LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString();
+
+        paymentMethod.setIssueDate(date);
         paymentMethod.setBalanceAmount(new BigDecimal("0.00"));
         paymentMethod.setActive(true);
 
