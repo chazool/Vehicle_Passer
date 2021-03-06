@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("services/recharge")
@@ -31,10 +32,14 @@ public class ReloadController {
         }
     }
 
-    @GetMapping(value = "/card")
+    @GetMapping(value = "/card/{card}")
     public List<Reload> fetchByCards(@PathVariable int card) {
         return reloadService.findByCard(card);
     }
 
 
+    @GetMapping
+    public List<Map<String, String>> findByBetweenDateTime(@RequestParam String date1, @RequestParam String date2) {
+        return reloadService.findByBetweenDateTime(date1, date2);
+    }
 }

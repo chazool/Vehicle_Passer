@@ -7,6 +7,7 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.Reload;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.ReloadRepository;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import com.chazool.highwayvehiclepasser.paymentservice.service.ReloadService;
+import io.micrometer.core.instrument.step.StepCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReloadServiceImpl implements ReloadService {
@@ -40,5 +42,10 @@ public class ReloadServiceImpl implements ReloadService {
     @Override
     public List<Reload> findByCard(int card) {
         return reloadRepository.findByCard(card);
+    }
+
+    @Override
+    public List<Map<String,String>> findByBetweenDateTime(String date1, String date2) {
+        return reloadRepository.findByBetweenDateTime(date1, date2);
     }
 }

@@ -4,13 +4,11 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
+import com.chazool.highwayvehiclepasser.model.paymentservice.Reload;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
-import com.chazool.vehiclepasser.ui.service.DriverService;
-import com.chazool.vehiclepasser.ui.service.LocationService;
-import com.chazool.vehiclepasser.ui.service.PaymentService;
-import com.chazool.vehiclepasser.ui.service.VehicleService;
+import com.chazool.vehiclepasser.ui.service.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -26,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @EnableOAuth2Sso
@@ -39,6 +40,8 @@ public class UIController extends WebSecurityConfigurerAdapter {
     private DriverService driverService;
     @Autowired
     private VehicleService vehicleService;
+    @Autowired
+    private ReloadService reloadService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -82,7 +85,11 @@ public class UIController extends WebSecurityConfigurerAdapter {
 
 
             //return "index";
-            return "index-operator" ;
+
+//            List<Map> reloadHistory = reloadService.findByBetweenDateTime();
+//            reloadHistory.forEach(System.out::println);
+
+            return "index-operator";
         }
     }
 

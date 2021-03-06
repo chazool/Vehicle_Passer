@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ReloadService {
@@ -15,6 +16,7 @@ public interface ReloadService {
 
     List<Reload> findByCard(int card);
 
+    List<Map<String, String>> findByBetweenDateTime(String date1, String date2);
 
 
 }
