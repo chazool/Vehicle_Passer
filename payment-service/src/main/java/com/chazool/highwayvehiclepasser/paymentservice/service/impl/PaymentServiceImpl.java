@@ -7,6 +7,7 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Route;
+import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
 import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentRepository;
@@ -24,11 +25,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -110,6 +113,40 @@ public class PaymentServiceImpl implements PaymentService {
 
     public synchronized Payment update(Payment payment) {
         return paymentRepository.save(payment);
+    }
+
+    @Override
+    public Map<String, List> findByLocationAndEntranceDate(int location, String startDate, String endDate) {
+
+        List<Integer> entranceTerminals = findTerminal(location, 0)
+                .stream()
+                .map(terminal -> terminal.getId())
+                .collect(Collectors.toList());
+
+        List<Integer> exitTerminals = findTerminal(location, 1)
+                .stream()
+                .map(terminal -> terminal.getId())
+                .collect(Collectors.toList());
+
+        //  List<Map> entranceVehicles = paymentRepository.findVehicleByEntranceTerminalAndDate(entranceTerminals, startDate, endDate);
+
+        //   List<Map> exitVehicles = paymentRepository.findVehicleByExitTerminalAndDate(exitTerminals, startDate, endDate);
+
+        Map<String, List> vehicleCounts = new HashMap<>();
+        vehicleCounts.put("entrance", paymentRepository.findVehicleByEntranceTerminalAndDate(entranceTerminals, startDate, endDate));
+        vehicleCounts.put("exit", paymentRepository.findVehicleByExitTerminalAndDate(exitTerminals, startDate, endDate));
+
+        return vehicleCounts;
+    }
+
+    private List<Terminal> findTerminal(int location, int terminalType) {
+
+        ResponseEntity<Terminal[]> terminals = restTemplate.exchange(
+                "http://transsaction/services/terminal?location=" + location + "&terminalType=" + terminalType
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Terminal[].class);
+        return Arrays.asList(terminals.getBody());
     }
 
     public synchronized Payment findByDriverAndIsComplete(int driver, boolean isComplete) {

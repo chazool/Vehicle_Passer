@@ -5,7 +5,10 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public interface PaymentService {
 
@@ -20,8 +23,10 @@ public interface PaymentService {
 
     Payment isSendEmail(Payment payment);
 
-    BigDecimal getVehicleCharge(int vehicleId,String authorization);
+    BigDecimal getVehicleCharge(int vehicleId, String authorization);
 
     Payment update(Payment payment);
+
+    Map<String, List> findByLocationAndEntranceDate(int location, String startDate, String endDate);
 
 }

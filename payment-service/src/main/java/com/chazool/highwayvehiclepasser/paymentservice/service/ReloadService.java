@@ -18,5 +18,4 @@ public interface ReloadService {
 
     List<Map<String, String>> findByBetweenDateTime(String date1, String date2);
 
-
 }

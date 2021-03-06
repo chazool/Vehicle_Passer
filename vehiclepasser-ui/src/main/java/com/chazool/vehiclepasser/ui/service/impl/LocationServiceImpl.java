@@ -41,6 +41,9 @@ public class LocationServiceImpl implements LocationService {
         return Arrays.asList(terminals.getBody());
     }
 
+
+
+
     @Override
     public Location findLocationById(int id) {
         Location location = restTemplate.getForObject("http://transsaction/services/locations/" + id, Location.class);

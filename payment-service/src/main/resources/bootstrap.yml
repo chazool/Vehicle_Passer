@@ -13,3 +13,9 @@ spring:
   cloud:
     config:
       uri: http://localhost:8899
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true

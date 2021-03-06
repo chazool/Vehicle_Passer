@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -56,6 +57,13 @@ public class PaymentController {
     public Payment isSendEmail(Payment payment) {
         return paymentService.isSendEmail(payment);
     }
+
+
+    @GetMapping
+    public Map<String, List> findByLocationAndEntranceDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
+        return paymentService.findByLocationAndEntranceDate(location, startDate, endDate);
+    }
+
 
 
 }
