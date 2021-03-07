@@ -1,6 +1,8 @@
 package com.chazool.highwayvehiclepasser.paymentservice.repository;
 
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
+import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
+import io.micrometer.core.instrument.step.StepCounter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,21 +21,35 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     @Query(value = "SELECT count(*) as vehicleCont," +
             "DATE_FORMAT(entranceDate, \"%Y-%m-%d\") as fullDate ," +
             "DATE_FORMAT(entranceDate, \"%b %d\") as simpleDate\n" +
-            "FROM vehiclepasser_payment.payment \n" +
+            "FROM payment \n" +
             "where entranceTerminal in (:terminals) and date(entranceDate) between :startDate and :endDate\n" +
             "group by date(entranceDate) ", nativeQuery = true)
-    List<Map> findVehicleByEntranceTerminalAndDate(
+    List<Map> findVehicleCountByEntranceTerminalAndDate(
             @Param("terminals") List<Integer> terminals,
             @Param("startDate") String date1, @Param("endDate") String date2);
 
     @Query(value = "SELECT count(*) as vehicleCont," +
             "DATE_FORMAT(exitDate, \"%Y-%m-%d\") as fullDate ," +
             "DATE_FORMAT(exitDate, \"%b %d\") as simpleDate\n" +
-            "FROM vehiclepasser_payment.payment \n" +
+            "FROM payment \n" +
             "where exitTerminal in (:terminals) and date(exitDate) between :startDate and :endDate\n" +
             "group by date(exitDate) ", nativeQuery = true)
-    List<Map> findVehicleByExitTerminalAndDate(
+    List<Map> findVehicleCountByExitTerminalAndDate(
             @Param("terminals") List<Integer> terminals,
             @Param("startDate") String date1, @Param("endDate") String date2);
+
+
+    @Query(value = "SELECT * FROM payment " +
+            "where entranceTerminal in (:terminals)  and date(entranceDate) between :startDate and  :endDate "
+            , nativeQuery = true)
+    List<Payment> findPaymentsByEntranceTerminalInAndDate(@Param("terminals") List<Integer> terminals
+            , @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query(value = "SELECT * FROM payment " +
+            "where exitTerminal in (:terminals)  and date(exitDate) between :startDate and  :endDate "
+            , nativeQuery = true)
+    List<Payment> findPaymentsByExitTerminalInAndDate(@Param("terminals") List<Integer> terminals
+            , @Param("startDate") String startDate, @Param("endDate") String endDate);
+
 
 }

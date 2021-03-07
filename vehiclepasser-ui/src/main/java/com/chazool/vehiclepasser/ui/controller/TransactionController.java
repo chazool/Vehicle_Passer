@@ -2,6 +2,7 @@ package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
+import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,10 @@ public class TransactionController {
     private LocationService locationService;
 
 
-    @RequestMapping(value = "/terminalControll")
+    @RequestMapping(value = "/terminal-control")
     @PreAuthorize("hasRole('ROLE_admin')")
     public String terminalConsole(Model model) {
+        model.addAttribute("username", AccessToken.getUsername());
         model.addAttribute("locations", locationService.findAllLocations());
         model.addAttribute("terminal", new Terminal());
         return "terminal-console";

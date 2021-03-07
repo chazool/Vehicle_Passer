@@ -69,9 +69,6 @@ public class PaymentController {
         return "exit";
     }
 
-
-
-
     private void setModel(Model model) {
         model.addAttribute("locations", locationService.findAllLocations());
     }

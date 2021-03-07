@@ -2,14 +2,12 @@ package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
 import com.chazool.highwayvehiclepasser.model.exception.PaymentNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
-import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -59,11 +57,15 @@ public class PaymentController {
     }
 
 
-    @GetMapping
+    @GetMapping(value = "vehicle-counts")
     public Map<String, List> findByLocationAndEntranceDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
-        return paymentService.findByLocationAndEntranceDate(location, startDate, endDate);
+        return paymentService.findVehicleCountByExitTerminalAndDate(location, startDate, endDate);
     }
 
 
+    @GetMapping(value = "vehicletype-count")
+    public Map<String, Map> findPaymentsByEntranceTerminalInAndDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
+        return paymentService.findPaymentsByEntranceTerminalInAndDate(location, startDate, endDate);
+    }
 
 }

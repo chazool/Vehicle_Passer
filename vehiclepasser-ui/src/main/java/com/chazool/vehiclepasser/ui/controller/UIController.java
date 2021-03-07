@@ -84,12 +84,9 @@ public class UIController extends WebSecurityConfigurerAdapter {
                     + "/" + paymentMethod.getIssueDate().getYear());
 
 
-            //return "index";
+            return "index";
 
-//            List<Map> reloadHistory = reloadService.findByBetweenDateTime();
-//            reloadHistory.forEach(System.out::println);
-
-            return "index-operator";
+            // return "index-operator";
         }
     }
 

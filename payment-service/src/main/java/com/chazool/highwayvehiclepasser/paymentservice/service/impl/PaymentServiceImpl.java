@@ -21,7 +21,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -30,7 +29,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,31 +116,71 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Map<String, List> findByLocationAndEntranceDate(int location, String startDate, String endDate) {
+    public Map<String, List> findVehicleCountByExitTerminalAndDate(int location, String startDate, String endDate) {
 
-        List<Integer> entranceTerminals = findTerminal(location, 0)
-                .stream()
-                .map(terminal -> terminal.getId())
-                .collect(Collectors.toList());
-
-        List<Integer> exitTerminals = findTerminal(location, 1)
-                .stream()
-                .map(terminal -> terminal.getId())
-                .collect(Collectors.toList());
-
-        //  List<Map> entranceVehicles = paymentRepository.findVehicleByEntranceTerminalAndDate(entranceTerminals, startDate, endDate);
-
-        //   List<Map> exitVehicles = paymentRepository.findVehicleByExitTerminalAndDate(exitTerminals, startDate, endDate);
+        List<Integer> entranceTerminals = getTerminalIds(location, 0);
+        List<Integer> exitTerminals = getTerminalIds(location, 1);
 
         Map<String, List> vehicleCounts = new HashMap<>();
-        vehicleCounts.put("entrance", paymentRepository.findVehicleByEntranceTerminalAndDate(entranceTerminals, startDate, endDate));
-        vehicleCounts.put("exit", paymentRepository.findVehicleByExitTerminalAndDate(exitTerminals, startDate, endDate));
+        vehicleCounts.put("entrance", paymentRepository.findVehicleCountByEntranceTerminalAndDate(entranceTerminals, startDate, endDate));
+        vehicleCounts.put("exit", paymentRepository.findVehicleCountByExitTerminalAndDate(exitTerminals, startDate, endDate));
 
         return vehicleCounts;
     }
 
-    private List<Terminal> findTerminal(int location, int terminalType) {
+    @Override
+    public Map<String, Map> findPaymentsByEntranceTerminalInAndDate(int location, String startDate, String endDate) {
+        List<Integer> entranceTerminals = getTerminalIds(location, 0);
+        List<Integer> exitTerminals = getTerminalIds(location, 1);
 
+        List<VehicleType> vehicleTypes = getVehicleTypes();
+
+        List<Payment> entrancePayments = paymentRepository
+                .findPaymentsByEntranceTerminalInAndDate(entranceTerminals, startDate, endDate);
+
+        List<Payment> exitPayments = paymentRepository
+                .findPaymentsByExitTerminalInAndDate(exitTerminals, startDate, endDate);
+
+
+        Map<Integer, Map> entranceVehicleTypeCount = new HashMap<>();
+
+        vehicleTypes.forEach(vehicleType -> {
+            Map<LocalDate, Long> counting = entrancePayments.stream().filter(payment -> {
+                return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
+                        .getVehicleType() == vehicleType.getId();
+            }).collect(Collectors.groupingBy(payment -> payment.getEntranceDate().toLocalDate(), Collectors.counting()));
+
+            entranceVehicleTypeCount.put(vehicleType.getId(), counting);
+        });
+
+        Map<Integer, Map> exitVehicleTypeCount = new HashMap<>();
+
+        vehicleTypes.forEach(vehicleType ->
+        {
+            Map<LocalDate, Long> counting = exitPayments.stream().filter(payment -> {
+                return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
+                        .getVehicleType() == vehicleType.getId();
+            }).collect(Collectors.groupingBy(payment -> payment.getExitDate().toLocalDate(), Collectors.counting()));
+            exitVehicleTypeCount.put(vehicleType.getId(), counting);
+        });
+
+        Map<String, Map> vehicleTypesCount = new HashMap<>();
+        vehicleTypesCount.put("entrance", entranceVehicleTypeCount);
+        vehicleTypesCount.put("exit", exitVehicleTypeCount);
+
+        return vehicleTypesCount;
+    }
+
+    public List<VehicleType> getVehicleTypes() {
+        ResponseEntity<Response> responseEntity = restTemplate
+                .exchange("http://transsaction/services/vehicle-type/", HttpMethod.GET, AccessToken.getHttpEntity(), Response.class);
+
+        VehicleType[] vehicleTypes = new ObjectMapper().convertValue(responseEntity.getBody().getData(), VehicleType[].class);
+
+        return Arrays.asList(vehicleTypes);
+    }
+
+    private List<Terminal> findTerminal(int location, int terminalType) {
         ResponseEntity<Terminal[]> terminals = restTemplate.exchange(
                 "http://transsaction/services/terminal?location=" + location + "&terminalType=" + terminalType
                 , HttpMethod.GET
@@ -148,6 +188,11 @@ public class PaymentServiceImpl implements PaymentService {
                 , Terminal[].class);
         return Arrays.asList(terminals.getBody());
     }
+
+    private List<Integer> getTerminalIds(int location, int terminalType) {
+        return findTerminal(location, terminalType).stream().map(terminal -> terminal.getId()).collect(Collectors.toList());
+    }
+
 
     public synchronized Payment findByDriverAndIsComplete(int driver, boolean isComplete) {
         Optional<Payment> payment = paymentRepository.findByDriverAndIsComplete(driver, false);
@@ -191,26 +236,29 @@ public class PaymentServiceImpl implements PaymentService {
         return routeResponseEntity.getBody();
     }
 
-    public BigDecimal getVehicleCharge(int vehicleId, String authorization) {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        System.out.println(authorization);
-        httpHeaders.add("Authorization", authorization);
-
-        HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
-
+    private Vehicle findVehicle(int vehicleId, HttpEntity httpEntity) {
         ResponseEntity<Response> vehicleResponseEntity = restTemplate.exchange(
                 "http://driver/services/vehicles/" + vehicleId
                 , HttpMethod.GET
                 , httpEntity
                 , Response.class);
 
-        Vehicle vehicle = new ObjectMapper().convertValue(vehicleResponseEntity.getBody().getData(), Vehicle.class);
+        return new ObjectMapper().convertValue(vehicleResponseEntity.getBody().getData(), Vehicle.class);
+    }
+
+    public BigDecimal getVehicleCharge(int vehicleId, String authorization) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", authorization);
+        HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
+
+        Vehicle vehicle = findVehicle(vehicleId, httpEntity);
+
 
         ResponseEntity<VehicleType> vehicleTypeResponseEntity = restTemplate.exchange(
                 "http://transsaction/services/vehicle-type/" + vehicle.getVehicleType()
                 , HttpMethod.GET
-                , httpEntity
+                , AccessToken.getHttpEntity()
                 , VehicleType.class);
 
         return vehicleTypeResponseEntity.getBody().getCharge();

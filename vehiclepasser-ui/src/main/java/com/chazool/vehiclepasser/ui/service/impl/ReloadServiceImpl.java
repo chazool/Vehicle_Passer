@@ -84,7 +84,6 @@ public class ReloadServiceImpl implements ReloadService {
                 }
         );
 
-
         return reloadHistoryWithAllDays;
     }
 }
