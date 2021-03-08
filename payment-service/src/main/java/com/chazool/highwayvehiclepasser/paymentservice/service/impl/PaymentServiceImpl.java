@@ -122,8 +122,11 @@ public class PaymentServiceImpl implements PaymentService {
         List<Integer> exitTerminals = getTerminalIds(location, 1);
 
         Map<String, List> vehicleCounts = new HashMap<>();
-        vehicleCounts.put("entrance", paymentRepository.findVehicleCountByEntranceTerminalAndDate(entranceTerminals, startDate, endDate));
-        vehicleCounts.put("exit", paymentRepository.findVehicleCountByExitTerminalAndDate(exitTerminals, startDate, endDate));
+
+        if (entranceTerminals.size() != 0)
+            vehicleCounts.put("entrance", paymentRepository.findVehicleCountByEntranceTerminalAndDate(entranceTerminals, startDate, endDate));
+        if (exitTerminals.size() != 0)
+            vehicleCounts.put("exit", paymentRepository.findVehicleCountByExitTerminalAndDate(exitTerminals, startDate, endDate));
 
         return vehicleCounts;
     }

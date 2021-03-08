@@ -240,7 +240,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Map<String, List> findVehicleCountByLocationAndDate(int location) {
+    public Map<String, List<Map<String, String>>> findVehicleCountByLocationAndDate(int location) {
 
         LocalDate startDate = LocalDate.now().minusDays(6);
         LocalDate endDate = LocalDate.now();
@@ -252,51 +252,52 @@ public class PaymentServiceImpl implements PaymentService {
                 , AccessToken.getHttpEntity()
                 , Map.class);
 
-        Map<String, List> vehicleCounts = responseEntity.getBody();
-        List<Map<String, String>> entranceData = vehicleCounts.get("entrance");
-        List<Map<String, String>> exitData = vehicleCounts.get("exit");
+        Map<String, List<Map<String, String>>> vehicleCounts = responseEntity.getBody();
+        if (vehicleCounts.size() != 0) {
+            List<Map<String, String>> entranceData = vehicleCounts.get("entrance");
+            List<Map<String, String>> exitData = vehicleCounts.get("exit");
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
-        getDates(startDate, endDate).forEach(day -> {
-            //entrance Vehicle Counts
-            boolean available = entranceData.stream()
-                    .filter(data -> {
-                        LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
-                        return localdate.equals(day);
-                    }).findAny().isPresent();
+            getDates(startDate, endDate).forEach(day -> {
+                //entrance Vehicle Counts
+                boolean available = entranceData.stream()
+                        .filter(data -> {
+                            LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
+                            return localdate.equals(day);
+                        }).findAny().isPresent();
 
-            if (!available) {
-                Map map = new HashMap();
-                map.put("fullDate", day.toString());
-                map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
-                map.put("amount", 0.00);
-                entranceData.add(map);
-            }
-            //exit Vehicle Counts
-            available = exitData.stream()
-                    .filter(data -> {
-                        LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
-                        return localdate.equals(day);
-                    }).findAny().isPresent();
+                if (!available) {
+                    Map map = new HashMap();
+                    map.put("fullDate", day.toString());
+                    map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
+                    map.put("vehicleCont", 0);
+                    entranceData.add(map);
+                }
+                //exit Vehicle Counts
+                available = exitData.stream()
+                        .filter(data -> {
+                            LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
+                            return localdate.equals(day);
+                        }).findAny().isPresent();
 
-            if (!available) {
-                Map map = new HashMap();
-                map.put("fullDate", day.toString());
-                map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
-                map.put("amount", 0.00);
-                exitData.add(map);
-            }
-        });
+                if (!available) {
+                    Map map = new HashMap();
+                    map.put("fullDate", day.toString());
+                    map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
+                    map.put("vehicleCont", 0);
+                    exitData.add(map);
+                }
+            });
 
-        vehicleCounts.put("entrance", entranceData.stream().sorted((o1, o2) -> {
-            return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
-        }).collect(Collectors.toList()));
+            vehicleCounts.put("entrance", entranceData.stream().sorted((o1, o2) -> {
+                return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
+            }).collect(Collectors.toList()));
 
-        vehicleCounts.put("exit", entranceData.stream().sorted((o1, o2) -> {
-            return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
-        }).collect(Collectors.toList()));
-
+            vehicleCounts.put("exit", exitData.stream().sorted((o1, o2) -> {
+                return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
+            }).collect(Collectors.toList()));
+        }
         return vehicleCounts;
     }
 

@@ -20,7 +20,7 @@ public interface PaymentService {
 
     void sendEmail(String subject, int driverId, int terminalId, String authorization);
 
-    Map<String, List> findVehicleCountByLocationAndDate(int location);
+    Map<String, List<Map<String,String>>> findVehicleCountByLocationAndDate(int location);
 
     Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location);
 

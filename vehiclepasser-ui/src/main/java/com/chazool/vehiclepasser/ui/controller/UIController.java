@@ -69,10 +69,7 @@ public class UIController extends WebSecurityConfigurerAdapter {
             // return "redirect:driver";
             //  return "terminal-console";
 
-
-            //service
-            Map<String, List> map = paymentService.findVehicleCountByLocationAndDate(1);
-
+            //
             return "index-admin";
         } else {
             PaymentMethod paymentMethod = paymentService.findPaymentMethod(AccessToken.getUsername());

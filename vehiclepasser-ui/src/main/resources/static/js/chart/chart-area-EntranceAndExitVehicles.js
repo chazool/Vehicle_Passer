@@ -27,36 +27,60 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
+$("#location").change(function () {
+    load_areaChartEntranceAndExitVehicles($(this).val());
+});
 
-var densityData = {
-    label: 'Density of Planet (kg/m3)',
-    data: [5427, 5243, 5514, 3933, 1326, 687, 1271],
-    borderColor: 'rgba(0, 99, 132, 0.6)',
-    borderWidth: 4
-};
+function load_areaChartEntranceAndExitVehicles(location) {
+    $.getJSON("entranceandexit-vehicles/" + location, function (data, textStatus, jqXHR) {
 
-var gravityData = {
-    label: 'Gravity of Planet (m/s2)',
-    data: [4427, 3243, 2514, 933, 5326, 987, 1271],
-    borderColor: 'rgba(99, 132, 0, 0.6)',
-    borderWidth: 4
-};
+        var labels = [];
+        var entranceVehicles = [];
+        var exitVehicles = [];
 
-var planetData = {
-    labels: ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus"],
-    datasets: [densityData, gravityData]
+        $.each(data.entrance, function (key, value) {
+            labels.push(value.simpleDate);
+            entranceVehicles.push(value.vehicleCont);
+        });
 
-};
+        $.each(data.exit, function (key, value) {
+            exitVehicles.push(value.vehicleCont);
+        });
 
+
+        var entranceData = {
+            label: 'Entrance Vehicles',
+            data: entranceVehicles,
+            borderColor: 'rgba(0, 99, 132, 0.6)',
+            borderWidth: 4
+        };
+
+        var exitData = {
+            label: 'Exit Vehicles',
+            data: exitVehicles,
+            borderColor: 'rgba(99, 132, 0, 0.6)',
+            borderWidth: 4
+        };
+
+        var vehicleData = {
+            labels: labels,
+            datasets: [entranceData, exitData]
+        };
+
+        areaChartEntranceAndExitVehicles.data = vehicleData;
+        areaChartEntranceAndExitVehicles.update();
+
+    });
+}
+
+
+load_areaChartEntranceAndExitVehicles($("#location").val());
 
 // Area Chart Example
 var ctx = document.getElementById("areaChart-EntranceAndExitVehicles");
-var myLineChart = new Chart(ctx, {
+var areaChartEntranceAndExitVehicles = new Chart(ctx, {
     type: 'line',
-    data: {
-        labels: ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus"],
-        datasets: [densityData, gravityData],
-    },
+    data: {},
     options: {
         maintainAspectRatio: false,
         layout: {
@@ -112,3 +136,6 @@ var myLineChart = new Chart(ctx, {
         }
     }
 });
+
+
+

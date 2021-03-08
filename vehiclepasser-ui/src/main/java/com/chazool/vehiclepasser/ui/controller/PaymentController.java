@@ -72,7 +72,7 @@ public class PaymentController {
     }
 
     @GetMapping(value = "entranceandexit-vehicles/{location}")
-    public Map<String, List> findVehicleCountByLocationAndDate(@PathVariable int location) {
+    public Map findVehicleCountByLocationAndDate(@PathVariable int location) {
         return paymentService.findVehicleCountByLocationAndDate(location);
     }
 
