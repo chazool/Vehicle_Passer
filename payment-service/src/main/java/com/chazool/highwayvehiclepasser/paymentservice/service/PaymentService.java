@@ -27,9 +27,11 @@ public interface PaymentService {
 
     Payment update(Payment payment);
 
-    Map<String, List> findVehicleCountByExitTerminalAndDate(int location, String startDate, String endDate);
+    Map<String, List> findVehicleCountByLocationAndDate(int location, String startDate, String endDate);
 
-    Map<String, Map> findPaymentsByEntranceTerminalInAndDate(int location, String startDate, String endDate);
+    Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location, String startDate, String endDate);
+
+    Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location, String startDate, String endDate);
 
 
 }

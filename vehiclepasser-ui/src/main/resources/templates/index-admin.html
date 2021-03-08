@@ -81,11 +81,7 @@
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="/driver-profile">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Profile
-                            </a>
-                            <div class="dropdown-divider"></div>
+
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
@@ -113,9 +109,9 @@
 
                         <div class="card shadow mb-4">
                             <div class="card-body">
-                                <a href="/recharge" class="btn btn-lg btn-block btn-primary shadow-sm">
-                                    <i class="fas fa-money-check-alt fa-sm text-white-50"></i>
-                                    Terminal Setup </a>
+                                <a href="/terminal-control" class="btn btn-lg btn-block btn-primary shadow-sm">
+                                    <i class="fas fa-cog fa-sm text-white-50"></i>
+                                    Terminal Control </a>
                             </div>
                         </div>
 
@@ -127,13 +123,13 @@
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Entrance & Exit Vehicle Count</h6>
 
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="chart-area">
-                                    <canvas id="myAreaChart"></canvas>
+                                    <canvas id="areaChart-EntranceAndExitVehicles"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -141,6 +137,47 @@
 
                 </div>
 
+                <div class="row">
+                    <!-- bar chat  -->
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Entrance Vehicle Types Counts</h6>
+
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="barChart-EntranceVehicleTypes"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <!-- bar chat  -->
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Exit Vehicle Types Counts</h6>
+
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="barChart-ExitVehicleTypes"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <!-- /.container-fluid -->
 
@@ -207,7 +244,11 @@
 
 
 <!-- Page level custom scripts -->
-<script src="js/chart/chart-area-rechargeDailySummary.js"></script>
+<script src="js/chart/chart-area-EntranceAndExitVehicles.js"></script>
+<script src="js/chart/chart-bar-entranceVehicleTypeCount.js"></script>
+<script src="js/chart/chart-bar-exitVehicleTypeCount.js"></script>
+
+
 </body>
 
 </html>

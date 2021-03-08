@@ -23,113 +23,176 @@
 
 </head>
 
-<body class="bg-gradient-primary">
-<!-- Content Wrapper -->
-<div id="content-wrapper" class="d-flex flex-column">
+<body id="page-top">
 
-    <!-- Main Content -->
-    <div id="content">
+<!-- Page Wrapper -->
+<div id="wrapper">
 
-        <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar Toggle (Topbar) -->
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Vehicle Passer</div>
+        </a>
 
-            <!-- Topbar Navbar -->
-            <ul class="navbar-nav ml-auto">
-                <div class="topbar-divider d-none d-sm-block"></div>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
 
-                <!-- Nav Item - User Information -->
-                <li class="nav-item dropdown no-arrow">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span th:text="${username}" class="mr-2 d-none d-lg-inline text-gray-600 small"> </span>
-                        <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                    </a>
-                    <!-- Dropdown - User Information -->
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                         aria-labelledby="userDropdown">
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Logout
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span th:text="${username}" class="mr-2 d-none d-lg-inline text-gray-600 small"> </span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                         </a>
-                    </div>
-                </li>
-
-            </ul>
-
-        </nav>
-        <!-- End of Topbar -->
-
-
-    </div>
-    <!-- End of Main Content -->
-
-</div>
-<div class="container">
-
-    <div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
-            <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="p-5">
-                        <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Setup Terminal !</h1>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                           
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
                         </div>
-                        <form action="#" th:action="@{/transaction}" th:object="${terminal}" method="post"
-                              class="user needs-validation" novalidate>
+                    </li>
 
-                            <!-- Row 0-->
-                            <div class="form-group row">
+                </ul>
 
-                                <div class="col-sm-12 mb-3 mb-sm-0">
-                                    <select id="locationType" name="terminalType" class="form-control" required>
-                                        <option value="">- Location Type -</option>
-                                        <option value="0">Entrance</option>
-                                        <option value="1">Exit</option>
-                                    </select>
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Terminal Control</h1>
+                </div>
+                <!-- Content Row -->
+
+                <div class="row">
+                    <!-- Recharge -->
+                    <div class="col-xl-12 col-lg-12 align-self-center">
+
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Setup Terminal !</h1>
+                                    </div>
+                                    <form action="#" th:action="@{/transaction}" th:object="${terminal}" method="post"
+                                          class="user needs-validation" novalidate>
+
+                                        <!-- Row 0-->
+                                        <div class="form-group row">
+
+                                            <div class="col-sm-12 mb-3 mb-sm-0">
+                                                <select id="locationType" name="terminalType" class="form-control"
+                                                        required>
+                                                    <option value="">- Location Type -</option>
+                                                    <option value="0">Entrance</option>
+                                                    <option value="1">Exit</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-12 mb-3 mb-sm-0">
+                                                <select class="form-control" name="locationId" id="location" required>
+                                                    <option value="">- Location -</option>
+                                                    <option th:each="location: ${locations}" th:value="${location.id}"
+                                                            th:text="${location.description}"></option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-12 mb-3 mb-sm-0">
+                                                <select class="form-control" name="id" id="terminal" required>
+                                                    <option value="">- Terminal -</option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                        <input class="btn btn-primary btn-user btn-block" type="submit">
+                                    </form>
+
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-group row">
-                                <div class="col-sm-12 mb-3 mb-sm-0">
-                                    <select class="form-control" name="locationId" id="location" required>
-                                        <option value="">- Location -</option>
-                                        <option th:each="location: ${locations}" th:value="${location.id}"
-                                                th:text="${location.description}"></option>
-                                    </select>
-
-                                </div>
-
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-12 mb-3 mb-sm-0">
-                                    <select class="form-control" name="id" id="terminal" required>
-                                        <option value="">- Terminal -</option>
-
-                                    </select>
-
-                                </div>
-                            </div>
-
-                            <input class="btn btn-primary btn-user btn-block" type="submit">
-                        </form>
 
                     </div>
+
+
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; chazool 2021</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </footer>
+        <!-- End of Footer -->
 
+    </div>
+    <!-- End of Content Wrapper -->
 
 </div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
 
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -153,6 +216,7 @@
         </div>
     </div>
 </div>
+
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -5,6 +5,9 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Reload;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 
+import java.util.List;
+import java.util.Map;
+
 public interface PaymentService {
 
     Response enter(int cardNo, int terminalId);
@@ -16,6 +19,12 @@ public interface PaymentService {
     PaymentMethod findPaymentMethod(String username);
 
     void sendEmail(String subject, int driverId, int terminalId, String authorization);
+
+    Map<String, List> findVehicleCountByLocationAndDate(int location);
+
+    Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location);
+
+    Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location);
 
 
 }

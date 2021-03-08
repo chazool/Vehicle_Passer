@@ -63,12 +63,12 @@ public class ReloadServiceImpl implements ReloadService {
                 .collect(Collectors.toList());
 
         List<Map<String, String>> reloadHistoryWithAllDays = new ArrayList();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-d");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
         dates.forEach(day -> {
                     AtomicBoolean available = new AtomicBoolean(false);
                     reloadHistory.forEach(history -> {
-                        if (LocalDate.parse(history.get("datetime"), df).compareTo(day) == 0) {
+                        if (LocalDate.parse(history.get("datetime"), dateTimeFormatter).compareTo(day) == 0) {
                             available.set(true);
                             reloadHistoryWithAllDays.add(history);
                         }

@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Map<String, List> findVehicleCountByExitTerminalAndDate(int location, String startDate, String endDate) {
+    public Map<String, List> findVehicleCountByLocationAndDate(int location, String startDate, String endDate) {
 
         List<Integer> entranceTerminals = getTerminalIds(location, 0);
         List<Integer> exitTerminals = getTerminalIds(location, 1);
@@ -129,19 +129,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Map<String, Map> findPaymentsByEntranceTerminalInAndDate(int location, String startDate, String endDate) {
+    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location, String startDate, String endDate) {
         List<Integer> entranceTerminals = getTerminalIds(location, 0);
-        List<Integer> exitTerminals = getTerminalIds(location, 1);
-
         List<VehicleType> vehicleTypes = getVehicleTypes();
 
-        List<Payment> entrancePayments = paymentRepository
-                .findPaymentsByEntranceTerminalInAndDate(entranceTerminals, startDate, endDate);
-
-        List<Payment> exitPayments = paymentRepository
-                .findPaymentsByExitTerminalInAndDate(exitTerminals, startDate, endDate);
-
-
+        List<Payment> entrancePayments = paymentRepository.findPaymentsByEntranceTerminalInAndDate(entranceTerminals, startDate, endDate);
         Map<Integer, Map> entranceVehicleTypeCount = new HashMap<>();
 
         vehicleTypes.forEach(vehicleType -> {
@@ -152,6 +144,16 @@ public class PaymentServiceImpl implements PaymentService {
 
             entranceVehicleTypeCount.put(vehicleType.getId(), counting);
         });
+
+        return entranceVehicleTypeCount;
+    }
+
+    @Override
+    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location, String startDate, String endDate) {
+        List<Integer> exitTerminals = getTerminalIds(location, 1);
+        List<VehicleType> vehicleTypes = getVehicleTypes();
+
+        List<Payment> exitPayments = paymentRepository.findPaymentsByExitTerminalInAndDate(exitTerminals, startDate, endDate);
 
         Map<Integer, Map> exitVehicleTypeCount = new HashMap<>();
 
@@ -164,11 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
             exitVehicleTypeCount.put(vehicleType.getId(), counting);
         });
 
-        Map<String, Map> vehicleTypesCount = new HashMap<>();
-        vehicleTypesCount.put("entrance", entranceVehicleTypeCount);
-        vehicleTypesCount.put("exit", exitVehicleTypeCount);
-
-        return vehicleTypesCount;
+        return exitVehicleTypeCount;
     }
 
     public List<VehicleType> getVehicleTypes() {

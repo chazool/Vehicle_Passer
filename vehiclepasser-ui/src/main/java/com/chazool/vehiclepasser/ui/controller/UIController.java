@@ -40,8 +40,7 @@ public class UIController extends WebSecurityConfigurerAdapter {
     private DriverService driverService;
     @Autowired
     private VehicleService vehicleService;
-    @Autowired
-    private ReloadService reloadService;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -68,7 +67,13 @@ public class UIController extends WebSecurityConfigurerAdapter {
             model.addAttribute("locations", locationService.findAllLocations());
             model.addAttribute("terminal", new Terminal());
             // return "redirect:driver";
-            return "terminal-console";
+            //  return "terminal-console";
+
+
+            //service
+            Map<String, List> map = paymentService.findVehicleCountByLocationAndDate(1);
+
+            return "index-admin";
         } else {
             PaymentMethod paymentMethod = paymentService.findPaymentMethod(AccessToken.getUsername());
 

@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 @Controller
+@RestController
 public class PaymentController {
 
     @Autowired
@@ -47,7 +50,6 @@ public class PaymentController {
         return "entrance";
     }
 
-
     @RequestMapping(value = "exit")
     public String exit(Model model) {
         model.addAttribute("alert", false);
@@ -67,6 +69,21 @@ public class PaymentController {
 
         setModel(model);
         return "exit";
+    }
+
+    @GetMapping(value = "entranceandexit-vehicles/{location}")
+    public Map<String, List> findVehicleCountByLocationAndDate(@PathVariable int location) {
+        return paymentService.findVehicleCountByLocationAndDate(location);
+    }
+
+    @GetMapping(value = "entrance-vehicletypes/{location}")
+    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(@PathVariable int location) {
+        return paymentService.findEntranceVehicleTypeCountByLocationAndDate(location);
+    }
+
+    @GetMapping(value = "exit-vehicletypes/{location}")
+    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(@PathVariable int location) {
+        return paymentService.findExitVehicleTypeCountByLocationAndDate(location);
     }
 
     private void setModel(Model model) {

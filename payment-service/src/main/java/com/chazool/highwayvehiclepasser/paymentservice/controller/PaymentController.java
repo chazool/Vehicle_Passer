@@ -58,14 +58,18 @@ public class PaymentController {
 
 
     @GetMapping(value = "vehicle-counts")
-    public Map<String, List> findByLocationAndEntranceDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
-        return paymentService.findVehicleCountByExitTerminalAndDate(location, startDate, endDate);
+    public Map<String, List> findVehicleCountByLocationAndEntranceDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
+        return paymentService.findVehicleCountByLocationAndDate(location, startDate, endDate);
     }
 
+    @GetMapping(value = "entrance-vehicletype-count")
+    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
+        return paymentService.findEntranceVehicleTypeCountByLocationAndDate(location, startDate, endDate);
+    }
 
-    @GetMapping(value = "vehicletype-count")
-    public Map<String, Map> findPaymentsByEntranceTerminalInAndDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
-        return paymentService.findPaymentsByEntranceTerminalInAndDate(location, startDate, endDate);
+    @GetMapping(value = "exit-vehicletype-count")
+    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(@RequestParam int location, @RequestParam String startDate, @RequestParam String endDate) {
+        return paymentService.findExitVehicleTypeCountByLocationAndDate(location, startDate, endDate);
     }
 
 }

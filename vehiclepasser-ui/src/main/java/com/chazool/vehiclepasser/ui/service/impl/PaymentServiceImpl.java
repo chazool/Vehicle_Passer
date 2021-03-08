@@ -29,8 +29,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -232,6 +238,103 @@ public class PaymentServiceImpl implements PaymentService {
                 "http://email/services/emails", HttpMethod.POST, new HttpEntity<>(email, httpHeaders), Email.class);
 
     }
+
+    @Override
+    public Map<String, List> findVehicleCountByLocationAndDate(int location) {
+
+        LocalDate startDate = LocalDate.now().minusDays(6);
+        LocalDate endDate = LocalDate.now();
+
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                "http://payment/services/payments/vehicle-counts?location="
+                        + location + "&startDate=" + startDate.toString() + "&endDate=" + endDate.toString()
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Map.class);
+
+        Map<String, List> vehicleCounts = responseEntity.getBody();
+        List<Map<String, String>> entranceData = vehicleCounts.get("entrance");
+        List<Map<String, String>> exitData = vehicleCounts.get("exit");
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+
+        getDates(startDate, endDate).forEach(day -> {
+            //entrance Vehicle Counts
+            boolean available = entranceData.stream()
+                    .filter(data -> {
+                        LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
+                        return localdate.equals(day);
+                    }).findAny().isPresent();
+
+            if (!available) {
+                Map map = new HashMap();
+                map.put("fullDate", day.toString());
+                map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
+                map.put("amount", 0.00);
+                entranceData.add(map);
+            }
+            //exit Vehicle Counts
+            available = exitData.stream()
+                    .filter(data -> {
+                        LocalDate localdate = LocalDate.parse(data.get("fullDate"), dateTimeFormatter);
+                        return localdate.equals(day);
+                    }).findAny().isPresent();
+
+            if (!available) {
+                Map map = new HashMap();
+                map.put("fullDate", day.toString());
+                map.put("simpleDate", day.format(DateTimeFormatter.ofPattern("MMM dd")).toString());
+                map.put("amount", 0.00);
+                exitData.add(map);
+            }
+        });
+
+        vehicleCounts.put("entrance", entranceData.stream().sorted((o1, o2) -> {
+            return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
+        }).collect(Collectors.toList()));
+
+        vehicleCounts.put("exit", entranceData.stream().sorted((o1, o2) -> {
+            return LocalDate.parse(o1.get("fullDate")).compareTo(LocalDate.parse(o2.get("fullDate")));
+        }).collect(Collectors.toList()));
+
+        return vehicleCounts;
+    }
+
+    @Override
+    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location) {
+        LocalDate startDate = LocalDate.now().minusDays(6);
+        LocalDate endDate = LocalDate.now();
+
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                "http://payment/services/payments/entrance-vehicletype-count?location="
+                        + location + "&startDate=" + startDate.toString() + "&endDate=" + endDate.toString()
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Map.class);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location) {
+        LocalDate startDate = LocalDate.now().minusDays(6);
+        LocalDate endDate = LocalDate.now();
+
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                "http://payment/services/payments/exit-vehicletype-count?location="
+                        + location + "&startDate=" + startDate.toString() + "&endDate=" + endDate.toString()
+                , HttpMethod.GET
+                , AccessToken.getHttpEntity()
+                , Map.class);
+        return responseEntity.getBody();
+    }
+
+    private List<LocalDate> getDates(LocalDate startDate, LocalDate endDate) {
+        long noOfDates = ChronoUnit.DAYS.between(startDate, endDate);
+        return Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(noOfDates + 1)
+                .collect(Collectors.toList());
+    }
+
 
     private String emailBody(String driver, String vehicle, String location, String terminal) {
 
