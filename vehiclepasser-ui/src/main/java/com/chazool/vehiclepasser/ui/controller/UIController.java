@@ -70,6 +70,7 @@ public class UIController extends WebSecurityConfigurerAdapter {
             //  return "terminal-console";
 
             //
+            paymentService.findEntranceVehicleTypeCountByLocationAndDate(1);
             return "index-admin";
         } else {
             PaymentMethod paymentMethod = paymentService.findPaymentMethod(AccessToken.getUsername());

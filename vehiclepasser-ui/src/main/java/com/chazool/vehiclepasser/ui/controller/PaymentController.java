@@ -77,12 +77,12 @@ public class PaymentController {
     }
 
     @GetMapping(value = "entrance-vehicletypes/{location}")
-    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(@PathVariable int location) {
+    public Map<String, Map> findEntranceVehicleTypeCountByLocationAndDate(@PathVariable int location) {
         return paymentService.findEntranceVehicleTypeCountByLocationAndDate(location);
     }
 
     @GetMapping(value = "exit-vehicletypes/{location}")
-    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(@PathVariable int location) {
+    public Map<String, Map> findExitVehicleTypeCountByLocationAndDate(@PathVariable int location) {
         return paymentService.findExitVehicleTypeCountByLocationAndDate(location);
     }
 

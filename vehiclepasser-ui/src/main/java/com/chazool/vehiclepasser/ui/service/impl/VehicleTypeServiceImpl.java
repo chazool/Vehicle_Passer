@@ -5,6 +5,7 @@ import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
 import com.chazool.vehiclepasser.ui.service.VehicleTypeService;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +39,9 @@ public class VehicleTypeServiceImpl implements VehicleTypeService {
         ResponseEntity<Response> responseEntity = restTemplate
                 .exchange("http://transsaction/services/vehicle-type/", HttpMethod.GET, httpEntity, Response.class);
 
-        return (List<VehicleType>) responseEntity.getBody().getData();
+        VehicleType[] vehicleTypes = new ObjectMapper().convertValue(responseEntity.getBody().getData(), VehicleType[].class);
+
+        return Arrays.asList(vehicleTypes);
 
     }
 }

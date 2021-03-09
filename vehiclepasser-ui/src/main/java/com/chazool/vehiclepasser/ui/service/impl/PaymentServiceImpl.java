@@ -9,6 +9,7 @@ import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
+import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.*;
 import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
@@ -51,6 +52,8 @@ public class PaymentServiceImpl implements PaymentService {
     private LocationService locationService;
     @Autowired
     private EmailSenderService emailSenderService;
+    @Autowired
+    private VehicleTypeService vehicleTypeService;
 
 
     @Override
@@ -302,9 +305,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Map<Integer, Map> findEntranceVehicleTypeCountByLocationAndDate(int location) {
+    public Map<String, Map> findEntranceVehicleTypeCountByLocationAndDate(int location) {
         LocalDate startDate = LocalDate.now().minusDays(6);
         LocalDate endDate = LocalDate.now();
+        List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
 
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "http://payment/services/payments/entrance-vehicletype-count?location="
@@ -312,11 +316,30 @@ public class PaymentServiceImpl implements PaymentService {
                 , HttpMethod.GET
                 , AccessToken.getHttpEntity()
                 , Map.class);
-        return responseEntity.getBody();
+
+        Map<String, Map> vehicleTypeCounts = responseEntity.getBody();
+
+        vehicleTypes.forEach(vehicleType ->
+        {
+            Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
+
+            getDates(startDate, endDate).forEach(day -> {
+                if (count.containsKey(day.toString())) {
+                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
+                    count.remove(day.toString());
+                } else {
+                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
+                }
+            });
+            vehicleTypeCounts.put(vehicleType.getId() + "", count);
+        });
+
+        return vehicleTypeCounts;
     }
 
     @Override
-    public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location) {
+    public Map<String, Map> findExitVehicleTypeCountByLocationAndDate(int location) {
+
         LocalDate startDate = LocalDate.now().minusDays(6);
         LocalDate endDate = LocalDate.now();
 
@@ -326,7 +349,29 @@ public class PaymentServiceImpl implements PaymentService {
                 , HttpMethod.GET
                 , AccessToken.getHttpEntity()
                 , Map.class);
-        return responseEntity.getBody();
+
+        Map<String, Map> vehicleTypeCounts = responseEntity.getBody();
+        return addZeroVehicleTypeCount(vehicleTypeCounts, startDate, endDate);
+    }
+
+    private Map<String, Map> addZeroVehicleTypeCount(Map<String, Map> vehicleTypeCounts, LocalDate startDate, LocalDate endDate) {
+        List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
+        vehicleTypes.forEach(vehicleType ->
+        {
+            Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
+
+            getDates(startDate, endDate).forEach(day -> {
+                if (count.containsKey(day.toString())) {
+                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
+                    count.remove(day.toString());
+                } else {
+                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
+                }
+            });
+            vehicleTypeCounts.put(vehicleType.getId() + "", count);
+        });
+
+        return vehicleTypeCounts;
     }
 
     private List<LocalDate> getDates(LocalDate startDate, LocalDate endDate) {
