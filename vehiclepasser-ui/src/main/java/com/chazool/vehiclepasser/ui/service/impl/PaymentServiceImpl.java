@@ -319,26 +319,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         Map<String, Map> vehicleTypeCounts = responseEntity.getBody();
 
-//        if (vehicleTypeCounts.size() != 0) {
-//
-//            vehicleTypes.forEach(vehicleType ->
-//            {
-//                Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
-//
-//                getDates(startDate, endDate).forEach(day -> {
-//                    if (count.containsKey(day.toString())) {
-//                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
-//                        count.remove(day.toString());
-//                    } else {
-//                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
-//                    }
-//                });
-//                vehicleTypeCounts.put(vehicleType.getName(), count);
-//                vehicleTypeCounts.remove(vehicleType.getId() + "");
-//            });
-//        }
-//        return vehicleTypeCounts;
-
         return addZeroVehicleTypeCount(vehicleTypeCounts, startDate, endDate);
     }
 

@@ -28,10 +28,13 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 $("#location-entranceAndExitVehicle").change(function () {
+
     load_areaChartEntranceAndExitVehicles($(this).val());
 });
 
 function load_areaChartEntranceAndExitVehicles(location) {
+    var lordingDiv = document.getElementById("areaChart-EntranceAndExitVehicles-lording");
+    lordingDiv.style.display = "block";
     $.getJSON("entranceandexit-vehicles/" + location, function (data, textStatus, jqXHR) {
 
         var labels = [];
@@ -69,7 +72,8 @@ function load_areaChartEntranceAndExitVehicles(location) {
 
         areaChartEntranceAndExitVehicles.data = vehicleData;
         areaChartEntranceAndExitVehicles.update();
-
+        $("#areaChart-EntranceAndExitVehicles-lording").hide();
+        lordingDiv.style.display = "none";
     });
 }
 

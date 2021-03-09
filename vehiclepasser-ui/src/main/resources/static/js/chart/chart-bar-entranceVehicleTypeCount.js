@@ -33,6 +33,8 @@ $("#location-entranceVehicleType").change(function () {
 
 function load_BarChartEntranceVehicleTypes(location) {
 
+    var lordingDiv = document.getElementById("barChart-EntranceVehicleTypes-lording");
+    lordingDiv.style.display = "block";
     $.getJSON("entrance-vehicletypes/" + location, function (data, textStatus, jqXHR) {
 
         var labels = [];
@@ -96,8 +98,9 @@ function load_BarChartEntranceVehicleTypes(location) {
 
         barChartEntranceVehicleTypes.data = vehicleTypeData;
         barChartEntranceVehicleTypes.update();
-
+        lordingDiv.style.display = "none";
     });
+
 }
 
 load_BarChartEntranceVehicleTypes($("#location-entranceVehicleType").val());

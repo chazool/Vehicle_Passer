@@ -27,30 +27,91 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
-var densityData = {
-    label: 'Density of Planet (kg/m3)',
-    data: [5427, 5243, 5514, 3933, 1326, 687, 1271],
-    backgroundColor: 'rgba(0, 99, 132, 0.6)',
-    borderWidth: 0
-};
+$("#location-exitVehicleType").change(function () {
+    load_BarChartExitVehicleTypes($(this).val());
+});
 
-var gravityData = {
-    label: 'Gravity of Planet (m/s2)',
-    data: [5427, 5243, 5514, 3933, 1326, 687, 1271],
-    backgroundColor: 'rgba(99, 132, 0, 0.6)',
-    borderWidth: 0
-};
+function load_BarChartExitVehicleTypes(location) {
 
-var planetData = {
-    labels: ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus"],
-    datasets: [densityData, gravityData]
-};
+    var lordingDiv = document.getElementById("barChart-ExitVehicleTypes-lording");
+    lordingDiv.style.display = "block";
+
+
+    $.getJSON("exit-vehicletypes/" + location, function (data, textStatus, jqXHR) {
+
+        var labels = [];
+        var vehicleType1_Data = [];
+        var vehicleType2_Data = [];
+        var vehicleType3_Data = [];
+
+        var vehicleType1_label = [];
+        var vehicleType2_label = [];
+        var vehicleType3_label = [];
+
+
+        var count = 1;
+        $.each(data, function (key, value) {
+            if (count === 1) {
+                vehicleType1_label = key;
+                $.each(value, function (key, value) {
+                    labels.push(key);
+                    vehicleType1_Data.push(value);
+                });
+
+            } else if (count === 2) {
+                vehicleType2_label = key;
+                $.each(value, function (key, value) {
+                    vehicleType2_Data.push(value);
+                });
+            } else if (count == 3) {
+                vehicleType3_label = key;
+                $.each(value, function (key, value) {
+                    vehicleType3_Data.push(value);
+                });
+            }
+            count++;
+        });
+
+        var vehicleType1 = {
+            label: vehicleType1_label,
+            data: vehicleType1_Data,
+            backgroundColor: 'rgba(78, 115, 223, 1)',
+            borderWidth: 0
+        };
+
+        var vehicleType2 = {
+            label: vehicleType2_label,
+            data: vehicleType2_Data,
+            backgroundColor: 'rgba(28, 200, 138, 1)',
+            borderWidth: 0
+        };
+
+        var vehicleType3 = {
+            label: vehicleType3_label,
+            data: vehicleType3_Data,
+            backgroundColor: 'rgba(54, 185, 204, 1)',
+            borderWidth: 0
+        };
+
+        var vehicleTypeData = {
+            labels: labels,
+            datasets: [vehicleType1, vehicleType2, vehicleType3]
+        };
+
+        barChartExitVehicleTypes.data = vehicleTypeData;
+        barChartExitVehicleTypes.update();
+        lordingDiv.style.display = "none";
+    });
+}
+
+load_BarChartExitVehicleTypes($("#location-exitVehicleType").val());
+
 
 // Bar Chart Example
 var ctx = document.getElementById("barChart-ExitVehicleTypes");
-var myBarChart = new Chart(ctx, {
+var barChartExitVehicleTypes = new Chart(ctx, {
     type: 'bar',
-    data: planetData,
+    data: {},
     options: {
         maintainAspectRatio: false,
         layout: {
@@ -76,7 +137,10 @@ var myBarChart = new Chart(ctx, {
                 maxBarThickness: 25,
             }],
             yAxes: [{
-
+                ticks: {
+                    maxTicksLimit: 5,
+                    padding: 10
+                },
                 gridLines: {
                     color: "rgb(234, 236, 244)",
                     zeroLineColor: "rgb(234, 236, 244)",

@@ -122,8 +122,16 @@
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <h6 class="m-0 font-weight-bold text-primary">Entrance & Exit Vehicle Count</h6>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div id="areaChart-EntranceAndExitVehicles-lording">
+                                        <div class="d-flex align-items-center">
+                                            <strong>Loading...</strong>
+                                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <select class="form-control" name="locationId" id="location-entranceAndExitVehicle"
@@ -154,8 +162,16 @@
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <h6 class="m-0 font-weight-bold text-primary">Entrance Vehicle Types Counts</h6>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div id="barChart-EntranceVehicleTypes-lording">
+                                        <div class="d-flex align-items-center">
+                                            <strong>Loading...</strong>
+                                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <select class="form-control" name="locationId" id="location-entranceVehicleType"
@@ -184,10 +200,20 @@
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <h6 class="m-0 font-weight-bold text-primary">Exit Vehicle Types Counts</h6>
                                 </div>
+                                <div class="col-sm-2">
+                                    <div id="barChart-ExitVehicleTypes-lording">
+                                        <div class="d-flex align-items-center">
+                                            <strong>Loading...</strong>
+                                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-sm-4">
+
+
                                     <select class="form-control" name="locationId" id="location-exitVehicleType"
                                             required>
                                         <option th:each="location: ${locations}" th:value="${location.id}"
