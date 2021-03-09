@@ -27,7 +27,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
-$("#location").change(function () {
+$("#location-entranceAndExitVehicle").change(function () {
     load_areaChartEntranceAndExitVehicles($(this).val());
 });
 
@@ -73,10 +73,9 @@ function load_areaChartEntranceAndExitVehicles(location) {
     });
 }
 
+load_areaChartEntranceAndExitVehicles($("#location-entranceAndExitVehicle").val());
 
-load_areaChartEntranceAndExitVehicles($("#location").val());
 
-// Area Chart Example
 var ctx = document.getElementById("areaChart-EntranceAndExitVehicles");
 var areaChartEntranceAndExitVehicles = new Chart(ctx, {
     type: 'line',

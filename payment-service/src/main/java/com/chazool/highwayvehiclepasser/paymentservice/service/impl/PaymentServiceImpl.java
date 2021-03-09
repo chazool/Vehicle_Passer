@@ -136,17 +136,19 @@ public class PaymentServiceImpl implements PaymentService {
         List<Integer> entranceTerminals = getTerminalIds(location, 0);
         List<VehicleType> vehicleTypes = getVehicleTypes();
 
-        List<Payment> entrancePayments = paymentRepository.findPaymentsByEntranceTerminalInAndDate(entranceTerminals, startDate, endDate);
         Map<Integer, Map> entranceVehicleTypeCount = new HashMap<>();
 
-        vehicleTypes.forEach(vehicleType -> {
-            Map<LocalDate, Long> counting = entrancePayments.stream().filter(payment -> {
-                return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
-                        .getVehicleType() == vehicleType.getId();
-            }).collect(Collectors.groupingBy(payment -> payment.getEntranceDate().toLocalDate(), Collectors.counting()));
+        if (entranceTerminals.size() != 0) {
+            List<Payment> entrancePayments = paymentRepository.findPaymentsByEntranceTerminalInAndDate(entranceTerminals, startDate, endDate);
+            vehicleTypes.forEach(vehicleType -> {
+                Map<LocalDate, Long> counting = entrancePayments.stream().filter(payment -> {
+                    return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
+                            .getVehicleType() == vehicleType.getId();
+                }).collect(Collectors.groupingBy(payment -> payment.getEntranceDate().toLocalDate(), Collectors.counting()));
 
-            entranceVehicleTypeCount.put(vehicleType.getId(), counting);
-        });
+                entranceVehicleTypeCount.put(vehicleType.getId(), counting);
+            });
+        }
 
         return entranceVehicleTypeCount;
     }
@@ -155,20 +157,19 @@ public class PaymentServiceImpl implements PaymentService {
     public Map<Integer, Map> findExitVehicleTypeCountByLocationAndDate(int location, String startDate, String endDate) {
         List<Integer> exitTerminals = getTerminalIds(location, 1);
         List<VehicleType> vehicleTypes = getVehicleTypes();
-
-        List<Payment> exitPayments = paymentRepository.findPaymentsByExitTerminalInAndDate(exitTerminals, startDate, endDate);
-
         Map<Integer, Map> exitVehicleTypeCount = new HashMap<>();
+        if (exitTerminals.size() != 0) {
+            List<Payment> exitPayments = paymentRepository.findPaymentsByExitTerminalInAndDate(exitTerminals, startDate, endDate);
 
-        vehicleTypes.forEach(vehicleType ->
-        {
-            Map<LocalDate, Long> counting = exitPayments.stream().filter(payment -> {
-                return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
-                        .getVehicleType() == vehicleType.getId();
-            }).collect(Collectors.groupingBy(payment -> payment.getExitDate().toLocalDate(), Collectors.counting()));
-            exitVehicleTypeCount.put(vehicleType.getId(), counting);
-        });
-
+            vehicleTypes.forEach(vehicleType ->
+            {
+                Map<LocalDate, Long> counting = exitPayments.stream().filter(payment -> {
+                    return findVehicle(payment.getVehicle(), AccessToken.getHttpEntity())
+                            .getVehicleType() == vehicleType.getId();
+                }).collect(Collectors.groupingBy(payment -> payment.getExitDate().toLocalDate(), Collectors.counting()));
+                exitVehicleTypeCount.put(vehicleType.getId(), counting);
+            });
+        }
         return exitVehicleTypeCount;
     }
 
@@ -219,10 +220,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", AccessToken.getAccessToken());
-
-       /* Route route = new Route();
-        route.setEntrance(entranceTerminal);
-        route.setExist(exitTerminal);*/
 
         HttpEntity<Route> httpEntity = new HttpEntity<>(httpHeaders);
 

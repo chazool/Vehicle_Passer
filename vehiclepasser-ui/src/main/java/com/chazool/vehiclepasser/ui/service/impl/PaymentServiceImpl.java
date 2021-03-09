@@ -319,22 +319,27 @@ public class PaymentServiceImpl implements PaymentService {
 
         Map<String, Map> vehicleTypeCounts = responseEntity.getBody();
 
-        vehicleTypes.forEach(vehicleType ->
-        {
-            Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
+//        if (vehicleTypeCounts.size() != 0) {
+//
+//            vehicleTypes.forEach(vehicleType ->
+//            {
+//                Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
+//
+//                getDates(startDate, endDate).forEach(day -> {
+//                    if (count.containsKey(day.toString())) {
+//                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
+//                        count.remove(day.toString());
+//                    } else {
+//                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
+//                    }
+//                });
+//                vehicleTypeCounts.put(vehicleType.getName(), count);
+//                vehicleTypeCounts.remove(vehicleType.getId() + "");
+//            });
+//        }
+//        return vehicleTypeCounts;
 
-            getDates(startDate, endDate).forEach(day -> {
-                if (count.containsKey(day.toString())) {
-                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
-                    count.remove(day.toString());
-                } else {
-                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
-                }
-            });
-            vehicleTypeCounts.put(vehicleType.getId() + "", count);
-        });
-
-        return vehicleTypeCounts;
+        return addZeroVehicleTypeCount(vehicleTypeCounts, startDate, endDate);
     }
 
     @Override
@@ -355,22 +360,24 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Map<String, Map> addZeroVehicleTypeCount(Map<String, Map> vehicleTypeCounts, LocalDate startDate, LocalDate endDate) {
-        List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
-        vehicleTypes.forEach(vehicleType ->
-        {
-            Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
+        if (vehicleTypeCounts.size() != 0) {
+            List<VehicleType> vehicleTypes = vehicleTypeService.findAll();
+            vehicleTypes.forEach(vehicleType ->
+            {
+                Map count = vehicleTypeCounts.get(vehicleType.getId() + "");
 
-            getDates(startDate, endDate).forEach(day -> {
-                if (count.containsKey(day.toString())) {
-                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
-                    count.remove(day.toString());
-                } else {
-                    count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
-                }
+                getDates(startDate, endDate).forEach(day -> {
+                    if (count.containsKey(day.toString())) {
+                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), count.get(day.toString()));
+                        count.remove(day.toString());
+                    } else {
+                        count.put(day.format(DateTimeFormatter.ofPattern("MMM dd")), 0);
+                    }
+                });
+                vehicleTypeCounts.put(vehicleType.getName(), count);
+                vehicleTypeCounts.remove(vehicleType.getId() + "");
             });
-            vehicleTypeCounts.put(vehicleType.getId() + "", count);
-        });
-
+        }
         return vehicleTypeCounts;
     }
 
