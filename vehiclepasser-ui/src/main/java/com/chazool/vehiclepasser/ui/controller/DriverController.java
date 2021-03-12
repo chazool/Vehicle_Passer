@@ -1,7 +1,6 @@
 package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
-import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.DriverService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 
 
 @Controller

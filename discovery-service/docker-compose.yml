@@ -1,0 +1,6 @@
+version: "3"
+services:
+  discovery-server:
+    image: discovery-jdbc
+    ports:
+      - 8761:8761

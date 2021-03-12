@@ -11,10 +11,10 @@ import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
+   /* @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException runtimeException, HttpStatus httpStatus, WebRequest webRequest) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimeStamp(LocalDateTime.now(ZoneId.of("Asia/Colombo")).toString());
@@ -24,9 +24,7 @@ public class GlobalExceptionHandler {
         errorResponse.setPath(webRequest.getDescription(false));
 
         return new ResponseEntity<>(errorResponse, httpStatus);
-    }
-
-
+    }*/
 
 
 }

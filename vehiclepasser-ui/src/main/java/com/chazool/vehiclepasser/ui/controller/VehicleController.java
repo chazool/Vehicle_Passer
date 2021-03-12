@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @Controller
-//@CrossOrigin(origins = "192.168.8.180:8181")
 public class VehicleController {
 
     @Autowired

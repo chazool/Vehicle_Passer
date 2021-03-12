@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public Response save(User user) {
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
-        role.setId(2);
+        role.setId(3);
         roles.add(role);
         user.setRoles(roles);
         return restTemplate.postForObject("http://authorization/auth/users/signup", user, Response.class);

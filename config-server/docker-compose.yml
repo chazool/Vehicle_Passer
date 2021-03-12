@@ -1,0 +1,6 @@
+version: "3"
+services:
+  discovery-server:
+    image: cloud-config-jdbc
+    ports:
+      - 8899:8899

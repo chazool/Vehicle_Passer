@@ -60,7 +60,6 @@ public class PaymentMethodController {
     public List<PaymentMethod> fetchAll() {
 
 
-
         return paymentMethodService.findAll();
     }
 

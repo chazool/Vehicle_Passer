@@ -1,16 +1,12 @@
 package com.chazool.highwayvehiclepasser.driverservice.controller;
 
-
 import com.chazool.highwayvehiclepasser.driverservice.service.DriverService;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Access;
 import java.util.List;
 import java.util.Map;
 

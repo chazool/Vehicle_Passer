@@ -4,11 +4,12 @@ spring:
   application:
     name: authorization
   datasource:
-    url: jdbc:mysql://localhost:3306/authDB?createDatabaseIfNotExist=true
+    url: jdbc:mysql://auth-db:3306/vehiclepasser_auth?createDatabaseIfNotExist=true
     username: root
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
     initialization-mode: always
+    continue-on-error: true
   jpa:
     hibernate:
       naming:
@@ -26,5 +27,7 @@ eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
+
+
 
 

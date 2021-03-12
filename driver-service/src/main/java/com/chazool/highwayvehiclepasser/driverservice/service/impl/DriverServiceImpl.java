@@ -12,12 +12,10 @@ import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,8 +39,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver save(Driver driver, String authorization)
-            throws InvalidEmailException, InvalidPasswordException
-            , InvalidNameException, InvalidDrivingLicenseException {
+            throws InvalidEmailException, InvalidPasswordException, InvalidNameException, InvalidDrivingLicenseException {
 
         isValid(driver);
         if (driver.getPassword().trim().equals(null) || driver.getPassword().trim().equals("")
@@ -142,8 +139,10 @@ public class DriverServiceImpl implements DriverService {
         paymentMethod.setActive(true);
 
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", authorization);
-        HttpEntity<PaymentMethod> httpEntity = new HttpEntity<>(paymentMethod, httpHeaders);
+        JSONObject jsonObject = new JSONObject(paymentMethod);
+        HttpEntity httpEntity = new HttpEntity<>(jsonObject.toString(), httpHeaders);
 
         ResponseEntity<Response> responseEntity = restTemplate
                 .exchange("http://payment/services/payment-method", HttpMethod.POST, httpEntity, Response.class);

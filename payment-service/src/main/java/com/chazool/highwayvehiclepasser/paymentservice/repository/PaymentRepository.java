@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +20,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             "DATE_FORMAT(entranceDate, \"%Y-%m-%d\") as fullDate ," +
             "DATE_FORMAT(entranceDate, \"%b %d\") as simpleDate\n" +
             "FROM payment \n" +
-            "where entranceTerminal in (:terminals) and date(entranceDate) between :startDate and :endDate\n" +
+            "where entranceTerminal in (:terminals) and date(entranceDate) between :startDate and DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
             "group by date(entranceDate) ", nativeQuery = true)
     List<Map> findVehicleCountByEntranceTerminalAndDate(
             @Param("terminals") List<Integer> terminals,
@@ -32,7 +30,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             "DATE_FORMAT(exitDate, \"%Y-%m-%d\") as fullDate ," +
             "DATE_FORMAT(exitDate, \"%b %d\") as simpleDate\n" +
             "FROM payment \n" +
-            "where exitTerminal in (:terminals) and date(exitDate) between :startDate and :endDate\n" +
+            "where exitTerminal in (:terminals) and date(exitDate) between :startDate and DATE_ADD(:endDate, INTERVAL 1 DAY)  \n" +
             "group by date(exitDate) ", nativeQuery = true)
     List<Map> findVehicleCountByExitTerminalAndDate(
             @Param("terminals") List<Integer> terminals,
@@ -40,13 +38,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
 
     @Query(value = "SELECT * FROM payment " +
-            "where entranceTerminal in (:terminals)  and date(entranceDate) between :startDate and  :endDate "
+            "where entranceTerminal in (:terminals)  and date(entranceDate) between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)  "
             , nativeQuery = true)
     List<Payment> findPaymentsByEntranceTerminalInAndDate(@Param("terminals") List<Integer> terminals
             , @Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "SELECT * FROM payment " +
-            "where exitTerminal in (:terminals)  and date(exitDate) between :startDate and  :endDate "
+            "where exitTerminal in (:terminals)  and date(exitDate) between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)  "
             , nativeQuery = true)
     List<Payment> findPaymentsByExitTerminalInAndDate(@Param("terminals") List<Integer> terminals
             , @Param("startDate") String startDate, @Param("endDate") String endDate);

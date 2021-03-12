@@ -14,10 +14,7 @@ import com.chazool.vehiclepasser.ui.config.AccessToken;
 import com.chazool.vehiclepasser.ui.service.*;
 import com.chazool.vehiclepasser.ui.thread.PaymentEmailSender;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,8 +30,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,12 +40,6 @@ public class PaymentServiceImpl implements PaymentService {
     private RestTemplate restTemplate;
     @Autowired
     private DriverService driverService;
-    @Autowired
-    private VehicleService vehicleService;
-    @Autowired
-    private LocationService locationService;
-    @Autowired
-    private EmailSenderService emailSenderService;
     @Autowired
     private VehicleTypeService vehicleTypeService;
 
@@ -75,7 +63,6 @@ public class PaymentServiceImpl implements PaymentService {
                     Response paymentResponse = findByDriver(paymentMethod.getDriver());
                     if (paymentResponse.isAction() == false) {
 
-                        //  Payment payment =objectMapper.convertValue(paymentResponse.getData(), Payment.class);
                         Payment payment = new Payment();
 
                         payment.setPaymentMethod(cardNo);
@@ -127,7 +114,6 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setExitTerminal(terminalId);
 
                 JSONObject jsonObject = new JSONObject(payment);
-                System.out.println(jsonObject.toString());
 
                 ResponseEntity<Response> responseEntity = restTemplate.exchange(
                         "http://payment/services/payments"

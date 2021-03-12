@@ -1,6 +1,5 @@
 package com.chazool.vehiclepasser.ui.controller;
 
-import com.chazool.highwayvehiclepasser.model.transactionservice.Location;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.vehiclepasser.ui.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class LocationController {
 
     @GetMapping("/terminal")
     public List<Terminal> getTerminal(@RequestParam int location, @RequestParam int terminalType) {
-        return locationService.findTerminal(location,terminalType);
+        return locationService.findTerminal(location, terminalType);
     }
 
 
