@@ -5,6 +5,7 @@ spring:
     name: authorization
   datasource:
     url: jdbc:mysql://auth-db:3306/vehiclepasser_auth?createDatabaseIfNotExist=true
+   # url: jdbc:mysql://auth-db:3306/vehiclepasser_auth?autoReconnect=true&useSSL=false
     username: root
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
@@ -25,8 +26,11 @@ logging:
         type: trace
 eureka:
   client:
+
     register-with-eureka: true
     fetch-registry: true
+
+
 
 
 

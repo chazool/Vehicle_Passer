@@ -3,10 +3,7 @@ package com.chazool.highwayvehiclepasser.model.transactionservice;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -15,7 +12,7 @@ import java.math.BigDecimal;
 @ToString
 public class VehicleType {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private BigDecimal charge;

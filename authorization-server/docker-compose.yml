@@ -1,15 +1,17 @@
-version: "3"
+version: "3.7"
 services:
-#  auth-db:
-#    image: mysql:8
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=1234
-#      - MYSQL_DATABASE=vehiclepasser_auth
+  auth-db:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=vehiclepasser_auth
   auth-server:
-    image: auth-jdbc
+    image: auth-server
     ports:
       - 9191:9191
 #    environment:
 #      SPRING_DATASOURCE_URL: jdbc:mysql://auth-db:3306/vehiclepasser_auth
-#    depends_on:
-#      - auth-db
+    depends_on:
+      - auth-db
+
