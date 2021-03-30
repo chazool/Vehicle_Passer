@@ -1,25 +1,7 @@
-server:
-  port: 8181
-  servlet:
-    session:
-      cookie:
-        name: KSESSION
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
 spring:
   application:
-    name: vehicle-passser-ui
-
-security:
-  oauth2:
-    client:
-      client-id: mobile
-      client-secret: pin
-      user-authorization-uri: http://localhost:9191/oauth/authorize
-      access-token-uri: http://localhost:9191/oauth/token
-    resource:
-      token-info-uri: http://localhost:9191/oauth/check_token
-
+    name: ui
+  cloud:
+    config:
+      uri: http://localhost:8899
 

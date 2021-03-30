@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: authorization
+  cloud:
+    config:
+      uri: http://localhost:8899
