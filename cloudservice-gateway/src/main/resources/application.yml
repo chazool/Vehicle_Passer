@@ -1,0 +1,59 @@
+ribbon:
+  ReadTimeout: 60000
+  connection-timeout: 60000
+#  eureka:
+#    enabled: true
+
+
+zuul:
+  sensitive-headers: Cookie,Set-Cookie
+  prefix: /api
+  routes:
+    driver:
+      path: /driver/**
+      serviceId: driver
+    email:
+      path: /email/**
+      serviceId: email
+    payment:
+      path: /payment/**
+      serviceId: payment
+    transsaction:
+      path: /transsaction/**
+      serviceId: transsaction
+#  ignoredServices: '*'
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+
+security:
+  oauth2:
+    resource:
+      token-info-uri: http://localhost:9191/oauth/check_token
+    client:
+      client-id: mobile
+      client-secret: pin
+
+
+server:
+  port: 8989
+
+spring:
+  application:
+    name: zuul-service
+
+##  Increase the Hystrix timeout to 60s (for all)
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 60000
