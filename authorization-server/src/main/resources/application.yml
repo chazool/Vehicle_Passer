@@ -1,0 +1,51 @@
+#server:
+#  port: 9191
+#spring:
+#  application:
+#    name: authorization
+#  datasource:
+#    url: jdbc:mysql://mysql-standalone:3306/vehiclepasser_auth?createDatabaseIfNotExist=true
+#    #url: jdbc:mysql://localhost:3306/vehiclepasser_auth?createDatabaseIfNotExist=true
+#    #url: jdbc:mysql://localhost:3306/vehiclepasser_auth?useSSL=false
+#    #?autoReconnect=true&useSSL=false
+#    username: root
+#    password: root
+#    driver-class-name: com.mysql.jdbc.Driver
+#    initialization-mode: always
+#    continue-on-error: true
+#  jpa:
+#    hibernate:
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        type: trace
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://discovery-service:8761/eureka/
+#  instance:
+#    hostname: discovery-service
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#

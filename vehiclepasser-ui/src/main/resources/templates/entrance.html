@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
 
@@ -72,16 +72,16 @@
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
 <script th:inline="javascript">
-
-
     /*<![CDATA[*/
     var response = [[${response}]];
     //  alert(response);
-    //  console.log(response.action);
+    console.log(response);
     if (response.action === true) {
         swal({
             title: "Safe Drive!",

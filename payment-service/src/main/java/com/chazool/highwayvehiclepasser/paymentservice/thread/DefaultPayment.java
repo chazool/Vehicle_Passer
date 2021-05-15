@@ -1,9 +1,7 @@
 package com.chazool.highwayvehiclepasser.paymentservice.thread;
 
-import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 

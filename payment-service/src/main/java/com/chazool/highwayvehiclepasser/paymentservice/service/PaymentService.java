@@ -9,11 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface PaymentService {
 
-
-    Payment enter(int driverId, int entranceTerminal);
+    Payment enter(int driverId, int entranceTerminal) throws ExecutionException, InterruptedException;
 
     Payment exit(int driverId, int exitTerminal);
 

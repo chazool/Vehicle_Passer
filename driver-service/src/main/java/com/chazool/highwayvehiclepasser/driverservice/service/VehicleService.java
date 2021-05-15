@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface VehicleService {
 
-
-    Vehicle save(Vehicle vehicle,String authorization);
+    Vehicle save(Vehicle vehicle, String authorization);
 
     Vehicle update(Vehicle vehicle);
 
@@ -21,7 +20,5 @@ public interface VehicleService {
     List<Vehicle> findByAll();
 
     List<Vehicle> findByOwnerId(int ownerId);
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.chazool.highwayvehiclepasser.paymentservice.controller;
 
 import com.chazool.highwayvehiclepasser.model.exception.PaymentNotFoundException;
+import com.chazool.highwayvehiclepasser.model.exception.ServiceDownException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("services/payments")
@@ -20,15 +22,21 @@ public class PaymentController {
 
     @PostMapping
     public Response enter(@RequestBody Payment payment) {
-        System.out.println(AccessToken.getAccessToken());
 
-        return Response.success(paymentService.enter(payment.getDriver(), payment.getEntranceTerminal()));
+        try {
+            return Response.success(paymentService.enter(payment.getDriver(), payment.getEntranceTerminal()));
+        } catch (ExecutionException e) {
+            return Response.fail(e.getMessage());
+        } catch (InterruptedException e) {
+            return Response.fail(e.getMessage());
+        } catch (ServiceDownException serviceDownException) {
+            return Response.systemDown(serviceDownException.getMessage());
+        }
     }
 
     @PutMapping
     public Response exit(@RequestBody Payment payment) {
         try {
-            //    Payment payment = new Payment();
             return Response.success(paymentService.exit(payment.getDriver(), payment.getExitTerminal()));
         } catch (PaymentNotFoundException paymentNotFoundException) {
             return Response.fail(paymentNotFoundException.getMessage());

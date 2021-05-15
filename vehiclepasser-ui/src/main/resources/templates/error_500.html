@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <title> 500</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Encode+Sans+Semi+Condensed:100,200,300,400" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link type="text/css" href="css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        /**/
+        :root {
+            --main-color: #eaeaea;
+            --stroke-color: black;
+
+        }
+
+        /**/
+        body {
+            background: var(--main-color);
+        }
+
+        h1 {
+            margin: 100px auto 0 auto;
+            color: var(--stroke-color);
+            font-family: 'Encode Sans Semi Condensed', Verdana, sans-serif;
+            font-size: 10rem;
+            line-height: 10rem;
+            font-weight: 200;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 20px auto 30px auto;
+            font-family: 'Encode Sans Semi Condensed', Verdana, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 200;
+            text-align: center;
+        }
+
+        h1, h2 {
+            -webkit-transition: opacity 0.5s linear, margin-top 0.5s linear; /* Safari */
+            transition: opacity 0.5s linear, margin-top 0.5s linear;
+        }
+
+        .loading h1, .loading h2 {
+            margin-top: 0px;
+            opacity: 0;
+        }
+
+        .gears {
+            position: relative;
+            margin: 0 auto;
+            width: auto;
+            height: 0;
+        }
+
+        .gear {
+            position: relative;
+            z-index: 0;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: var(--stroke-color);
+        }
+
+        .gear:before {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            z-index: 2;
+            content: "";
+            border-radius: 50%;
+            background: var(--main-color);
+        }
+
+        .gear:after {
+            position: absolute;
+            left: 25px;
+            top: 25px;
+            z-index: 3;
+            content: "";
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 5px solid var(--stroke-color);
+            box-sizing: border-box;
+            background: var(--main-color);
+        }
+
+        .gear.one {
+            left: -130px;
+        }
+
+        .gear.two {
+            top: -75px;
+        }
+
+        .gear.three {
+            top: -235px;
+            left: 130px;
+        }
+
+        .gear .bar {
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            z-index: 0;
+            width: 150px;
+            height: 30px;
+            margin-top: -15px;
+            border-radius: 5px;
+            background: var(--stroke-color);
+        }
+
+        .gear .bar:before {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            z-index: 1;
+            content: "";
+            border-radius: 2px;
+            background: var(--main-color);
+        }
+
+        .gear .bar:nth-child(2) {
+            transform: rotate(60deg);
+            -webkit-transform: rotate(60deg);
+        }
+
+        .gear .bar:nth-child(3) {
+            transform: rotate(120deg);
+            -webkit-transform: rotate(120deg);
+        }
+
+        @-webkit-keyframes clockwise {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @-webkit-keyframes anticlockwise {
+            0% {
+                -webkit-transform: rotate(360deg);
+            }
+            100% {
+                -webkit-transform: rotate(0deg);
+            }
+        }
+
+        @-webkit-keyframes clockwiseError {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            20% {
+                -webkit-transform: rotate(30deg);
+            }
+            40% {
+                -webkit-transform: rotate(25deg);
+            }
+            60% {
+                -webkit-transform: rotate(30deg);
+            }
+            100% {
+                -webkit-transform: rotate(0deg);
+            }
+        }
+
+        @-webkit-keyframes anticlockwiseErrorStop {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            20% {
+                -webkit-transform: rotate(-30deg);
+            }
+            60% {
+                -webkit-transform: rotate(-30deg);
+            }
+            100% {
+                -webkit-transform: rotate(0deg);
+            }
+        }
+
+        @-webkit-keyframes anticlockwiseError {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            20% {
+                -webkit-transform: rotate(-30deg);
+            }
+            40% {
+                -webkit-transform: rotate(-25deg);
+            }
+            60% {
+                -webkit-transform: rotate(-30deg);
+            }
+            100% {
+                -webkit-transform: rotate(0deg);
+            }
+        }
+
+        .gear.one {
+            -webkit-animation: anticlockwiseErrorStop 2s linear infinite;
+        }
+
+        .gear.two {
+            -webkit-animation: anticlockwiseError 2s linear infinite;
+        }
+
+        .gear.three {
+            -webkit-animation: clockwiseError 2s linear infinite;
+        }
+
+        .loading .gear.one, .loading .gear.three {
+            -webkit-animation: clockwise 3s linear infinite;
+        }
+
+        .loading .gear.two {
+            -webkit-animation: anticlockwise 3s linear infinite;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Vehicle Passer</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span th:text="${username}" class="mr-2 d-none d-lg-inline text-gray-600 small"> </span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="/driver-profile">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <h1>500</h1>
+                <h2>Unexpected Error <b>:(</b></h2>
+                <div class="gears">
+                    <div class="gear one">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="gear two">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="gear three">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; chazool 2021</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-secondary" href="javascript: document.logoutForm.submit()">LOG OUT</a>
+                <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                    <input hidden type="submit" value="Sign Out"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    $(function () {
+        setTimeout(function () {
+            $('body').removeClass('loading');
+        }, 1000);
+    });
+
+</script>
+</body>
+
+</html>

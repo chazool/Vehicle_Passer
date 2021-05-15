@@ -1,17 +1,61 @@
-version: "3.7"
+#version: "3"
+#services:
+#  discovery-server:
+#    image: auth-server
+#    ports:
+#      - 9191:9191
+#
+
+
+version: "3"
 services:
-  auth-db:
-    image: mysql:8
-    restart: always
+
+  menu:
+    image: mysql
+    networks:
+      - menu-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=1234
       - MYSQL_DATABASE=vehiclepasser_auth
-  auth-server:
+
+  menu-jdbc:
     image: auth-server
     ports:
-      - 9191:9191
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://auth-db:3306/vehiclepasser_auth
+      - "9191:9191"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://menu:3306/vehiclepasser_auth
+    networks:
+      - menu-mysql
     depends_on:
-      - auth-db
+      - menu
+networks:
+  menu-mysql:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

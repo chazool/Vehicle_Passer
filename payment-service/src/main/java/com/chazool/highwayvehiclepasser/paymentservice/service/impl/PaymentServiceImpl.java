@@ -10,16 +10,15 @@ import com.chazool.highwayvehiclepasser.model.transactionservice.Route;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
 import com.chazool.highwayvehiclepasser.model.transactionservice.VehicleType;
 import com.chazool.highwayvehiclepasser.paymentservice.config.AccessToken;
+import com.chazool.highwayvehiclepasser.paymentservice.hystrix.CommonHystrixCommand;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentRepository;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentService;
 import com.chazool.highwayvehiclepasser.paymentservice.thread.DefaultPayment;
+import com.netflix.hystrix.HystrixCommand;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,10 +26,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Function;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,12 +41,18 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    HystrixCommand.Setter setter;
 
     @Override
-    public Payment enter(int driverId, int entranceTerminal) {
+    public Payment enter(int driverId, int entranceTerminal) throws ExecutionException, InterruptedException, ServiceDownException {
 
         Driver driver = getDriver(driverId);
 
+        if (driver == null) {
+            throw new ServiceDownException("Driver Service IS Down");
+        }
+        //----------------
         Payment payment = new Payment();
         payment.setDriver(driver.getId());
         payment.setVehicle(driver.getActiveVehicle());
@@ -202,18 +206,22 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-    private Driver getDriver(int driverId) throws DriverNotFoundException {
+    private Driver getDriver(int driverId) throws DriverNotFoundException, ExecutionException, InterruptedException {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", AccessToken.getAccessToken());
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
 
-        ResponseEntity<Driver> responseEntity = restTemplate.exchange("http://driver/services/drivers/" + driverId
-                , HttpMethod.GET
-                , httpEntity
-                , Driver.class);
+        CommonHystrixCommand<Driver> commonHystrixCommand = new CommonHystrixCommand<Driver>(
+                "default",
+                () -> {
+                    ResponseEntity<Driver> responseEntity
+                            = restTemplate.exchange("http://driver/services/drivers/" + driverId, HttpMethod.GET, httpEntity, Driver.class);
+                    return responseEntity.getBody();
+                }, () -> null);
 
-        return responseEntity.getBody();
+        Future<Driver> future = commonHystrixCommand.queue();
+        return future.get();
     }
 
     private Route getRout(int entranceTerminal, int exitTerminal) {
@@ -252,15 +260,13 @@ public class PaymentServiceImpl implements PaymentService {
 
         Vehicle vehicle = findVehicle(vehicleId, httpEntity);
 
-
         ResponseEntity<VehicleType> vehicleTypeResponseEntity = restTemplate.exchange(
                 "http://transsaction/services/vehicle-type/" + vehicle.getVehicleType()
                 , HttpMethod.GET
-                , AccessToken.getHttpEntity()
+                , httpEntity
                 , VehicleType.class);
 
         return vehicleTypeResponseEntity.getBody().getCharge();
-
     }
 
 

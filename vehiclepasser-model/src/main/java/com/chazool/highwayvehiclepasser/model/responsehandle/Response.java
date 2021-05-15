@@ -15,7 +15,7 @@ public class Response {
     private Object data;
 
     private enum Status {
-        SUCCESS, FAIL
+        SUCCESS, FAIL, SYSTEM_DOWN
     }
 
     private Response(Status status, boolean action, Object data) {
@@ -25,13 +25,16 @@ public class Response {
     }
 
 
-
     public static Response success(Object data) {
         return new Response(Status.SUCCESS, true, data);
     }
 
     public static Response fail(Object data) {
         return new Response(Status.FAIL, false, data);
+    }
+
+    public static Response systemDown(Object data) {
+        return new Response(Status.SYSTEM_DOWN, false, data);
     }
 
 

@@ -7,10 +7,11 @@ import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface PaymentService {
 
-    Response enter(int cardNo, int terminalId);
+    Response enter(int cardNo, int terminalId) throws ExecutionException, InterruptedException;
 
     Response exit(int cardNo, int terminalId);
 

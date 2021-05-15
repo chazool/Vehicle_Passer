@@ -1,29 +1,26 @@
 package com.chazool.vehiclepasser.ui.service.impl;
 
-import com.chazool.highwayvehiclepasser.model.authorizationserver.Role;
 import com.chazool.highwayvehiclepasser.model.authorizationserver.User;
 import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
-import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
-import com.chazool.highwayvehiclepasser.model.exception.VehicleNotFoundException;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.vehiclepasser.ui.config.AccessToken;
+import com.chazool.vehiclepasser.ui.hystrix.CommonHystrixCommand;
+import com.chazool.vehiclepasser.ui.hystrix.DriverHystrixCommand;
 import com.chazool.vehiclepasser.ui.service.DriverService;
 import com.chazool.vehiclepasser.ui.service.UserService;
 import com.chazool.vehiclepasser.ui.service.VehicleService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.utils.FallbackMethod;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.security.oauth2.client.AccessTokenContextRelay;
 import org.springframework.http.*;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.Access;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -34,6 +31,7 @@ public class DriverServiceImpl implements DriverService {
     private VehicleService vehicleService;
     @Autowired
     private UserService userService;
+
 
     @Override
     public Response save(Driver driver) {
@@ -63,6 +61,7 @@ public class DriverServiceImpl implements DriverService {
             return response;
         }
     }
+
 
     @Override
     public Response update(Driver driver) {
@@ -104,7 +103,8 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public synchronized Driver findById(int id) {
+    // @HystrixCommand(fallbackMethod = "findByIdFallback")
+    public Driver findById(int id) throws ExecutionException, InterruptedException {
 
         ResponseEntity<Driver> responseEntity = restTemplate.exchange(
                 "http://driver/services/drivers/" + id
@@ -113,7 +113,54 @@ public class DriverServiceImpl implements DriverService {
                 , Driver.class);
 
         return responseEntity.getBody();
+
+
+//        DriverHystrixCommand driverHystrixCommand = new DriverHystrixCommand(restTemplate, id);
+//
+//        Driver da = driverHystrixCommand.execute();
+//        System.out.println(da);
+//
+//
+//        //***************************
+//        CommonHystrixCommand<Driver> commonHystrixCommand1 = new CommonHystrixCommand<Driver>(
+//                "default",
+//                () -> {
+//                    ResponseEntity<Driver> responseEntity
+//                            = restTemplate.exchange("http://driver/services/drivers/" + id, HttpMethod.GET, AccessToken.getHttpEntity(), Driver.class);
+//                    return responseEntity.getBody();
+//                }, () -> null);
+//
+//        Future<Driver> future1 = commonHystrixCommand1.queue();
+//        Driver dd = future1.get();
+//        System.out.println(dd);
+//
+//
+//        //************************
+//
+//        CommonHystrixCommand<Driver> commonHystrixCommand = new CommonHystrixCommand<Driver>(
+//                "default",
+//                () -> {
+//                    ResponseEntity<Driver> responseEntity
+//                            = restTemplate.exchange("http://driver/services/drivers/" + id, HttpMethod.GET, AccessToken.getHttpEntity(), Driver.class);
+//                    return responseEntity.getBody();
+//                },
+//                () -> {
+//                    Driver driver = new Driver();
+//                    driver.setId(-1);
+//                    return driver;
+//                }
+//        );
+//
+//        Future<Driver> future = commonHystrixCommand.queue();
+//        return future.get();
     }
+
+
+    public Driver findByIdFallback(int id) {
+        System.out.println("Hit on Fallback.......................");
+        return new Driver();
+    }
+
 
     @Override
     public Driver findByEmail(String email) {

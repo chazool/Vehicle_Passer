@@ -5,7 +5,6 @@ import com.chazool.highwayvehiclepasser.model.exception.PaymentMethodNotFoundExc
 import com.chazool.highwayvehiclepasser.model.exception.PaymentNotFoundException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentMethodRepository;
-import com.chazool.highwayvehiclepasser.paymentservice.repository.PaymentRepository;
 import com.chazool.highwayvehiclepasser.paymentservice.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,7 +75,6 @@ public class PaymentMethodImpl implements PaymentMethodService {
 
         PaymentMethod paymentMethod = findById(id);
         paymentMethod.setBalanceAmount(paymentMethod.getBalanceAmount().add(amount));
-
         return update(paymentMethod);
     }
 

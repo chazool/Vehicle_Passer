@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
+    // @Qualifier("userDetailServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -36,10 +38,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+
+        auth.userDetailsService(userDetailsService).passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+
+        // auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
 

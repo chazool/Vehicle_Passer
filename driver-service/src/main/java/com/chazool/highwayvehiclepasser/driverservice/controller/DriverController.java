@@ -12,7 +12,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/services/drivers")
-public class DriverController {
+public class
+DriverController {
 
     @Autowired
     private DriverService driverService;
@@ -36,9 +37,7 @@ public class DriverController {
     @PutMapping
     public Response update(@RequestBody Driver driver)
             throws InvalidIdException, InvalidEmailException, InvalidNameException, InvalidDrivingLicenseException {
-        // System.out.println(driver1);
         try {
-            //   Driver driver = new Driver();
             driver = driverService.update(driver);
             return Response.success(driver);
         } catch (InvalidEmailException invalidEmailException) {
@@ -79,12 +78,6 @@ public class DriverController {
 
     @GetMapping
     public List<Driver> fetchByAll() {
-
-
-
-
         return driverService.findByAll();
     }
-
-
 }

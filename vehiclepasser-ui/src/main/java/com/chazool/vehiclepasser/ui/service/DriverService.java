@@ -4,6 +4,7 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface DriverService {
 
@@ -13,7 +14,7 @@ public interface DriverService {
 
     Response setActiveVehicle(int activeVehicleId);
 
-    Driver findById(int id);
+    Driver findById(int id) throws ExecutionException, InterruptedException;
 
     Driver findByEmail(String email);
 

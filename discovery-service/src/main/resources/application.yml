@@ -1,6 +1,8 @@
-spring:
-  application:
-    name: discovery
-  cloud:
-    config:
-      uri: http://localhost:8899
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  datacenter: Colombo-SriLanka
+  environment: production
+server:
+  port: 8761

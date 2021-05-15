@@ -30,7 +30,6 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     private EmailSenderService emailSenderService;
 
-
     @Override
     public Vehicle save(Vehicle vehicle, String authorization) throws DuplicateEntryException {
 
@@ -62,7 +61,6 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle delete(int id) {
-
         Vehicle vehicle = findById(id);
         vehicle.setActive(false);
         return vehicleRepository.save(vehicle);

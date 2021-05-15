@@ -1,8 +1,7 @@
 spring:
   application:
-    name: driver
+    name: ui
   cloud:
     config:
       uri: http://localhost:8899
 
-#services

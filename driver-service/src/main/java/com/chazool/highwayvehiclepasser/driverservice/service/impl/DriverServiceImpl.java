@@ -11,7 +11,6 @@ import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.*;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -108,7 +106,6 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.findAll();
     }
 
-
     private void isValid(Driver driver) throws InvalidPasswordException, InvalidEmailException {
 
         if (driver.getFirstName().trim().toString().equals(null) || driver.getFirstName().trim().equals(""))
@@ -122,9 +119,7 @@ public class DriverServiceImpl implements DriverService {
                 || driver.getDrivingLicenseNo().trim().length() < 9) {
             new InvalidDrivingLicenseException("Invalid Driving Licence ");
         }
-
     }
-
 
     @Override
     public void createCard(Driver driver, String authorization) {

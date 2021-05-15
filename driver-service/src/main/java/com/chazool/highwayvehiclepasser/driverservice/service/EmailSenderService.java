@@ -8,6 +8,5 @@ import org.springframework.web.client.RestTemplate;
 @FunctionalInterface
 public interface EmailSenderService {
 
-
-    Response send(Email email,String  authorization);
+    Response send(Email email, String authorization);
 }

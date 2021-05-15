@@ -16,7 +16,6 @@ public class PaymentCard extends Thread {
         this.authorization = authorization;
     }
 
-
     @Override
     public void run() {
         driverService.createCard(driver, authorization);

@@ -1,6 +1,7 @@
 package com.chazool.vehiclepasser.ui.controller;
 
 import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
+import com.chazool.highwayvehiclepasser.model.exception.ServiceDownException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
 import com.chazool.highwayvehiclepasser.model.transactionservice.Terminal;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class PaymentController {
@@ -38,7 +40,14 @@ public class PaymentController {
             Response response = paymentService.enter(payment.getPaymentMethod(), payment.getEntranceTerminal());
             model.addAttribute("response", response);
         } catch (LowBalanceException lowBalanceException) {
-            model.addAttribute("response", lowBalanceException.getMessage());
+            model.addAttribute("response", Response.fail(lowBalanceException.getMessage()));
+        } catch (InterruptedException interruptedException) {
+            model.addAttribute("response", Response.fail(interruptedException.getMessage()));
+        } catch (ExecutionException executionException) {
+            model.addAttribute("response", Response.fail(executionException.getMessage()));
+        } catch (ServiceDownException serviceDownException) {
+            model.addAttribute("response", Response.systemDown(serviceDownException.getMessage()));
+            return "error_500";
         }
         // setModel(model);
         Payment payment1 = new Payment();

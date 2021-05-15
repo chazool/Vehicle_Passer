@@ -4,6 +4,7 @@ import com.chazool.highwayvehiclepasser.model.driverservice.Driver;
 import com.chazool.highwayvehiclepasser.model.driverservice.Vehicle;
 import com.chazool.highwayvehiclepasser.model.emailservice.Email;
 import com.chazool.highwayvehiclepasser.model.exception.LowBalanceException;
+import com.chazool.highwayvehiclepasser.model.exception.ServiceDownException;
 import com.chazool.highwayvehiclepasser.model.paymentservice.Payment;
 import com.chazool.highwayvehiclepasser.model.paymentservice.PaymentMethod;
 import com.chazool.highwayvehiclepasser.model.responsehandle.Response;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public Response enter(int cardNo, int terminalId) throws LowBalanceException {
+    public Response enter(int cardNo, int terminalId) throws LowBalanceException, ExecutionException, InterruptedException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         Response paymentMethodResponse = getPaymentMethod(cardNo);
@@ -55,10 +57,12 @@ public class PaymentServiceImpl implements PaymentService {
 
             Driver driver = driverService.findById(paymentMethod.getDriver());
 
+//            if (driver.getId() == -1) {
+//                throw new ServiceDownException("Driver Service Is Down.");
+//            } else
             if (driver.getActiveVehicle() == 0) {
                 return Response.fail("Cannot Find Vehicle.!");
             } else {
-
                 if (paymentMethod.getBalanceAmount().compareTo(new BigDecimal("1000.00")) != -1) {
                     Response paymentResponse = findByDriver(paymentMethod.getDriver());
                     if (paymentResponse.isAction() == false) {
